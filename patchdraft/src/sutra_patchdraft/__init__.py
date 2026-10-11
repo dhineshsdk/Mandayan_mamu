@@ -10,8 +10,7 @@ validation, and it never carries an approval route.
 
 from .draft import Citation, PatchJobDraft, Ring, Step
 from .drafter import DEFAULT_MODEL, DrafterConfig, PatchDrafter, draft_patch_job, template_only
-from .inputs import (DraftInput, FindingInput, HostInput, InputError, MaintenancePolicy, RootCauseInput,
-                     from_sutra)
+from .inputs import DraftInput, FindingInput, HostInput, InputError, MaintenancePolicy, RootCauseInput, from_sutra
 
 __all__ = [
     "Citation", "DEFAULT_MODEL", "DraftInput", "DrafterConfig", "FindingInput", "HostInput", "InputError",

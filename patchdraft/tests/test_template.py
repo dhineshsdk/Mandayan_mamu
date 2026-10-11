@@ -2,13 +2,13 @@ from datetime import date
 
 import pytest
 
-from helpers import AS_OF, GLIBC_FIXED, ot_plc, rhel_glibc
-from sutra_patchdraft import (DraftInput, FindingInput, HostInput, MaintenancePolicy, RootCauseInput,
-                              template_only)
+from sutra_patchdraft import DraftInput, FindingInput, HostInput, MaintenancePolicy, RootCauseInput, template_only
 from sutra_patchdraft.facts import WINDOWS_PATCH, build_facts, corpus
 from sutra_patchdraft.grounding import validate
 from sutra_patchdraft.schema import OT_TOOL
 from sutra_patchdraft.template import template_raw
+
+from helpers import AS_OF, GLIBC_FIXED, ot_plc, rhel_glibc
 
 WIN = "Windows Server 2019 Datacenter"
 

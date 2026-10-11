@@ -36,7 +36,8 @@ def ot_plc(n_hosts: int = 3, policy: MaintenancePolicy | None = None) -> DraftIn
                             safety_critical=(i == 1), business_process="Generation")
                   for i in range(1, n_hosts + 1))
     findings = tuple(FindingInput(
-        finding_id=f"OT-{i}", asset_id=f"P{i}", title="Siemens SIMATIC S7-1500 CPU firmware vulnerability (SSA-2026-0101)",
+        finding_id=f"OT-{i}", asset_id=f"P{i}",
+        title="Siemens SIMATIC S7-1500 CPU firmware vulnerability (SSA-2026-0101)",
         severity="critical", kind="package", cves=("CVE-2024-12345",), package="S7-1500 CPU firmware",
         installed="V2.9.4", fixed="V3.1.0", solution="Update firmware to V3.1.0 per OEM guidance",
         scanner_refs=("Tenable plugin 501234",),

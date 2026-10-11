@@ -9,7 +9,7 @@ Drafts come from Claude when an API key is set, and from rule-based templates ot
 checks before anyone sees them, and neither carries an approval route: who approves comes from the rules engine in
 the app, so a draft cannot lower its own approval level.
 
-It is a plain Python library (3.10+, no required dependencies) with no web server, database or workflow. The app
+It is a plain Python library (3.11+, no required dependencies) with no web server, database or workflow. The app
 calls it when a team raises a patch job.
 
 ## Use

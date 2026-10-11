@@ -3,11 +3,19 @@ from types import SimpleNamespace
 
 import pytest
 
-from helpers import AS_OF, GLIBC_FIXED, ot_plc, rhel_glibc
-from sutra_patchdraft import (DraftInput, FindingInput, HostInput, InputError, MaintenancePolicy, RootCauseInput,
-                              from_sutra)
+from sutra_patchdraft import (
+    DraftInput,
+    FindingInput,
+    HostInput,
+    InputError,
+    MaintenancePolicy,
+    RootCauseInput,
+    from_sutra,
+)
 from sutra_patchdraft.facts import WINDOWS_PATCH, build_facts, clean, corpus
 from sutra_patchdraft.windows import it_windows, ot_window
+
+from helpers import AS_OF, GLIBC_FIXED, ot_plc, rhel_glibc
 
 RC = RootCauseInput(rc_id="RC-1", kind="single", key="k", title="t", fix="f")
 
@@ -105,7 +113,8 @@ def test_corpus_holds_every_input_value():
 
 def test_it_windows_start_the_week_after_as_of():
     policy = MaintenancePolicy(weekday=5, start=time(22, 0), duration_hours=4)
-    assert it_windows(policy, AS_OF, 2) == ["Sat 17 Oct 2026, 22:00 to 02:00 IST", "Sat 24 Oct 2026, 22:00 to 02:00 IST"]
+    assert it_windows(policy, AS_OF, 2) == ["Sat 17 Oct 2026, 22:00 to 02:00 IST",
+                                            "Sat 24 Oct 2026, 22:00 to 02:00 IST"]
     # A window on the as-of day itself is too soon to approve; the next one is used.
     assert it_windows(policy, date(2026, 10, 17), 1) == ["Sat 24 Oct 2026, 22:00 to 02:00 IST"]
 

@@ -112,7 +112,7 @@ def template_raw(inp: DraftInput, facts: Facts, lane: str) -> dict:
             "summary": f"Staged plan for {len(hosts)} OT asset(s): OEM approval, compensating control until the "
                        "shutdown, then a hand-applied change one asset first.",
             "excluded_hosts": [],
-            "rings": [{"name": n, "hosts": g, "purpose": p} for n, g, p in zip(names, groups, purposes)],
+            "rings": [{"name": n, "hosts": g, "purpose": p} for n, g, p in zip(names, groups, purposes, strict=True)],
             "steps": steps,
             "prechecks": [{"text": t, "cites": [ROOT_CAUSE_REF]} for t in (
                 "OEM approval received in writing", "Shutdown slot confirmed with operations",
@@ -144,8 +144,8 @@ def template_raw(inp: DraftInput, facts: Facts, lane: str) -> dict:
     if rc.kind == "base-image":
         image_changes = [c for c, ch in facts.changes.items() if ch.kind in ("package", "windows-update")]
         if image_changes:
-            step("rebuild_image", 0, f"Rebuild the image {clean(rc.key, 120)} with the changes and keep the previous version "
-                 "as a fallback template.", changes=image_changes)
+            step("rebuild_image", 0, f"Rebuild the image {clean(rc.key, 120)} with the changes and keep the "
+                 "previous version as a fallback template.", changes=image_changes)
     for i, group in enumerate(groups, 1):
         for kinds in ({"package", "windows-update", "other"}, {"config"}, {"credential"}):
             changes = ring_changes(group, kinds)
@@ -176,7 +176,7 @@ def template_raw(inp: DraftInput, facts: Facts, lane: str) -> dict:
                    f"{len(groups)} ring(s), then rescan.",
         "tool": tool,
         "excluded_hosts": [],
-        "rings": [{"name": n, "hosts": g, "purpose": p} for n, g, p in zip(names, groups, purposes)],
+        "rings": [{"name": n, "hosts": g, "purpose": p} for n, g, p in zip(names, groups, purposes, strict=True)],
         "steps": steps,
         "prechecks": [{"text": t, "cites": [ROOT_CAUSE_REF]} for t in prechecks + ["Service health baseline "
                                                                                      "captured"]],

@@ -7,12 +7,12 @@ import anthropic
 import httpx2
 import pytest
 
-from helpers import (GLIBC_FIXED, FakeClient, ot_plc, response, rhel_glibc, valid_it_raw, valid_ot_raw)
-from sutra_patchdraft import (DEFAULT_MODEL, DraftInput, DrafterConfig, FindingInput, MaintenancePolicy,
-                              PatchDrafter)
+from sutra_patchdraft import DEFAULT_MODEL, DrafterConfig, DraftInput, FindingInput, MaintenancePolicy, PatchDrafter
 from sutra_patchdraft.drafter import FALLBACK_BETA
 from sutra_patchdraft.prompt import DATA_TAG, SYSTEM_PROMPT
 from sutra_patchdraft.schema import OT_TOOL, schema_for
+
+from helpers import GLIBC_FIXED, FakeClient, ot_plc, response, rhel_glibc, valid_it_raw, valid_ot_raw
 
 CONFIG = DrafterConfig()
 
