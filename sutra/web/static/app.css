@@ -195,3 +195,7 @@ ul.evidence-list, ul.plain { margin: 4px 0; padding-left: 18px; }
 ul.evidence-list li, ul.plain > li { margin: 4px 0; }
 tr.detail-row > td { border-top: 0; padding-top: 0; }
 form.inline-form { display: inline-flex; gap: 6px; align-items: center; margin-left: 6px; }
+
+ul.ai { margin: 0; padding-left: 18px; }
+ul.ai li { margin-bottom: 8px; }
+.cites .badge { font-size: 10.5px; padding: 0 5px; }

@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import directory, drafting, intel, migrate, netconfig, notify, scanpull, sweeper
+from . import ai, directory, drafting, intel, migrate, netconfig, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -21,6 +21,7 @@ from .db import make_engine, make_sessionmaker
 from .integrations import Senders
 from .jobs import Conflict, Forbidden
 from .routes import admin, auth, compliance, data, history, jobs, netdevices, ot, scanners, views
+from .routes import ai as ai_routes
 
 STATIC = Path(__file__).resolve().parent.parent / "web" / "static"
 
@@ -29,8 +30,10 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'")
 
 
-def create_app(settings: Settings | None = None, drafter=None, background: bool = True) -> FastAPI:
-    """``drafter``: a ``sutra_patchdraft.PatchDrafter``; by default one configured from the environment.
+def create_app(settings: Settings | None = None, drafter=None, background: bool = True,
+               explainer=None) -> FastAPI:
+    """``drafter``: a ``sutra_patchdraft.PatchDrafter``; by default one configured from the environment (Claude, a
+    local model, or templates, see ``ai.py``). ``explainer``: a ``sutra_explain.Explainer``, likewise.
     ``background``: run the hourly sweeper and the notification dispatcher threads (tests drive them directly)."""
     settings = settings or Settings()
 
@@ -69,7 +72,8 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.engine = make_engine(settings.database_url)
     app.state.sessionmaker = make_sessionmaker(app.state.engine)
     app.state.analysis = AnalysisStore()
-    app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter)
+    app.state.ai = ai.AiService(explainer=explainer)
+    app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter or ai.drafter(app.state.ai.config))
     app.state.sweeper = sweeper.Sweeper(app.state.sessionmaker)
     app.state.senders = Senders(settings)
     app.state.dispatcher = notify.Dispatcher(app.state.sessionmaker, app.state.senders)
@@ -126,8 +130,9 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
         return JSONResponse({"error": f"{field}: {first.get('msg', 'invalid')}" if field else "Invalid request."},
                             status_code=422)
 
-    for router in (auth.router, views.router, jobs.router, ot.router, data.router, scanners.router, netdevices.router,
-                   compliance.router, history.router, admin.router, admin.audit_router):
+    for router in (auth.router, views.router, ai_routes.router, jobs.router, ot.router, data.router,
+                   scanners.router, netdevices.router, compliance.router, history.router, admin.router,
+                   admin.audit_router):
         app.include_router(router)
 
     @app.api_route("/api/{rest:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"], include_in_schema=False)

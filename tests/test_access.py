@@ -39,6 +39,8 @@ ACCOUNTS = {
 SCREENS = {
     "board": ("GET", "/api/board", None),
     "board_pack": ("GET", "/api/board/pack", None),
+    "briefing": ("GET", "/api/board/briefing", None),
+    "ai_status": ("GET", "/api/admin/ai", None),
     "root_causes": ("GET", "/api/root-causes", None),
     "receipts": ("GET", "/api/downloads/receipts.json", None),
     "assets": ("GET", "/api/assets", None),
@@ -66,6 +68,7 @@ SCREENS = {
 }
 # Actions: sent with a body that is rejected after the access check, so "allowed" means "not 401/403".
 ACTIONS = {
+    "rc_explanation": ("GET", "/api/root-causes/RC-001/explanation", None),  # 404 when outside the person's scope
     "raise_job": ("POST", "/api/jobs", {}),
     "cmp_record": ("POST", "/api/compliance/entities", {}),
     "cmp_finding": ("POST", "/api/compliance/audits/999999/findings", {}),
@@ -90,22 +93,24 @@ ACTIONS = {
 EXPECTED = {
     "team_member": {"portal", "jobs", "raise_job"},
     "team_manager": {"portal", "jobs", "decide_job", "scorecards"},
-    "vm_analyst": {"board", "board_pack", "root_causes", "receipts", "assets", "headline", "jobs", "uploads",
-                   "datasets", "decide_job", "upload", "analyze", "demo", "connections", "intel", "start_pull"},
-    "vertical_head": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "scorecards"},
+    "vm_analyst": {"board", "board_pack", "briefing", "rc_explanation", "root_causes", "receipts", "assets",
+            "headline", "jobs", "uploads", "datasets", "decide_job", "upload", "analyze", "demo", "connections",
+            "intel", "start_pull"},
+    "vertical_head": {"board", "board_pack", "briefing", "rc_explanation", "root_causes", "receipts", "jobs",
+            "decide_job", "scorecards"},
     "plant_engineer": {"portal", "ot_plans", "ot_record"},
-    "ciso": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "scorecards", "approval_rules",
-             "set_rules", "maintenance", "set_maintenance", "sla", "set_sla", "compliance", "compliance_meta",
-             "cmp_record", "cmp_finding"},
-    "compliance_officer": {"board", "board_pack", "audit", "audit_csv", "compliance", "compliance_meta", "cmp_record",
-                           "cmp_finding"},
-    "executive": {"board", "board_pack"},
+    "ciso": {"board", "board_pack", "briefing", "rc_explanation", "ai_status", "root_causes", "receipts", "jobs",
+            "decide_job", "scorecards", "approval_rules", "set_rules", "maintenance", "set_maintenance", "sla",
+            "set_sla", "compliance", "compliance_meta", "cmp_record", "cmp_finding"},
+    "compliance_officer": {"board", "board_pack", "briefing", "audit", "audit_csv", "compliance",
+            "compliance_meta", "cmp_record", "cmp_finding"},
+    "executive": {"board", "board_pack", "briefing"},
     "auditor": {"audit", "audit_csv", "compliance", "compliance_meta"},
-    "admin": {"uploads", "datasets", "connections", "intel", "add_connection", "start_pull",
-              "admin_users", "directory", "admin_catalog", "admin_ownership", "approval_rules", "audit",
-              "audit_csv", "upload", "analyze", "demo", "create_user", "update_user", "set_licence", "set_rules",
-              "ownership_upload", "maintenance", "set_maintenance", "sla", "set_sla", "integrations",
-              "outbox_retry"},
+    "admin": {"ai_status", "uploads", "datasets", "connections", "intel", "add_connection", "start_pull",
+            "admin_users", "directory", "admin_catalog", "admin_ownership", "approval_rules", "audit",
+            "audit_csv", "upload", "analyze", "demo", "create_user", "update_user", "set_licence", "set_rules",
+            "ownership_upload", "maintenance", "set_maintenance", "sla", "set_sla", "integrations",
+            "outbox_retry"},
 }
 
 

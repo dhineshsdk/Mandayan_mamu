@@ -35,8 +35,10 @@ def _rc_fields(rc: Mapping[str, Any]) -> dict[str, Any]:
     f: dict[str, Any] = {
         "kind": rc["kind"], "ssvc": rc["ssvc"], "exploitation": rc["exploitation"], "exposure": rc["exposure"],
         "human_impact": rc["human_impact"], "max_severity": rc["max_severity"], "hosts": int(rc["hosts"]),
-        "findings": int(rc["findings"]), "ale_label": rupees(rc["ale"]), "ale_p10_label": rupees(rc["ale_p10"]),
-        "ale_p90_label": rupees(rc["ale_p90"]), "cea_overdue": int(rc["cea_overdue"]), "is_ot": bool(rc["is_ot"]),
+        "findings": int(rc["findings"]), "ale_label": rc.get("ale_label") or rupees(rc["ale"]),
+        "ale_p10_label": rupees(rc["ale_p10"]), "ale_p90_label": rupees(rc["ale_p90"]),
+        "range_percent": 80,  # ale_p10 to ale_p90 is the 80% range
+        "cea_overdue": int(rc["cea_overdue"]), "is_ot": bool(rc["is_ot"]),
         "cve_count": len(cves),
         "cves_active": sum(1 for c in cves if c.get("exploitation") == "active"),
         "cves_poc": sum(1 for c in cves if c.get("exploitation") == "poc"),
@@ -53,7 +55,9 @@ def read_findings(payload: Mapping[str, Any], finding_ids: list[str], reader=Non
 
 
 def root_cause_facts(payload: Mapping[str, Any], rc_id: str, typed: Mapping[str, Typed] | None = None,
-                     max_hosts: int = 12, max_findings: int = 12, max_cves: int = 5) -> FactSet:
+                     max_hosts: int = 12, max_findings: int = 12, max_cves: int = 5, reader=None) -> FactSet:
+    """Facts for one root cause. Whether a finding's text looks like an instruction is always decided by the rules,
+    for every finding; ``reader`` (for example a ``ModelReader``) may only choose the category of the findings shown."""
     rc = next((r for r in payload["root_causes"] if r["id"] == rc_id), None)
     if rc is None:
         raise KeyError(f"no root cause {rc_id}")
@@ -67,6 +71,7 @@ def root_cause_facts(payload: Mapping[str, Any], rc_id: str, typed: Mapping[str,
                      key=lambda f: (-SEV_RANK[f["severity"]], -(f["cvss"] or 0), f["id"]))
     # The model is told how much the nodes below cover, so it can say "12 of 40" and not claim more.
     fields["hosts_total"], fields["findings_total"] = len(hosts), len(members)
+    fields["hosts_shown"], fields["findings_shown"] = min(len(hosts), max_hosts), min(len(members), max_findings)
     facts.add(Node("R1", rc_id, "root_cause", rc["title"], fields))
 
     for i, a in enumerate(hosts[:max_hosts], 1):
@@ -74,7 +79,12 @@ def root_cause_facts(payload: Mapping[str, Any], rc_id: str, typed: Mapping[str,
             "zone": a["zone"], "criticality": int(a["criticality"]), "is_ot": bool(a["is_ot"]),
             "safety_critical": bool(a["safety"]), "in_cmdb": bool(a["in_cmdb"]),
             "scanned_by_count": len(a["scanned_by"])}))
-    for i, f in enumerate(members[:max_findings], 1):
+    shown = members[:max_findings]
+    if reader is not None and shown:
+        better = read_findings(payload, [f["id"] for f in shown], reader)
+        typed = {**typed, **{k: Typed(v.category, typed[k].suspicious if k in typed else v.suspicious, v.source)
+                             for k, v in better.items()}}
+    for i, f in enumerate(shown, 1):
         t = typed.get(f["id"]) or Typed("other", False, "rules")
         fl: dict[str, Any] = {"severity": f["severity"], "finding_kind": f["kind"], "category": t.category,
                               "cve_count": len(f["cves"])}
@@ -96,7 +106,8 @@ def board_facts(payload: Mapping[str, Any], top_n: int = 5, unowned: int | None 
     h, cov, pl = payload["headline"], payload["coverage"], payload["portfolio_labels"]
     ssvc = h["ssvc"]
     facts.add(Node("B1", "portfolio", "portfolio", payload["org"], {
-        "ale_label": pl["ale_mean"], "ale_p10_label": pl["ale_p10"], "ale_p90_label": pl["ale_p90"],
+        "range_percent": 80, "ale_label": pl["ale_mean"], "ale_p10_label": pl["ale_p10"],
+        "ale_p90_label": pl["ale_p90"],
         "findings": int(h["findings"]), "root_causes": int(h["root_causes"]), "top_n": int(h["top_n"]),
         "top_findings_share": _pct(h["top_findings_share"]), "top_risk_share": _pct(h["top_risk_share"]),
         "ssvc_act": int(ssvc.get("Act", 0)), "ssvc_attend": int(ssvc.get("Attend", 0)),
