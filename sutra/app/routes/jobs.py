@@ -11,10 +11,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .. import closure, otplans
+from .. import compliance as cmp
 from .. import jobs as J
 from ..access import Principal
-from ..deps import client_ip, get_db, require
-from ..models import AuditEvent, Job
+from ..deps import client_ip, get_db, require, require_any
+from ..models import AuditEvent, Job, utcnow
 from ..security import audit
 
 router = APIRouter(prefix="/api/jobs")
@@ -75,6 +76,7 @@ def get_job(pk: int, request: Request, p: Principal = Depends(require("M-PJ", "v
     out["checks"] = closure.checks_json(db, job)
     plan = otplans.plan_for(db, job, request.app.state.analysis.result)
     out["ot_plan"] = otplans.plan_json(db, plan, job, p) if plan else None
+    out["second_schedule"] = cmp.second_schedule(db, job)
     db.commit()
     s = request.app.state.settings
     out["jira_url"] = f"{s.jira_url}/browse/{job.jira_key}" if job.jira_key and s.jira_url else None
@@ -104,5 +106,53 @@ def raise_job(body: RaiseIn, request: Request, p: Principal = Depends(require("M
 def decide(pk: int, body: DecisionIn, request: Request, p: Principal = Depends(require("M-PJ", "approve")),
            db: Session = Depends(get_db)):
     job = _get(request, db, p, pk)
+    if body.action == "approve" and job.status == "pending" and \
+            sum(1 for s in job.steps if s.state in ("current", "waiting")) == 1 and \
+            cmp.second_schedule(db, job)["blocks_final_approval"]:
+        raise J.Conflict("This change needs a cyber security audit before deployment (CEA Second Schedule). Record "
+                         "the pre-deployment audit on the job, then approve.")
     J.decide(db, p, job, body.action, body.comment.strip(), client_ip(request))
     return J.job_json(db, job, p, request.app.state.analysis.result)
+
+
+CHANGE_EDITORS = require_any(("M-PJ", "act"), ("M-PJ", "approve"))
+
+
+class CategoriesIn(BaseModel):
+    categories: list[str] = Field(default_factory=list, max_length=20)
+
+
+@router.put("/{pk}/change-categories")
+def set_change_categories(pk: int, body: CategoriesIn, request: Request, p: Principal = Depends(CHANGE_EDITORS),
+                          db: Session = Depends(get_db)):
+    """What kind of change the fix is, for the CEA Second Schedule. Sutra adds the critical-fix category itself."""
+    job = _get(request, db, p, pk)
+    if job.status not in J.OPEN:
+        raise J.Conflict("This job is closed.")
+    before = list(job.change_categories or [])
+    job.change_categories = cmp.check_categories(body.categories)
+    audit(db, "job.change_categories", p.user, "job", job.id, client_ip(request), before=before,
+          after=job.change_categories)
+    db.commit()
+    return cmp.second_schedule(db, job)
+
+
+class PreAuditIn(BaseModel):
+    reference: str = Field(min_length=1, max_length=120)
+    audited_on: date
+    auditor: str = Field(min_length=1, max_length=200)
+
+
+@router.post("/{pk}/pre-deployment-audit")
+def record_pre_audit(pk: int, body: PreAuditIn, request: Request, p: Principal = Depends(CHANGE_EDITORS),
+                     db: Session = Depends(get_db)):
+    job = _get(request, db, p, pk)
+    if not cmp.second_schedule(db, job)["needs_pre_deployment_audit"]:
+        raise ValueError("This change does not need a pre-deployment audit under the Second Schedule.")
+    cmp.check_past(body.audited_on, "The audit date")
+    job.pre_audit = {"reference": body.reference.strip(), "audited_on": body.audited_on.isoformat(),
+                     "auditor": body.auditor.strip(), "by": p.user.display_name,
+                     "at": utcnow().isoformat(timespec="seconds")}
+    audit(db, "job.pre_deployment_audit", p.user, "job", job.id, client_ip(request), **job.pre_audit)
+    db.commit()
+    return cmp.second_schedule(db, job)

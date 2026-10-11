@@ -28,6 +28,7 @@ class Principal:
     roles: list[tuple[str, Scope]]
     perms: dict[tuple[str, str], set[Scope]] = field(default_factory=dict)
     team_vertical: dict[str, str] = field(default_factory=dict)
+    read_only: bool = False  # holds a time-limited role, so every action but view is removed
 
     @property
     def role_keys(self) -> set[str]:
@@ -110,4 +111,14 @@ def build_principal(db: Session, user: User) -> Principal:
         if g.effect == "deny":
             for key in [k for k in p.perms if k[0] == g.module_key and (g.action == "*" or k[1] == g.action)]:
                 del p.perms[key]
+    p.read_only = read_only(user, roles)
+    if p.read_only:
+        # Time-limited access (the external auditor) only ever reads, whatever else the account was given.
+        for key in [k for k in p.perms if k[1] != "view"]:
+            del p.perms[key]
     return p
+
+
+def read_only(user: User, roles: dict[str, Role]) -> bool:
+    """An account holding a time-limited role is read-only."""
+    return any(roles[ur.role_key].time_limited for ur in user.roles if ur.role_key in roles)

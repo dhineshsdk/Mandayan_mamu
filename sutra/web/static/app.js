@@ -89,7 +89,8 @@ function buildNav() {
     '<p class="muted" style="padding:0 10px">No modules are switched on for you yet. Ask an administrator.</p>';
   const u = ME.user;
   document.getElementById("who").textContent = u.name;
-  document.getElementById("me-foot").innerHTML = ME.roles.map((r) => `${esc(ROLE_NAME[r.role] || r.role)}<br><span>${esc(r.scope)}</span>`).join("<br>") || "No role";
+  document.getElementById("me-foot").innerHTML = ME.roles.map((r) => `${esc(ROLE_NAME[r.role] || r.role)}<br><span>${esc(r.scope)}</span>`).join("<br>") || "No role"
+  if (u.expires_at) document.getElementById("me-foot").innerHTML += `<br><span class="warn-ink">${u.read_only ? "Read-only access" : "Access"} ends ${esc(fmtDate(u.expires_at))}</span>`;
 }
 function homeView() { const n = NAV.find(allowed); return n ? n.view : "account"; }
 async function refreshInbox() {
@@ -531,6 +532,7 @@ VIEWS.job = {
       ${j.mode === "manual" ? `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team ${j.status === "verified-fixed" ? "fixed" : "is fixing"} this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}.${j.status === "verified-fixed" ? "" : " The findings close only when a rescan proves the fix."}</p></div>` : ""}
       ${j.ot_plan ? otPlanHtml(j.ot_plan, j, false) : ""}
       ${rescanHtml(j)}
+      ${secondScheduleHtml(j)}
       ${j.status === "drafting" ? '<div class="card mt"><h2>Drafting</h2><p style="margin:0">Sutra is writing the draft. The first approval step opens when it is ready. <a href="">Refresh</a></p></div>' : ""}
       ${j.status === "draft-failed" ? '<div class="card mt"><h2>Draft failed</h2><p style="margin:0">Sutra could not write a draft for this job, so it was closed without approvals. Raise it again; if it fails again, tell your Sutra administrator.</p></div>' : ""}
       ${d && d.lane ? draftHtml(j, d) : ""}
@@ -551,6 +553,7 @@ VIEWS.job = {
         <tbody>${j.audit.map((a) => `<tr><td class="mono">${esc(fmtTime(a.at))}</td><td>${esc(a.actor || "Sutra")}</td><td>${esc(a.action)}</td><td>${esc(a.comment)}</td></tr>`).join("")}</tbody></table></div></div>`;
   },
   wire(root, j) {
+    wireSecondSchedule(root, j);
     root.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", async () => {
       b.disabled = true;
       try {
@@ -671,6 +674,37 @@ VIEWS.otplan = {
 };
 
 const OUTCOME = { fixed: "Fixed", "partly-fixed": "Partly fixed", "not-fixed": "Not fixed", "not-rescanned": "Not rescanned", reopened: "Findings back: reopened" };
+function secondScheduleHtml(j) {
+  const ss = j.second_schedule;
+  if (!ss || !ss.applies) return "";
+  const edit = (can("M-PJ", "act") || can("M-PJ", "approve")) && OPEN.includes(j.status);
+  const chosen = new Set(ss.categories.filter((c) => c.from === "person").map((c) => c.id));
+  const auto = ss.categories.filter((c) => c.from === "sutra");
+  const pa = ss.pre_audit;
+  const head = ss.needs_pre_deployment_audit
+    ? `<p style="margin-top:0"><span class="badge warn">Needs a cyber security audit before deployment</span> ${ss.categories.map((c) => esc(c.label)).join("; ")}.${ss.in_force ? "" : " The CEA regulation applies from 1 April 2027; until then this is a warning only."}${ss.blocks_final_approval ? " <b>The final approval waits until the pre-deployment audit is recorded.</b>" : ""}</p>`
+    : '<p class="muted" style="margin-top:0">No Second Schedule category applies to this change, so no pre-deployment audit is needed.</p>';
+  return `<div class="card mt" id="ss-card"><h2>CEA Second Schedule</h2>${head}
+    ${auto.length ? `<p class="muted">Sutra added "${esc(auto[0].label)}" because the job fixes critical CEA audit finding${ss.linked_findings.length === 1 ? "" : "s"} ${ss.linked_findings.map((f) => esc(f.ref)).join(", ")}.</p>` : ""}
+    ${pa ? `<p>Pre-deployment audit <b class="mono">${esc(pa.reference)}</b> by ${esc(pa.auditor)} on ${esc(fmtDate(pa.audited_on))}, recorded by ${esc(pa.by)}.</p>` : ""}
+    ${edit ? `<details><summary>What kind of change is this?</summary><form id="ss-cats" class="stack-form">${Object.entries(ss.all_categories).map(([k, l]) => `<label class="check"><input type="checkbox" name="cat" value="${k}"${chosen.has(k) ? " checked" : ""}> ${esc(l)}</label>`).join("")}
+      <div class="toolbar"><button class="btn">Save</button></div></form></details>
+      ${ss.needs_pre_deployment_audit ? `<details${ss.blocks_final_approval ? " open" : ""}><summary>${pa ? "Replace the" : "Record the"} pre-deployment audit</summary><form id="ss-audit" class="form-grid">
+        <label>Audit reference <input name="reference" maxlength="120" required></label><label>Auditor <input name="auditor" maxlength="200" required></label>
+        <label>Audited on <input type="date" name="audited_on" max="${todayIso()}" required></label><div class="toolbar"><button class="btn primary">Record audit</button></div></form></details>` : ""}` : ""}
+    ${ss.citations.length ? `<p class="muted" style="margin-bottom:0">Rule ${ss.citations.map((c) => esc(c.rule_id)).join(", ")}, not yet checked against the gazette text.</p>` : ""}</div>`;
+}
+function wireSecondSchedule(root, j) {
+  const cats = root.querySelector("#ss-cats"), aud = root.querySelector("#ss-audit");
+  if (cats) cats.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try { await api(`/api/jobs/${j.pk}/change-categories`, { method: "PUT", json: { categories: [...cats.querySelectorAll("input:checked")].map((x) => x.value) } }); render(); } catch (err) { alert(err.message); }
+  });
+  if (aud) aud.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try { await post(`/api/jobs/${j.pk}/pre-deployment-audit`, { reference: aud.reference.value, auditor: aud.auditor.value, audited_on: aud.audited_on.value }); render(); } catch (err) { alert(err.message); }
+  });
+}
 function rescanHtml(j) {
   const head = j.status === "verified-fixed" ? `<p style="margin-top:0"><b>Fixed.</b> The scan of ${esc(fmtDate(j.fixed_on))} no longer reports any of the ${j.targets} findings this job covers.</p>`
     : `<p class="muted" style="margin-top:0">This job closes by itself when a later import shows none of its ${j.targets} findings on hosts that were scanned again. Nobody marks it fixed by hand.</p>`;
@@ -1225,6 +1259,37 @@ const ENTITY_FIELDS = (v, types) => `<label>Name <input name="name" maxlength="2
 const GAP = { missing_reference: "Missing file", no_fix_evidence: "No fix evidence", fix_evidence_predates_fix: "Evidence older than the fix",
   control_without_evidence: "Control without evidence", activity_without_evidence: "Activity without evidence", evidence_after_as_of: "Evidence after the assessment date",
   no_report_evidence: "No copy of the report" };
+const istLocal = (iso) => (iso ? new Date(iso + "Z").toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }) + " IST" : "–");
+const toInput = (iso) => (iso ? new Date(new Date(iso + "Z").getTime() + 330 * 60000).toISOString().slice(0, 16) : "");
+const fromInput = (v) => (v ? `${v}:00+05:30` : null);
+const OBL = { pending: ["st-pending", "Due"], done_on_time: ["st-approved", "Sent on time"], done_late: ["st-cmp-amber", "Sent late"], overdue: ["st-rejected", "Overdue"] };
+function incidentForm(x, d) {
+  const v = x || { title: "", description: "", detected_at: "", asset_ids: [], affects_critical_system: null, actions_taken: "" };
+  const dt = (name, label, val, req) => `<label>${label} (IST) <input type="datetime-local" name="${name}" data-ist${req ? " required" : ""} value="${toInput(val)}"></label>`;
+  return `<form class="form-grid" data-cmp-url="${x ? `/api/compliance/incidents/${x.id}` : `/api/compliance/entities/${d.entity.id}/incidents`}" data-cmp-method="${x ? "PUT" : "POST"}">
+    <label style="grid-column:1/-1">What happened <input name="title" maxlength="300" required value="${esc(v.title)}"></label>
+    ${dt("detected_at", "Detected", v.detected_at, true)}
+    <label>Critical system affected <select name="affects_critical_system" data-tri><option value=""${v.affects_critical_system == null ? " selected" : ""}>Not yet established</option><option value="true"${v.affects_critical_system === true ? " selected" : ""}>Yes</option><option value="false"${v.affects_critical_system === false ? " selected" : ""}>No</option></select></label>
+    <label style="grid-column:1/-1">Systems affected <select name="asset_ids" multiple size="5" data-multi>${d.assets.map((a) => `<option value="${esc(a.asset_id)}"${v.asset_ids.includes(a.asset_id) ? " selected" : ""}>${esc(a.asset_id)}${a.name ? ` ${esc(a.name)}` : ""}</option>`).join("")}</select></label>
+    <label style="grid-column:1/-1">Description <textarea name="description" maxlength="5000">${esc(v.description)}</textarea></label>
+    <label style="grid-column:1/-1">Actions taken so far <textarea name="actions_taken" maxlength="5000">${esc(v.actions_taken)}</textarea></label>
+    ${x ? `${dt("reported_csirt_at", "Reported to CSIRT-Power", x.reported_csirt_at)}${dt("reported_certin_at", "Reported to CERT-In", x.reported_certin_at)}
+    ${dt("sabotage_concluded_at", "Concluded to be sabotage of a critical system", x.sabotage_concluded_at)}${dt("sabotage_reported_at", "Sabotage report sent", x.sabotage_reported_at)}` : ""}
+    <div class="toolbar" style="grid-column:1/-1"><button class="btn primary">${x ? "Save incident" : "Record incident"}</button></div></form>`;
+}
+function incidentHtml(x, d) {
+  const obl = x.obligations.map((o) => `<tr><td>${esc(o.recipient_label)}${o.rule_id === "CEA-SABOTAGE-24H" ? " (sabotage, 24 h)" : " (6 h)"}</td><td>${esc(new Date(o.due_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }))} IST</td>
+    <td><span class="status ${OBL[o.state][0]}">${OBL[o.state][1]}</span>${o.hours_remaining != null ? `<div class="fix">${o.hours_remaining} h left</div>` : ""}${o.missing_evidence_kinds.length ? `<div class="fix warn-ink">Missing: ${o.missing_evidence_kinds.map((k) => esc(D.meta.evidence_kinds[k] || k)).join(", ")}</div>` : ""}</td></tr>`).join("");
+  return `<div class="card mt" id="inc-${x.id}"><h2>Incident ${esc(x.ref)}: ${esc(x.title)}</h2>
+    <p class="muted" style="margin-top:0">Detected ${esc(istLocal(x.detected_at))}.</p>
+    <div class="table-wrap"><table><thead><tr><th>Report</th><th>Due by</th><th>State</th></tr></thead><tbody>${obl || '<tr><td colspan="3" class="muted">No reporting rule applies.</td></tr>'}</tbody></table></div>
+    <details><summary>Draft report for CSIRT-Power and CERT-In</summary>
+      <p class="muted">${esc(x.draft.note)}${x.draft.missing.length ? ` Still missing: ${x.draft.missing.map(esc).join(", ")}.` : ""}</p>
+      <pre class="config">${esc(x.draft.text)}</pre><div class="toolbar"><button class="btn small" data-copy="${esc(x.draft.text)}">Copy draft</button></div></details>
+    <div class="grid two" style="margin-top:8px"><div><h3>Proof the reports were sent</h3>${evidenceList(x.report_evidence, { type: "incident", id: x.id }, d)}</div>
+      <div><h3>Sabotage report: root cause and forensic summary</h3>${evidenceList(x.sabotage_evidence, { type: "sabotage", id: x.id }, d)}</div></div>
+    ${d.can_act ? `<details><summary>Edit or record when reports were sent</summary>${incidentForm(x, d)}${x.reported_csirt_at || x.reported_certin_at || x.sabotage_reported_at ? "" : `<div class="toolbar"><button class="btn small" data-delincident="${x.id}">Remove incident</button></div>`}</details>` : ""}</div>`;
+}
 function assetsHtml(d) {
   const act = d.can_act;
   const rows = d.assets.map((x) => {
@@ -1297,6 +1362,9 @@ VIEWS.compliance = {
           <label>Asset (per-asset activities only) <select name="asset_id"><option value="">Whole entity</option>${d.assets.map((x) => `<option value="${esc(x.asset_id)}">${esc(x.asset_id)}${x.name ? ` ${esc(x.name)}` : ""}</option>`).join("")}</select></label>
           <label>Done on <input type="date" name="performed_on" max="${d.meta.today}" required></label><label>Approved by <input name="approved_by" maxlength="200"></label>
           <div class="toolbar"><button class="btn primary">Record</button></div></form></details>` : ""}</div>
+      <h2 style="margin-top:18px">Incidents</h2>
+      ${d.incidents.length ? d.incidents.map((x) => incidentHtml(x, d)).join("") : '<div class="card mt"><p class="muted" style="margin:0">No incidents recorded.</p></div>'}
+      ${d.can_act ? `<div class="card mt"><details><summary>Record an incident (starts the 6-hour clock)</summary>${incidentForm(null, d)}</details></div>` : ""}
       ${assetsHtml(d)}
       <div class="card mt"><h2>Evidence gaps</h2>${d.evidence_gaps.length ? `<p class="muted" style="margin-top:0">What an auditor would ask for and not find.</p><div class="table-wrap"><table><thead><tr><th>Gap</th><th>About</th><th>What</th></tr></thead><tbody>${d.evidence_gaps.map((g) => `<tr><td>${esc(GAP[g.kind] || g.kind)}</td><td class="mono">${esc(g.ref)}</td><td>${esc(g.message)}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">None: every closure, control, activity and report has its evidence on file.</p>'}</div>
       <div class="card mt"><h2>Evidence register</h2><p class="muted" style="margin-top:0">Every file is stored once under its SHA-256 and never changed. Downloads are logged.</p>
@@ -1325,6 +1393,9 @@ VIEWS.compliance = {
             if (el.hasAttribute("data-list")) v = v ? v.split(",").map((s) => s.trim()).filter(Boolean) : [];
             else if (el.hasAttribute("data-num")) v = v === "" ? null : Number(v);
             else if (el.type === "date") v = v || null;
+            else if (el.hasAttribute("data-ist")) v = fromInput(v);
+            else if (el.hasAttribute("data-tri")) v = v === "" ? null : v === "true";
+            else if (el.hasAttribute("data-multi")) v = [...el.selectedOptions].map((o) => o.value);
             body[el.name] = v;
           }
           const res = await api(f.dataset.cmpUrl, { method: f.dataset.cmpMethod || "POST", json: body });
@@ -1339,6 +1410,10 @@ VIEWS.compliance = {
     }));
     del("data-delfinding", (id) => `/api/compliance/findings/${id}`, "Remove this finding, its compensating controls and its evidence links? Uploaded files are kept.");
     del("data-delaudit", (id) => `/api/compliance/audits/${id}`, "Remove this audit?");
+    del("data-delincident", (id) => `/api/compliance/incidents/${id}`, "Remove this incident?");
+    root.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; } catch (err) { alert("Select the text and copy it by hand."); }
+    }));
     del("data-delasset", (id) => `/api/compliance/assets/${id}`, "Remove this asset from the entity?");
     root.querySelectorAll("[data-classify]").forEach((sel) => sel.addEventListener("change", async () => {
       const critical = sel.value === "critical" ? true : sel.value === "not-critical" ? false : null;

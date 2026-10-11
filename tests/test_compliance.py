@@ -339,3 +339,94 @@ def test_the_audit_pack_exports_with_its_evidence_and_a_digest(env, log4j_job):
         exports = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "compliance.audit_pack_export",
                                                            AuditEvent.target_id == str(e["id"]))))
     assert {x.detail["format"] for x in exports} == {"json", "zip"}
+
+
+def test_second_schedule_flags_changes_that_need_a_pre_deployment_audit(env, log4j_job, monkeypatch):
+    # A job linked to a critical CEA finding is a fix for a previously found critical vulnerability.
+    officer = client(env, OFFICER)
+    e = ok(officer.post("/api/compliance/entities", json={"name": "Schedule Station", "entity_type": "generator",
+                                                          "capacity_mw": 200}), 201)
+    a = ok(officer.post(f"/api/compliance/entities/{e['id']}/audits", json={
+        "ref": "CSA-S", "auditor": "Example LLP", "auditor_status": "cert_in_empanelled", "started_on": days(-9)}),
+        201)
+    ok(officer.post(f"/api/compliance/audits/{a['id']}/findings", json={
+        "ref": "S-1", "severity": "critical", "title": "Log4Shell", "job_id": log4j_job["pk"]}), 201)
+    ss = ok(client(env, VM).get(f"/api/jobs/{log4j_job['pk']}"))["second_schedule"]
+    assert ss["needs_pre_deployment_audit"] is True
+    assert ss["categories"] == [{"id": "critical_vulnerability_fix", "label": ss["all_categories"][
+        "critical_vulnerability_fix"], "from": "sutra"}]
+    assert ss["citations"][0]["rule_id"] == "CEA-SECOND-SCHEDULE"
+
+    # A person says what kind of change a fix is; once the regulation is in force the final approval waits for
+    # the recorded pre-deployment audit.
+    team = client(env, LINUX)
+    rc = next(t for t in team.get("/api/portal").json()["teams"][0]["tasks"] if "rhel8-base-v3" in t["title"])
+    j = ok(team.post("/api/jobs", json={"rc_id": rc["id"], "team": "IT Infra - Linux", "mode": "patch"}), 201)
+    assert ok(team.get(f"/api/jobs/{j['pk']}"))["second_schedule"]["needs_pre_deployment_audit"] is False
+    assert team.put(f"/api/jobs/{j['pk']}/change-categories", json={"categories": ["firmware"]}).status_code == 400
+    ss = ok(team.put(f"/api/jobs/{j['pk']}/change-categories", json={"categories": ["authentication_privilege"]}))
+    assert ss["needs_pre_deployment_audit"] is True and ss["matched"] == ["authentication_privilege"]
+    assert client(env, AUDITOR).put(f"/api/jobs/{j['pk']}/change-categories",
+                                    json={"categories": []}).status_code == 403
+
+    monkeypatch.setattr(cmp, "today_local", lambda: date(2027, 5, 3))
+    approvers = (MANAGER, VM, HEAD)[:len(j["steps"])]
+    for who in approvers[:-1]:
+        ok(client(env, who).post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"}))
+    last = client(env, approvers[-1])
+    r = last.post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"})
+    assert r.status_code == 409 and "Second Schedule" in r.json()["error"]
+    ss = ok(team.post(f"/api/jobs/{j['pk']}/pre-deployment-audit", json={
+        "reference": "PDA-2027-14", "audited_on": "2027-05-02", "auditor": "Example Auditors LLP"}))
+    assert ss["blocks_final_approval"] is False and ss["pre_audit"]["reference"] == "PDA-2027-14"
+    assert ok(last.post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"}))["status"] == "approved"
+
+
+def test_incident_clocks_and_the_report_draft(env):
+    from datetime import UTC, datetime
+
+    officer, auditor = client(env, OFFICER), client(env, AUDITOR)
+    e = ok(officer.post("/api/compliance/entities", json={"name": "Incident Station", "entity_type": "generator",
+                                                          "capacity_mw": 400, "site": "Vindhya Thermal Plant"}), 201)
+    ok(officer.post(f"/api/compliance/entities/{e['id']}/assets/import"))
+    asset = ok(officer.get(f"/api/compliance/entities/{e['id']}"))["assets"][0]
+    ok(officer.put(f"/api/compliance/assets/{asset['id']}", json={"critical": True}))
+    url = f"/api/compliance/entities/{e['id']}/incidents"
+    now = datetime.now(UTC).replace(microsecond=0)
+    iso = lambda hours: (now - timedelta(hours=hours)).isoformat()  # noqa: E731
+
+    # Seven hours ago and nothing reported yet: both reports are overdue. Times are never in the future.
+    body = {"title": "Ransomware note on an engineering workstation", "detected_at": iso(7),
+            "asset_ids": [asset["asset_id"]], "affects_critical_system": True}
+    assert officer.post(url, json={**body, "detected_at": (now + timedelta(hours=1)).isoformat()}).status_code == 400
+    assert officer.post(url, json={**body, "reported_certin_at": iso(9)}).status_code == 400  # before detection
+    inc = ok(officer.post(url, json=body), 201)
+    d = ok(auditor.get(f"/api/compliance/entities/{e['id']}"))
+    item = d["incidents"][0]
+    assert {o["recipient"]: o["state"] for o in item["obligations"]} == {"csirt_power": "overdue", "cert_in": "overdue"}
+    assert any(i["subject"] == "incident" and i["severity"] == "breach" for i in d["assessment"]["issues"])
+
+    # The draft holds only what is recorded and says what is missing.
+    draft = item["draft"]
+    fields = {f["label"]: f["value"] for f in draft["fields"]}
+    assert fields["Critical system affected"] == "Yes" and asset["asset_id"] in fields["Systems affected"]
+    assert "critical system" in fields["Systems affected"] and fields["Reporting entity"].startswith("Incident Station")
+    assert set(draft["missing"]) == {"Description", "Actions taken so far"}
+    assert "CEA-INCIDENT-6H" in draft["note"] and draft["text"].startswith("Reporting entity:")
+
+    # Reports sent within 6 hours of detection are on time; one sent later is late.
+    ok(officer.put(f"/api/compliance/incidents/{inc['id']}", json={
+        **body, "description": "Ransom note found on ENG-WS-04", "actions_taken": "Host isolated",
+        "reported_csirt_at": iso(3), "reported_certin_at": iso(0)}))
+    item = ok(auditor.get(f"/api/compliance/entities/{e['id']}"))["incidents"][0]
+    states = {o["recipient"]: o["state"] for o in item["obligations"]}
+    assert states == {"csirt_power": "done_on_time", "cert_in": "done_late"} and item["draft"]["missing"] == []
+
+    # Evidence attaches to an incident; a report on record keeps the incident.
+    up = ok(officer.post(f"/api/compliance/entities/{e['id']}/evidence", data={
+        "kind": "other", "title": "Sent to CERT-In", "owner_type": "incident", "owner_id": str(inc["id"])},
+        files={"file": ("sent.txt", b"mail", "text/plain")}), 201)
+    item = ok(officer.get(f"/api/compliance/entities/{e['id']}"))["incidents"][0]
+    assert [x["id"] for x in item["report_evidence"]] == [up["id"]]
+    assert officer.delete(f"/api/compliance/incidents/{inc['id']}").status_code == 400
+    assert auditor.post(url, json=body).status_code == 403
