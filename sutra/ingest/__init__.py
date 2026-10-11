@@ -1,9 +1,11 @@
-"""Readers for Qualys and Tenable exports and the CMDB, plus asset resolution and dedupe."""
+"""Readers for Qualys and Tenable exports, Trivy and Grype image scans and the CMDB, plus asset resolution and
+dedupe."""
 
 from __future__ import annotations
 
 import csv
 import json
+import re
 from datetime import date, datetime
 from pathlib import Path
 
@@ -11,9 +13,13 @@ import defusedxml.ElementTree as ET
 
 from ..model import SEVERITY_ORDER, Asset, Finding, SourceRef
 from . import normalize as nz
+from .images import load_grype, load_trivy
 
 
 def _short(hostname: str) -> str:
+    """A host's short name. Image names (``registry.example/app:1.4``) are kept whole: they are not DNS names."""
+    if any(c in (hostname or "") for c in "/:@"):
+        return hostname.strip().lower()
     return (hostname or "").split(".")[0].strip().lower()
 
 
@@ -189,11 +195,19 @@ def load_rows(path: Path) -> list[dict]:
     return out
 
 
+TRIVY_HEAD = re.compile(r'\{\s*"SchemaVersion"\s*:')
+GRYPE_HEAD = re.compile(r'\{\s*"matches"\s*:')
+
+
 def detect_format(path: Path) -> str:
-    """qualys | tenable | nessus | rows | cmdb | teams, from the file's first bytes."""
-    head = path.read_bytes()[:20000].decode("utf-8", "ignore")
+    """qualys | tenable | nessus | trivy | grype | rows | cmdb | teams, from the file's first bytes."""
+    head = path.read_bytes()[:20000].decode("utf-8", "ignore").lstrip("\ufeff")
     if head.startswith('{"format": "%s"' % ROWS_HEADER):
         return "rows"
+    if TRIVY_HEAD.match(head) and '"ArtifactName"' in head:
+        return "trivy"
+    if GRYPE_HEAD.match(head) and ('"matchDetails"' in head or '"grype"' in head):
+        return "grype"
     if "NessusClientData_v2" in head:
         return "nessus"
     first_lines = head.splitlines()[:30]
@@ -207,29 +221,36 @@ def detect_format(path: Path) -> str:
             return "cmdb"
         if "team" in cols and "manager" in cols:
             return "teams"
-    raise ValueError(f"{path.name}: not a Qualys CSV, Tenable CSV, .nessus file or CMDB CSV")
+    raise ValueError(f"{path.name}: not a Qualys CSV, Tenable CSV, .nessus file, Trivy or Grype JSON, or CMDB CSV")
 
 
-LOADERS = {"qualys": load_qualys, "tenable": load_tenable, "nessus": load_nessus, "rows": load_rows}
+LOADERS = {"qualys": load_qualys, "tenable": load_tenable, "nessus": load_nessus, "trivy": load_trivy,
+           "grype": load_grype, "rows": load_rows}
 
 
 def resolve_assets(cmdb: list[Asset], raws: list[dict]) -> dict[str, Asset]:
-    """Match each scanner row to a CMDB asset by IP, then hostname; unknown hosts become new assets."""
+    """Match each scanner row to a CMDB asset by IP, then hostname; unknown hosts become new assets.
+
+    Rows from image scans (Trivy, Grype) carry ``image``, the scanned artifact's name, and no IP. Their asset takes
+    that image unless the CMDB already names one for it."""
     by_id = {a.asset_id: a for a in cmdb}
-    by_ip = {a.ip: a for a in cmdb}
+    by_ip = {a.ip: a for a in cmdb if a.ip}
     by_host = {a.hostname: a for a in cmdb if a.hostname}
     for r in raws:
-        a = by_ip.get(r["ip"]) or by_host.get(r["host"])
+        a = (r["ip"] and by_ip.get(r["ip"])) or by_host.get(r["host"])
         if a is None:
             # Named by address so the same unregistered host keeps its ID from one import to the next.
             a = Asset(asset_id=f"UNK-{r['ip'] or r['host']}", hostname=r["host"], ip=r["ip"], os=r.get("os", ""),
                       in_cmdb=False, owner="(unknown: not in CMDB)")
             by_id[a.asset_id] = a
-            by_ip[a.ip] = a
+            if a.ip:
+                by_ip[a.ip] = a
             if a.hostname:
                 by_host[a.hostname] = a
         if not a.os and r.get("os"):
             a.os = r["os"]
+        if r.get("image") and not a.image:
+            a.image, a.image_source = r["image"], "scanned image"
         a.scanned_by.add(r["scanner"])
         r["asset_id"] = a.asset_id
     return by_id

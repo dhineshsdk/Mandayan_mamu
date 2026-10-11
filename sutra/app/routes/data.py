@@ -104,7 +104,8 @@ def analyze(body: AnalyzeIn, request: Request, p: Principal = Depends(require("M
             db: Session = Depends(get_db)):
     staged = [f for f in staged_files(request) if f["format"] != "unknown"]
     if not any(f["format"] in ingest.LOADERS for f in staged):
-        raise ValueError("Upload at least one Qualys CSV, Tenable CSV or .nessus file.")
+        raise ValueError("Upload at least one scanner file: a Qualys CSV, Tenable CSV, .nessus file, or Trivy or "
+                         "Grype JSON report.")
     dest = _dataset_dir(request, "upload")
     files = []
     for f in staged:
