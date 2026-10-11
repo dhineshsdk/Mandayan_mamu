@@ -11,8 +11,8 @@ from sqlalchemy.orm import Session
 
 from .. import ingest, pipeline, risk, views
 from ..pipeline import Result
-from . import closure, drafting, history, sweeper
-from .models import Dataset, OwnershipTeam
+from . import closure, history, sweeper
+from .models import Dataset, OwnershipTeam, utcnow
 
 
 class AnalysisStore:
@@ -55,7 +55,7 @@ class AnalysisStore:
         db.flush()
         history.record(db, ds, res)
         closure.verify(db, ds)
-        sweeper.expire_exceptions(db, drafting.today())
+        sweeper.run(db, utcnow())
         db.commit()
         with self.lock:
             self.dataset_id, self.result, self._scoped = ds.id, res, {}

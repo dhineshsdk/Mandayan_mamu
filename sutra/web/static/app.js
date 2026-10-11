@@ -180,11 +180,11 @@ function jobStatus(j) {
 }
 function jobTable(jobs) {
   if (!jobs.length) return '<p class="muted">No jobs.</p>';
-  return `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Team</th><th>Type</th><th>SSVC</th><th>Status</th><th>Jira</th></tr></thead>
+  return `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Team</th><th>Type</th><th>SSVC</th><th>Status</th><th>Fix due</th><th>Jira</th></tr></thead>
     <tbody>${jobs.map((j) => `<tr class="click" data-job="${j.pk}"><td class="id"><b>${esc(j.id)}</b></td>
       <td><div class="t">${esc(j.rc_title)}</div><div class="fix">${j.hosts.length} hosts · ${j.findings.length} findings</div></td>
       <td>${esc(j.team)}</td><td>${j.mode === "manual" ? "Manual fix" : j.mode === "exception" ? "Risk acceptance" : j.is_ot ? "Staged plan" : "Patch job"}${j.route && j.route.emergency ? ' <span class="badge warn">emergency</span>' : ""}</td>
-      <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td class="mono">${esc(j.jira)}</td></tr>`).join("")}</tbody></table></div>`;
+      <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td>${j.due_on ? `${esc(fmtDate(j.due_on))}${j.sla_breached ? ' <span class="badge warn">missed</span>' : ""}` : '<span class="muted">–</span>'}</td><td class="mono">${esc(j.jira)}</td></tr>`).join("")}</tbody></table></div>`;
 }
 const OPEN = ["drafting", "pending", "approved", "fixing-manually", "reopened"];
 // Buttons to raise a job, for each team this person may raise jobs for that owns hosts in this root cause.
@@ -481,6 +481,7 @@ VIEWS.jobs = {
       <h1>Patch jobs and approvals</h1>
       <p class="sub">Who approves depends on fixed rules: SSVC category, asset criticality and whether the asset is OT. A drafted job cannot lower its own approval level.</p>
       ${can("M-PJ", "approve") ? `<div class="card"><h2>Waiting for you</h2>${jobTable(d.waiting_for_me)}</div>` : ""}
+      ${d.escalated_to_me.length ? `<div class="card mt"><h2>Escalated to you</h2><p class="muted" style="margin-top:0">These approvals have waited longer than the agreed time at the step before yours. You cannot sign that step; chase the person named on it.</p>${jobTable(d.escalated_to_me)}</div>` : ""}
       <div class="card mt"><h2>Jobs in your scope</h2>${jobTable(d.jobs)}</div>
       <div class="card mt"><h2>Approval chain</h2><div class="table-wrap"><table>
         <thead><tr><th>Job type</th><th>Team</th><th>Manager</th><th>VM analyst</th><th>Vertical head</th></tr></thead><tbody>
@@ -506,11 +507,12 @@ VIEWS.job = {
       <h1>${esc(j.id)}: ${esc(j.rc_title)}</h1>
       <div class="chips">${jobStatus(j)} ${ssvc(j.ssvc)} ${otBadge(j.is_ot)} <span class="badge">${esc(j.team)}</span>
         <span class="badge mono">Jira ${esc(j.jira)}</span> ${j.rc_current_id ? (can("M-RC") ? `<a class="badge" href="#/rc/${esc(j.rc_current_id)}">${esc(j.rc_current_id)}</a>` : `<span class="badge">${esc(j.rc_current_id)}</span>`) : '<span class="badge">Not in the latest import</span>'}
-        ${j.route && j.route.emergency ? '<span class="badge warn">Emergency change allowed</span>' : ""}</div>
+        ${j.route && j.route.emergency ? '<span class="badge warn">Emergency change allowed</span>' : ""}
+        ${j.due_on ? `<span class="badge ${j.sla_breached ? "warn" : ""}">Fix due ${esc(fmtDate(j.due_on))}${j.sla_breached ? ": missed" : ""}</span>` : ""}</div>
       ${j.route ? `<div class="card"><h2>Approval route</h2><p class="muted" style="margin-top:0">${esc(j.route.reason)}.</p>
         <div class="route"><div class="step approved"><div class="role">Team</div><div class="who">${esc(j.raised_by)}</div><div class="st">Raised</div></div>
         ${j.steps.map((s) => `<div class="step ${esc(s.state)}"><div class="role">${esc(s.label)}</div><div class="who">${esc(s.decided_by || s.who || (s.role === "ciso" ? "The CISO" : "Any VM analyst"))}</div>
-          <div class="st">${esc(stepState[s.state])}${s.at ? ` · ${esc(fmtTime(s.at))}` : ""}</div>${s.comment ? `<div class="note-demo">“${esc(s.comment)}”</div>` : ""}</div>`).join("")}
+          <div class="st">${esc(stepState[s.state])}${s.at ? ` · ${esc(fmtTime(s.at))}` : ""}${s.due ? ` · by ${esc(fmtTime(s.due))}` : ""}</div>${s.escalated_to ? `<div class="note-demo">Overdue: escalated to the ${esc(s.escalated_to)}</div>` : ""}${s.comment ? `<div class="note-demo">“${esc(s.comment)}”</div>` : ""}</div>`).join("")}
         ${j.is_ot ? `<div class="step ${j.status === "approved" ? "current" : "waiting"}"><div class="role">Plant</div><div class="who">Plant engineer</div><div class="st">${j.status === "approved" ? "Executes at shutdown" : "After approval"}</div></div>` : ""}</div>
         ${j.can_decide ? `<div style="margin-top:12px"><textarea id="comment" maxlength="500" placeholder="Comment (optional)"></textarea>
           <div class="toolbar" style="margin-top:8px"><button class="btn primary" data-act="approve">Approve${j.route.emergency && cur.role === "vertical_head" ? " as emergency change" : ""}</button>
@@ -772,17 +774,18 @@ function auditRows(events) {
 VIEWS.admin = {
   async load(tab) {
     const full = can("M-ADM", "admin");
-    tab = full ? tab || "people" : ["rules", "maintenance"].includes(tab) ? tab : "rules";
+    tab = full ? tab || "people" : ["rules", "maintenance", "sla"].includes(tab) ? tab : "rules";
     const d = { tab, full };
     if (full) d.catalog = await api("/api/admin/catalog");
     if (tab === "people") d.users = await api("/api/admin/users");
     if (tab === "ownership") d.teams = await api("/api/admin/ownership");
     if (tab === "rules") d.rules = await api("/api/admin/approval-rules");
     if (tab === "maintenance") d.maint = await api("/api/admin/maintenance");
+    if (tab === "sla") d.sla = await api("/api/admin/sla");
     return d;
   },
   html(d) {
-    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"]];
+    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"]];
     return `<h1>Administration</h1>
       <div class="tabs">${tabs.map(([k, l]) => `<a href="#/admin/${k}" class="${k === d.tab ? "active" : ""}">${esc(l)}</a>`).join("")}</div>
       <div id="admin-msg"></div>
@@ -932,6 +935,31 @@ const ADMIN_TABS = {
             ot_shutdowns: ot } });
           adminMsg(root, "Saved.");
         } catch (err) { adminMsg(root, esc(err.message), "error"); }
+      });
+    },
+  },
+  sla: {
+    html(d) {
+      const c = d.sla.sla;
+      const steps = [["manager", "Manager"], ["vm_analyst", "VM analyst"], ["vertical_head", "Vertical head"], ["ciso", "CISO (risk acceptance)"]];
+      return `<div class="card"><h2>Service levels</h2>
+        <p class="muted" style="margin-top:0">Your own targets, not regulatory values. The CEA fix clock is tracked separately and these settings never relax it.</p>
+        <form id="sla" class="stack-form">
+          <fieldset><legend>Hours an approval step may wait before it is escalated to the next approver</legend>
+            ${steps.map(([k, l]) => `<label>${l} <input type="number" min="1" max="720" data-step="${k}" value="${c.step_hours[k]}" required></label>`).join("")}</fieldset>
+          <fieldset><legend>Days to fix, from the day the job is raised, by SSVC decision</legend>
+            ${SSVC_ORDER.map((k) => `<label>${ssvc(k)} <input type="number" min="1" max="730" data-fix="${esc(k)}" value="${c.fix_days[k]}" required></label>`).join("")}</fieldset>
+          <div><button class="btn primary">Save</button></div></form>
+        <p class="muted" style="margin-bottom:0">New fix targets apply to jobs raised after saving; step limits apply at the next check, which runs every hour.</p></div>`;
+    },
+    wire(root) {
+      root.querySelector("#sla").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const step_hours = {}, fix_days = {};
+        root.querySelectorAll("[data-step]").forEach((i) => { step_hours[i.dataset.step] = Number(i.value); });
+        root.querySelectorAll("[data-fix]").forEach((i) => { fix_days[i.dataset.fix] = Number(i.value); });
+        try { await api("/api/admin/sla", { method: "PUT", json: { step_hours, fix_days } }); adminMsg(root, "Saved."); }
+        catch (err) { adminMsg(root, esc(err.message), "error"); }
       });
     },
   },

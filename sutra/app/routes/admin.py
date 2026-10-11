@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 from ... import ingest
 from ...synth import TEAMS_COLS
-from .. import drafting
+from .. import drafting, sla
 from ..access import ORG, Principal
 from ..analysis import replace_ownership
 from ..catalog import DEFAULT_APPROVAL_RULES, FIXED_RULES, load_catalog
@@ -405,6 +405,40 @@ def put_maintenance(body: MaintenanceIn, request: Request,
           before=before, after=value)
     db.commit()
     return _maintenance_out(db, request)
+
+
+# ---------- service levels ----------
+
+class SlaIn(BaseModel):
+    step_hours: dict[Literal["manager", "vm_analyst", "vertical_head", "ciso"], int]
+    fix_days: dict[Literal["Act", "Attend", "Track*", "Track"], int]
+
+
+@router.get("/sla")
+def get_sla(p: Principal = Depends(require_any(("M-ADM", "act"), ("M-ADM", "admin"))),
+            db: Session = Depends(get_db)):
+    return {"sla": sla.settings(db), "defaults": sla.DEFAULT_SLA}
+
+
+@router.put("/sla")
+def put_sla(body: SlaIn, request: Request, p: Principal = Depends(require_any(("M-ADM", "act"), ("M-ADM", "admin"))),
+            db: Session = Depends(get_db)):
+    lo, hi = sla.STEP_LIMITS
+    if any(not lo <= v <= hi for v in body.step_hours.values()):
+        raise ValueError(f"Approval steps may wait between {lo} and {hi} hours.")
+    lo, hi = sla.FIX_LIMITS
+    if any(not lo <= v <= hi for v in body.fix_days.values()):
+        raise ValueError(f"Fix targets must be between {lo} and {hi} days.")
+    before = sla.settings(db)
+    value = body.model_dump()
+    row = db.get(Setting, "sla")
+    if row is None:
+        row = Setting(key="sla", value=value)
+        db.add(row)
+    row.value, row.updated_by, row.updated_at = value, p.user.id, utcnow()
+    audit(db, "admin.sla_changed", p.user, "setting", "sla", client_ip(request), before=before, after=value)
+    db.commit()
+    return {"sla": sla.settings(db), "defaults": sla.DEFAULT_SLA}
 
 
 # ---------- audit log ----------

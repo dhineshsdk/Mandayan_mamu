@@ -1,19 +1,20 @@
-"""Time-based work: risk acceptances that run out. Runs at start-up, after every import and once an hour.
+"""Time-based work: risk acceptances that run out, stalled approvals and missed fix dates.
 
-Each task is idempotent and takes "today" as an argument, so tests can move the clock.
+Runs at start-up, after every import and once an hour. Each task is idempotent and takes the time as an argument,
+so tests can move the clock.
 """
 
 from __future__ import annotations
 
 import logging
 import threading
-from datetime import date
+from datetime import UTC, date, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from . import drafting
-from .models import Job
+from . import drafting, sla
+from .models import Job, utcnow
 from .security import audit
 
 log = logging.getLogger("sutra.sweeper")
@@ -31,10 +32,16 @@ def expire_exceptions(db: Session, today: date) -> int:
     return n
 
 
-def sweep(sessions: sessionmaker, today: date | None = None) -> dict[str, int]:
-    today = today or drafting.today()
+def run(db: Session, now: datetime) -> dict[str, int]:
+    """``now`` is naive UTC like every stored timestamp; "today" is the date in India. The caller commits."""
+    today = now.replace(tzinfo=UTC).astimezone(drafting.IST).date()
+    return {"expired": expire_exceptions(db, today), "escalated": sla.escalate_stalled(db, now),
+            "breached": sla.record_breaches(db, now, today)}
+
+
+def sweep(sessions: sessionmaker, now: datetime | None = None) -> dict[str, int]:
     with sessions() as db:
-        out = {"expired": expire_exceptions(db, today)}
+        out = run(db, now or utcnow())
         db.commit()
     return out
 

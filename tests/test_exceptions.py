@@ -3,7 +3,7 @@ chain (with the CISO's final sign-off for SSVC Act), and the acceptance expires 
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
@@ -86,8 +86,9 @@ def test_act_risk_needs_the_ciso_and_expires(env):
     assert r.status_code == 200 and r.json()["status"] == "accepted"
 
     expires = drafting.today() + timedelta(days=60)
-    assert sweeper.sweep(app.state.sessionmaker, expires) == {"expired": 0}  # good through its last day
-    assert sweeper.sweep(app.state.sessionmaker, expires + timedelta(days=1)) == {"expired": 1}
+    noon_ist = datetime.combine(expires, time(6, 30))  # 12:00 IST, as naive UTC
+    assert sweeper.sweep(app.state.sessionmaker, noon_ist)["expired"] == 0  # good through its last day
+    assert sweeper.sweep(app.state.sessionmaker, noon_ist + timedelta(days=1))["expired"] == 1
     with app.state.sessionmaker() as db:
         assert db.get(Job, job["pk"]).status == "expired"
         assert db.scalars(select(AuditEvent).where(AuditEvent.action == "job.exception_expired",
