@@ -71,6 +71,7 @@ const NAV = [
   { view: "assets", label: "Assets and coverage", module: "M-AST" },
   { view: "portal", label: "Team portal", module: "M-TP" },
   { view: "jobs", label: "Patch jobs", module: "M-PJ" },
+  { view: "changes", label: "What changed", test: () => can("M-RC") || can("M-TP") || can("M-BRD") },
   { view: "headline", label: "Headline check", module: "M-HC" },
   { view: "import", label: "Import data", module: "M-DAT" },
   { view: "audit", label: "Audit log", test: () => can("M-AUD") || can("M-ADM", "admin") },
@@ -189,7 +190,7 @@ const OPEN = ["pending", "approved", "fixing-manually"];
 // Buttons to raise a job, for each team this person may raise jobs for that owns hosts in this root cause.
 function raiseButtons(rc, teams, jobs) {
   return teams.map((team) => {
-    const open = jobs.find((j) => j.rc_id === rc.id && j.team === team && OPEN.includes(j.status));
+    const open = jobs.find((j) => j.rc_current_id === rc.id && j.team === team && OPEN.includes(j.status));
     if (open) return `<div><a href="#/job/${open.pk}">${esc(open.id)}</a> ${jobStatus(open)}${teams.length > 1 ? ` <span class="muted">${esc(team)}</span>` : ""}</div>`;
     return `<div class="toolbar" style="margin:0 0 4px">${teams.length > 1 ? `<span class="muted">${esc(team)}:</span>` : ""}
       <button class="btn small primary" data-raise="${esc(rc.id)}" data-team="${esc(team)}" data-mode="patch">${rc.is_ot ? "Draft staged plan" : "Build patch job"}</button>
@@ -249,6 +250,7 @@ VIEWS.board = {
             <div><div class="value" style="color:var(--act)">${cov.unscanned}</div><div class="note">registered, never scanned</div></div>
             <div><div class="value" style="color:var(--attend)">${cov.unknown}</div><div class="note">found, not in CMDB</div></div>
           </div>
+          <div class="note" style="margin-top:8px"><b>${cov.unowned}</b> assets have no owning team in the ownership chart, so nobody is asked to fix them.</div>
           <div class="note" style="margin-top:8px">Unscanned assets carry risk this figure does not count.</div>
         </div>
       </div>
@@ -308,7 +310,7 @@ VIEWS.rc = {
     const kev = r.cves.filter((c) => c.exploitation === "active");
     const asset = (a) => d.assets[a];
     const myTeams = ME.raise_for_teams.filter((t) => r.owners.includes(t));
-    const jobs = d.jobs.filter((j) => j.rc_id === r.id);
+    const jobs = d.jobs.filter((j) => j.rc_current_id === r.id);
     return `
       <div class="crumb"><a href="#/queue">← Root-cause queue</a></div>
       <h1>${esc(r.title)}</h1>
@@ -375,6 +377,11 @@ VIEWS.assets = {
         <div class="card kpi"><div class="label">Never scanned</div><div class="value" style="color:var(--act)">${cov.unscanned.length}</div><div class="note">${cov.unscanned.filter((a) => asset(a).criticality >= 5).length} crown-jewel, ${cov.unscanned.filter((a) => asset(a).is_ot).length} OT</div></div>
         <div class="card kpi"><div class="label">Not in the CMDB</div><div class="value" style="color:var(--attend)">${cov.unknown.length}</div><div class="note">${cov.inferred_images.length} matched to a golden image</div></div>
       </div>
+      <div class="card" style="margin-bottom:14px"><h2>No owning team (${cov.unowned.length})</h2>
+        <p class="muted" style="margin-top:0">Assets whose owner is missing from the asset register or the ownership chart. Nobody is asked to fix their findings until a team owns them.</p>
+        <div class="table-wrap"><table><thead><tr><th>Host</th><th>IP</th><th>Site</th><th>Owner in register</th><th class="n">Findings</th></tr></thead>
+        <tbody>${cov.unowned.slice(0, 200).map((a) => { const x = asset(a); return `<tr><td><b>${esc(x.hostname)}</b>${x.in_cmdb ? "" : ' <span class="badge warn">not in CMDB</span>'}</td><td class="mono">${esc(x.ip)}</td>
+          <td>${esc(x.site || "–")}</td><td>${esc(x.in_cmdb ? x.owner || "none" : "–")}</td><td class="n">${counts[a] || 0}</td></tr>`; }).join("") || '<tr><td colspan="5" class="muted">None</td></tr>'}</tbody></table></div></div>
       <div class="grid two">
         <div class="card"><h2>Registered but never scanned</h2><div class="table-wrap"><table>
           <thead><tr><th>Host</th><th>IP</th><th>Site</th><th>Zone</th><th>Owner</th><th class="n">Crit.</th></tr></thead>
@@ -405,7 +412,10 @@ VIEWS.assets = {
 };
 
 VIEWS.portal = {
-  async load() { const [d, jobs] = await Promise.all([api("/api/portal"), jobsIfAllowed()]); d.jobs = jobs; return d; },
+  async load() {
+    const [d, jobs, changes] = await Promise.all([api("/api/portal"), jobsIfAllowed(), api("/api/history/changes").catch(() => null)]);
+    d.jobs = jobs; d.changes = changes; return d;
+  },
   html(d) {
     const scope = ME.modules.find((m) => m.key === "M-TP").scope.join(", ");
     if (!d.teams.length) return `<h1>Team portal</h1><p class="sub">No assets in your scope (${esc(scope)}).</p>`;
@@ -417,9 +427,11 @@ VIEWS.portal = {
         const findings = Object.values(d.findings).filter((f) => ids.has(f.asset_id)).length;
         const rcs = t.tasks.map((x) => d.root_causes.find((r) => r.id === x.id)).filter(Boolean);
         const mayRaise = ME.raise_for_teams.includes(t.owner);
+        const ch = d.changes && d.changes.teams.find((x) => x.team === t.owner);
         return `<div class="card mt"><div class="owner-head"><h2>${esc(t.owner)}</h2><span class="muted">${esc(inr(t.ale))} / yr</span></div>
           <div class="muted" style="font-size:13px;margin:-4px 0 10px">${t.in_chart ? `Jira <span class="mono">${esc(t.jira || "–")}</span> · manager ${esc(t.manager || "–")} · ${esc(t.vertical || "no vertical")}${t.vertical_head ? `, headed by ${esc(t.vertical_head)}` : ""}` : "Not in the ownership chart, so jobs cannot be routed for approval."}
             · ${ids.size} assets · ${num(findings)} open findings</div>
+          ${ch ? `<p style="margin:0 0 10px">Since the import of ${esc(fmtDate(d.changes.from.as_of))}: <b>${ch.fixed}</b> fixed, <b>${ch.new}</b> new, ${ch.still_open} still open${ch.not_rescanned ? `, ${ch.not_rescanned} not rescanned` : ""}. <a href="#/changes">Details</a></p>` : ""}
           <div class="table-wrap"><table><thead><tr><th>Root cause</th><th class="n">Hosts</th><th>SSVC</th><th class="n">₹ risk / yr</th><th>Due</th>${mayRaise ? "<th>Action</th>" : ""}</tr></thead>
           <tbody>${t.tasks.map((x) => { const r = rcs.find((y) => y.id === x.id); return `<tr ${can("M-RC") ? `class="click" data-rc="${esc(x.id)}"` : ""}><td><div class="t">${esc(x.title)} ${x.is_ot ? otBadge(true) : ""}</div><div class="fix">${esc(x.fix)}</div></td>
             <td class="n">${x.my_hosts}</td><td>${ssvc(x.ssvc)}</td><td class="n">${esc(x.ale_label)}</td><td>${dueLabel(x.earliest_due)}</td>
@@ -460,7 +472,7 @@ VIEWS.job = {
       <div class="crumb"><a href="#/jobs">← Patch jobs</a></div>
       <h1>${esc(j.id)}: ${esc(j.rc_title)}</h1>
       <div class="chips">${jobStatus(j)} ${ssvc(j.ssvc)} ${otBadge(j.is_ot)} <span class="badge">${esc(j.team)}</span>
-        <span class="badge mono">Jira ${esc(j.jira)}</span> ${can("M-RC") ? `<a class="badge" href="#/rc/${esc(j.rc_id)}">${esc(j.rc_id)}</a>` : `<span class="badge">${esc(j.rc_id)}</span>`}
+        <span class="badge mono">Jira ${esc(j.jira)}</span> ${j.rc_current_id ? (can("M-RC") ? `<a class="badge" href="#/rc/${esc(j.rc_current_id)}">${esc(j.rc_current_id)}</a>` : `<span class="badge">${esc(j.rc_current_id)}</span>`) : '<span class="badge">Not in the latest import</span>'}
         ${j.route && j.route.emergency ? '<span class="badge warn">Emergency change allowed</span>' : ""}</div>
       ${j.route ? `<div class="card"><h2>Approval route</h2><p class="muted" style="margin-top:0">${esc(j.route.reason)}.</p>
         <div class="route"><div class="step approved"><div class="role">Team</div><div class="who">${esc(j.raised_by)}</div><div class="st">Raised</div></div>
@@ -496,6 +508,57 @@ VIEWS.job = {
         refreshInbox(); render();
       } catch (err) { alert(err.message); b.disabled = false; }
     }));
+  },
+};
+
+VIEWS.changes = {
+  async load(arg) {
+    const imports = await api("/api/history/imports");
+    const [from, to] = (arg || "").split("..");
+    let changes = null, error = "";
+    if (imports.length > 1) {
+      try { changes = await api(`/api/history/changes?${from ? `from_id=${encodeURIComponent(from)}&` : ""}${to ? `to_id=${encodeURIComponent(to)}` : ""}`); }
+      catch (e) { error = e.message; }
+    }
+    return { imports, changes, error };
+  },
+  html(d) {
+    const label = (i) => `${fmtDate(i.as_of)} · ${i.org || "upload"}${i.kind === "demo" ? " (synthetic)" : ""} · imported ${fmtTime(i.imported_at)}`;
+    if (d.imports.length < 2) return `<h1>What changed</h1><p class="sub">Sutra compares two imports. Only ${d.imports.length} import exists so far; the next one will show what was fixed, what is new and what is still open.</p>`;
+    const c = d.changes;
+    if (!c) return `<h1>What changed</h1><div class="error">${esc(d.error)}</div>`;
+    const opts = (sel) => d.imports.map((i) => `<option value="${i.id}" ${i.id === sel ? "selected" : ""}>${esc(label(i))}</option>`).join("");
+    const t = c.totals;
+    return `<h1>What changed</h1>
+      <p class="sub">A finding counts as fixed only when its host was scanned again and the finding was gone. If the host was not scanned, it is listed as not rescanned.</p>
+      <div class="toolbar"><label>From <select id="ch-from">${opts(c.from.id)}</select></label><label>To <select id="ch-to">${opts(c.to.id)}</select></label></div>
+      <div class="grid kpis">
+        <div class="card kpi"><div class="label">Fixed</div><div class="value" style="color:var(--good)">${num(t.fixed)}</div></div>
+        <div class="card kpi"><div class="label">New</div><div class="value" style="color:var(--act)">${num(t.new)}</div></div>
+        <div class="card kpi"><div class="label">Still open</div><div class="value">${num(t.still_open)}</div></div>
+        <div class="card kpi"><div class="label">Not rescanned</div><div class="value" style="color:var(--attend)">${num(t.not_rescanned)}</div><div class="note">missing from the newer import, host not scanned</div></div>
+      </div>
+      <div class="card"><h2>Per team</h2><div class="table-wrap"><table><thead><tr><th>Team</th><th class="n">Fixed</th><th class="n">New</th><th class="n">Still open</th><th class="n">Not rescanned</th></tr></thead>
+        <tbody>${c.teams.map((x, n) => `<tr ${c.detail ? `class="click" data-team="${n}"` : ""}><td><b>${esc(x.team)}</b></td><td class="n">${x.fixed}</td><td class="n">${x.new}</td><td class="n">${x.still_open}</td><td class="n">${x.not_rescanned}</td></tr>`).join("") || '<tr><td colspan="5" class="muted">Nothing in your scope.</td></tr>'}</tbody></table></div>
+        ${c.detail ? '<p class="muted" style="margin-bottom:0">Click a team for the findings.</p>' : ""}</div>
+      <div id="ch-detail"></div>`;
+  },
+  wire(root, d) {
+    if (!d.changes) return;
+    const go = () => (location.hash = `#/changes/${root.querySelector("#ch-from").value}..${root.querySelector("#ch-to").value}`);
+    root.querySelectorAll("#ch-from, #ch-to").forEach((s) => s.addEventListener("change", go));
+    const c = d.changes;
+    root.querySelectorAll("tr[data-team]").forEach((tr) => tr.addEventListener("click", () => {
+      const x = c.teams[Number(tr.dataset.team)];
+      const sec = (k, title) => `<h2 style="margin-top:14px">${title} (${x.items[k].length})</h2>${VIEWS.changes.list(x.items[k])}`;
+      root.querySelector("#ch-detail").innerHTML = `<div class="card mt"><h2>${esc(x.team)}</h2>${sec("fixed", "Fixed")}${sec("new", "New")}${sec("not_rescanned", "Not rescanned")}${sec("still_open", "Still open")}</div>`;
+      root.querySelector("#ch-detail").scrollIntoView({ behavior: "smooth" });
+    }));
+  },
+  list(items) {
+    return items.length ? `<div class="table-wrap"><table><thead><tr><th>Host</th><th>Finding</th><th>Severity</th><th>Root cause</th><th>First seen</th></tr></thead><tbody>
+      ${items.slice(0, 300).map((i) => `<tr><td>${esc(i.host)}</td><td>${esc(i.title)}${i.cves.length ? `<div class="fix">${esc(i.cves.join(", "))}</div>` : ""}</td><td>${esc(i.severity)}</td><td class="muted">${esc(i.root_cause)}</td><td>${fmtDate(i.first_seen)}</td></tr>`).join("")}
+      </tbody></table></div>${items.length > 300 ? `<p class="muted">Showing 300 of ${items.length}.</p>` : ""}` : '<p class="muted">None.</p>';
   },
 };
 
@@ -552,9 +615,11 @@ VIEWS.import = {
         <div id="imp-msg"></div></div>
       <div class="card mt"><h2>Synthetic demo companies</h2>
         <p class="muted" style="margin-top:0">Invented companies for demonstrations, generated as Qualys CSV, Tenable CSV, two .nessus plant scans, a CMDB and an ownership chart. Every screen marks them as synthetic.</p>
-        <div class="toolbar">${Object.entries(d.profiles).map(([k, v]) => `<button class="btn" data-demo="${esc(k)}">Load ${esc(v)}</button>`).join("")}</div></div>` : ""}
-      <div class="card mt"><h2>Import history</h2>${d.datasets.length ? `<div class="table-wrap"><table><thead><tr><th>When</th><th>Organisation</th><th>Kind</th><th>Files</th><th>By</th></tr></thead><tbody>
-        ${d.datasets.map((x) => `<tr><td class="mono">${esc(fmtTime(x.at))}</td><td>${esc(x.org || "–")} ${x.current ? '<span class="badge">current</span>' : ""}</td><td>${x.kind === "demo" ? '<span class="badge warn">synthetic</span>' : "upload"}</td>
+        <div class="toolbar"><select id="demo-month"><option value="0">Base scan</option>${[1, 2, 3].map((m) => `<option value="${m}">${m} month${m > 1 ? "s" : ""} later</option>`).join("")}</select>
+          ${Object.entries(d.profiles).map(([k, v]) => `<button class="btn" data-demo="${esc(k)}">Load ${esc(v)}</button>`).join("")}</div>
+        <p class="muted" style="margin-bottom:0">Load the base scan first, then a later month, to see what changed between imports.</p></div>` : ""}
+      <div class="card mt"><h2>Import history</h2>${d.datasets.length ? `<div class="table-wrap"><table><thead><tr><th>Scans as of</th><th>Imported</th><th>Organisation</th><th>Kind</th><th class="n">Findings</th><th>Files</th><th>By</th></tr></thead><tbody>
+        ${d.datasets.map((x) => `<tr><td>${esc(fmtDate(x.as_of))}</td><td class="mono">${esc(fmtTime(x.at))}</td><td>${esc(x.org || "–")} ${x.current ? '<span class="badge">current</span>' : ""}</td><td>${x.kind === "demo" ? '<span class="badge warn">synthetic</span>' : "upload"}</td><td class="n">${x.summary.findings ?? "–"}</td>
           <td>${x.files.map((f) => esc(f.name)).join("<br>")}</td><td>${esc(x.by)}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">Nothing imported yet.</p>'}</div>`;
   },
   wire(root) {
@@ -564,7 +629,7 @@ VIEWS.import = {
     const done = async () => { await refreshStatus(); location.hash = `#/${homeView()}`; };
     root.querySelectorAll("[data-demo]").forEach((b) => b.addEventListener("click", async () => {
       b.disabled = true; b.textContent = "Loading…";
-      try { await post("/api/data/demo", { profile: b.dataset.demo }); await done(); } catch (e) { fail(e); render(); }
+      try { await post("/api/data/demo", { profile: b.dataset.demo, month: Number(root.querySelector("#demo-month").value) }); await done(); } catch (e) { fail(e); render(); }
     }));
     const upload = async (files) => {
       msg.innerHTML = '<p class="muted">Uploading…</p>';

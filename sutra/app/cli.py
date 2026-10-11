@@ -61,9 +61,10 @@ def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", ".", text.lower()).strip(".")
 
 
-def demo_users(settings: Settings, profile: str) -> list[tuple[str, str, str]]:
+def demo_users(settings: Settings, profile: str, months: int = 1) -> list[tuple[str, str, str]]:
     """Load a synthetic demo company and create one account per role on its ownership chart.
 
+    ``months`` imports are loaded, 30 days apart, so history and "fixed since last import" have data.
     Every password is random and printed once. These accounts are for the SYNTHETIC demo data only.
     """
     from types import SimpleNamespace
@@ -75,7 +76,8 @@ def demo_users(settings: Settings, profile: str) -> list[tuple[str, str, str]]:
     dom = synth.PROFILES[profile]["domain"]
     made: list[tuple[str, str, str]] = []
     with sm() as db:
-        load_demo(app, db, profile, None)
+        for month in range(max(1, months)):
+            load_demo(app, db, profile, None, month)
         res = app.state.analysis.result
         chart = list(db.scalars(select(OwnershipTeam)))
         people: dict[str, dict] = {}

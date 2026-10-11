@@ -28,6 +28,7 @@ class AnalyzeIn(BaseModel):
 
 class DemoIn(BaseModel):
     profile: str = Field(max_length=40)
+    month: int = Field(default=0, ge=0, le=12)  # 0 = the base scan; n = the same estate n x 30 days later
 
 
 def staging(request: Request) -> Path:
@@ -129,16 +130,16 @@ def demo(body: DemoIn, request: Request, p: Principal = Depends(require("M-DAT",
          db: Session = Depends(get_db)):
     if body.profile not in synth.PROFILES:
         raise ValueError(f"Unknown demo profile {body.profile!r}.")
-    ds = load_demo(request.app, db, body.profile, p.user.id)
-    audit(db, "data.demo", p.user, "dataset", ds.id, client_ip(request), profile=body.profile)
+    ds = load_demo(request.app, db, body.profile, p.user.id, body.month)
+    audit(db, "data.demo", p.user, "dataset", ds.id, client_ip(request), profile=body.profile, month=body.month)
     db.commit()
     return {"ok": True, "dataset": ds.id}
 
 
-def load_demo(app, db: Session, profile: str, user_id: int | None) -> Dataset:
-    """Generate a synthetic estate (clearly labelled SYNTHETIC) and make it the current dataset."""
-    d = app.state.settings.workspace / "datasets" / f"demo-{profile}-{secrets.token_hex(4)}"
-    paths = synth.generate(d, profile=profile)
+def load_demo(app, db: Session, profile: str, user_id: int | None, month: int = 0) -> Dataset:
+    """Generate a synthetic estate (clearly labelled SYNTHETIC) and make it the current import."""
+    d = app.state.settings.workspace / "datasets" / f"demo-{profile}-m{month}-{secrets.token_hex(4)}"
+    paths = synth.generate(d, profile=profile, month=month)
     files = [{"path": str(p), "name": p.name, "format": ingest.detect_format(p)} for p in paths.values()]
     return app.state.analysis.activate(db, files, synth.PROFILES[profile]["org"], "demo", user_id)
 
@@ -148,5 +149,6 @@ def datasets(p: Principal = Depends(require("M-DAT", "view")), db: Session = Dep
     users = {u.id: u.display_name for u in db.scalars(select(User))}
     rows = db.scalars(select(Dataset).order_by(Dataset.id.desc()).limit(50))
     return [{"id": d.id, "org": d.org_name, "kind": d.kind, "current": d.is_current,
+             "as_of": d.as_of.isoformat() if d.as_of else None, "summary": d.summary or {},
              "files": [{"name": f["name"], "format": f["format"]} for f in d.files],
              "by": users.get(d.created_by, "system"), "at": d.created_at.isoformat(timespec="seconds")} for d in rows]

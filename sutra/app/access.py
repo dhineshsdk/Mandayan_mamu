@@ -68,6 +68,10 @@ class Principal:
             return set(assets)
         return {k for k, a in assets.items() if any(self._match(s, a.owner or "", a.site) for s in scopes)}
 
+    def allowed(self, module: str, action: str, team: str, site: str) -> bool:
+        """Whether a record owned by ``team`` at ``site`` is inside this person's scope for the module action."""
+        return any(self._match(s, team, site) for s in self.scopes(module, action))
+
     def team_allowed(self, team: str, module: str, action: str) -> bool:
         return any(self._match(s, team, "") for s in self.scopes(module, action) if s.type != "site")
 

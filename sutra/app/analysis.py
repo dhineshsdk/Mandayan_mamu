@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from .. import ingest, pipeline, risk, views
 from ..pipeline import Result
+from . import history
 from .models import Dataset, OwnershipTeam
 
 
@@ -33,23 +34,26 @@ class AnalysisStore:
         if not scans:
             self.dataset_id, self.result, self._scoped = None, None, {}
             return
-        res = pipeline.run(scans, cmdb, org=ds.org_name)
+        res = pipeline.run(scans, cmdb, org=ds.org_name, known_first_seen=history.first_seen_hints(db, ds.id))
         with self.lock:
             self.dataset_id, self.result, self._scoped = ds.id, res, {}
 
     def activate(self, db: Session, files: list[dict], org: str, kind: str, user_id: int | None) -> Dataset:
-        """Record a new dataset as current, load an ownership chart if one is included, and analyse it."""
+        """Analyse a new import, load its ownership chart if it has one, store its snapshot and make it current."""
         scans = [Path(f["path"]) for f in files if f["format"] in ingest.LOADERS]
         if not scans:
             raise ValueError("Include at least one Qualys CSV, Tenable CSV or .nessus file.")
         cmdb = next((Path(f["path"]) for f in files if f["format"] == "cmdb"), None)
-        res = pipeline.run(scans, cmdb, org=org)  # fails before anything is stored if the files are bad
+        # Fails before anything is stored if the files are bad.
+        res = pipeline.run(scans, cmdb, org=org, known_first_seen=history.first_seen_hints(db))
         teams = next((Path(f["path"]) for f in files if f["format"] == "teams"), None)
         if teams:
             replace_ownership(db, ingest.load_teams(teams))
         db.execute(update(Dataset).values(is_current=False))
         ds = Dataset(org_name=org, kind=kind, files=files, is_current=True, created_by=user_id)
         db.add(ds)
+        db.flush()
+        history.record(db, ds, res)
         db.commit()
         with self.lock:
             self.dataset_id, self.result, self._scoped = ds.id, res, {}

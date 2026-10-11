@@ -16,6 +16,7 @@ def main(argv: list[str] | None = None) -> None:
     s.add_argument("--profile", choices=sorted(synth.PROFILES), default="power")
     s.add_argument("--out", type=Path, default=Path("data/synthetic"))
     s.add_argument("--seed", type=int, default=7)
+    s.add_argument("--month", type=int, default=0, help="the same estate this many 30-day months later")
 
     a = sub.add_parser("analyze", help="group findings by root cause and write the board summary")
     a.add_argument("files", type=Path, nargs="*", help="Qualys CSV, Tenable CSV or .nessus exports (auto-detected)")
@@ -48,6 +49,7 @@ def main(argv: list[str] | None = None) -> None:
     m = sub.add_parser("demo-users", help="load a SYNTHETIC demo company and create one account per role "
                                           "(random passwords, printed once)")
     m.add_argument("--profile", choices=sorted(synth.PROFILES), default="power")
+    m.add_argument("--months", type=int, default=2, help="monthly imports to load, 30 days apart (default 2)")
     m.add_argument("--workspace", type=Path)
 
     args = ap.parse_args(argv)
@@ -63,7 +65,7 @@ def main(argv: list[str] | None = None) -> None:
         elif args.cmd == "create-admin":
             cli.create_admin(settings, args.email, args.name)
         else:
-            made = cli.demo_users(settings, args.profile)
+            made = cli.demo_users(settings, args.profile, args.months)
             print(f"Loaded the synthetic {synth.PROFILES[args.profile]['org']} and set up {len(made)} accounts.")
             print("Passwords are shown once. These accounts are for synthetic demo data only.\n")
             width = max(len(e) for e, _, _ in made)
@@ -72,7 +74,7 @@ def main(argv: list[str] | None = None) -> None:
         return
 
     if args.cmd == "synth":
-        paths = synth.generate(args.out, args.seed, args.profile)
+        paths = synth.generate(args.out, args.seed, args.profile, args.month)
         for k, p in paths.items():
             print(f"{k:16} {p}")
         return
