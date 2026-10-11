@@ -37,7 +37,7 @@ class SourceRef:
     scanner: str
     scanner_ref: str  # Qualys QID or Tenable plugin ID
     source_file: str
-    source_row: int
+    source_row: int | str
 
 
 @dataclass

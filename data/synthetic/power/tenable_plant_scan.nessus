@@ -1,0 +1,1024 @@
+<?xml version='1.0' encoding='utf-8'?>
+<NessusClientData_v2>
+  <Policy>
+    <policyName>OT - credentialed audit, safe checks only</policyName>
+  </Policy>
+  <Report name="Demo Vindhya Power Ltd (SYNTHETIC) plant scan 2026-10-05">
+    <ReportHost name="192.168.50.1">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:58:36 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.1</tag>
+        <tag name="host-fqdn">vtp-hmi-01.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-01</tag>
+        <tag name="HOST_START">Mon Oct 05 02:58:36 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.2">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:02:29 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.2</tag>
+        <tag name="host-fqdn">vtp-hmi-02.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-02</tag>
+        <tag name="HOST_START">Mon Oct 05 02:02:29 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.3">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:37:36 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.3</tag>
+        <tag name="host-fqdn">vtp-hmi-03.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-03</tag>
+        <tag name="HOST_START">Mon Oct 05 02:37:36 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.4">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:27:01 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.4</tag>
+        <tag name="host-fqdn">vtp-hmi-04.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-04</tag>
+        <tag name="HOST_START">Mon Oct 05 02:27:01 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.5">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:45:08 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.5</tag>
+        <tag name="host-fqdn">vtp-hmi-05.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-05</tag>
+        <tag name="HOST_START">Mon Oct 05 02:45:08 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.6">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:27:05 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.6</tag>
+        <tag name="host-fqdn">vtp-hmi-06.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-06</tag>
+        <tag name="HOST_START">Mon Oct 05 02:27:05 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.7">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:11:33 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.7</tag>
+        <tag name="host-fqdn">vtp-hmi-07.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-07</tag>
+        <tag name="HOST_START">Mon Oct 05 02:11:33 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.8">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:18:52 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.8</tag>
+        <tag name="host-fqdn">vtp-hmi-08.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-08</tag>
+        <tag name="HOST_START">Mon Oct 05 02:18:52 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.9">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:32:50 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.9</tag>
+        <tag name="host-fqdn">vtp-hmi-09.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-09</tag>
+        <tag name="HOST_START">Mon Oct 05 02:32:50 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.50.10">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:47:22 2026</tag>
+        <tag name="operating-system">Windows 7 Embedded SP1</tag>
+        <tag name="host-ip">192.168.50.10</tag>
+        <tag name="host-fqdn">vtp-hmi-10.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-HMI-10</tag>
+        <tag name="HOST_START">Mon Oct 05 02:47:22 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="3389" svc_name="general" protocol="tcp" severity="4" pluginID="125313" pluginName="Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows Remote Desktop Services Remote Code Execution Vulnerability (BlueKeep) (KB4499175) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4499175.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2019-0708</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4499175
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.40.1">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:06:14 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.40.1</tag>
+        <tag name="host-fqdn">vtp-ews-01.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-EWS-01</tag>
+        <tag name="HOST_START">Mon Oct 05 02:06:14 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.40.2">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:50:47 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.40.2</tag>
+        <tag name="host-fqdn">vtp-ews-02.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-EWS-02</tag>
+        <tag name="HOST_START">Mon Oct 05 02:50:47 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.40.3">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:38:51 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.40.3</tag>
+        <tag name="host-fqdn">vtp-ews-03.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-EWS-03</tag>
+        <tag name="HOST_START">Mon Oct 05 02:38:51 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.40.4">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:03:14 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.40.4</tag>
+        <tag name="host-fqdn">vtp-ews-04.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-EWS-04</tag>
+        <tag name="HOST_START">Mon Oct 05 02:03:14 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.1">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:23:56 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.1</tag>
+        <tag name="host-fqdn">vtp-plc-01.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-01</tag>
+        <tag name="HOST_START">Mon Oct 05 02:23:56 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.2">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:47:27 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.2</tag>
+        <tag name="host-fqdn">vtp-plc-02.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-02</tag>
+        <tag name="HOST_START">Mon Oct 05 02:47:27 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.3">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:10:24 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.3</tag>
+        <tag name="host-fqdn">vtp-plc-03.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-03</tag>
+        <tag name="HOST_START">Mon Oct 05 02:10:24 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.4">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:40:45 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.4</tag>
+        <tag name="host-fqdn">vtp-plc-04.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-04</tag>
+        <tag name="HOST_START">Mon Oct 05 02:40:45 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.5">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:04:59 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.5</tag>
+        <tag name="host-fqdn">vtp-plc-05.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-05</tag>
+        <tag name="HOST_START">Mon Oct 05 02:04:59 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.6">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:26:12 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.6</tag>
+        <tag name="host-fqdn">vtp-plc-06.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-06</tag>
+        <tag name="HOST_START">Mon Oct 05 02:26:12 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.7">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:20:19 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.7</tag>
+        <tag name="host-fqdn">vtp-plc-07.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-07</tag>
+        <tag name="HOST_START">Mon Oct 05 02:20:19 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.8">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:21:32 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.8</tag>
+        <tag name="host-fqdn">vtp-plc-08.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-08</tag>
+        <tag name="HOST_START">Mon Oct 05 02:21:32 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.9">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:46:11 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.9</tag>
+        <tag name="host-fqdn">vtp-plc-09.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-09</tag>
+        <tag name="HOST_START">Mon Oct 05 02:46:11 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.10">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:31:34 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.10</tag>
+        <tag name="host-fqdn">vtp-plc-10.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-10</tag>
+        <tag name="HOST_START">Mon Oct 05 02:31:34 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.11">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:48:32 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.11</tag>
+        <tag name="host-fqdn">vtp-plc-11.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-11</tag>
+        <tag name="HOST_START">Mon Oct 05 02:48:32 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.60.12">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:00:42 2026</tag>
+        <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
+        <tag name="host-ip">192.168.60.12</tag>
+        <tag name="host-fqdn">vtp-plc-12.vindhyapower.example.in</tag>
+        <tag name="netbios-name">VTP-PLC-12</tag>
+        <tag name="HOST_START">Mon Oct 05 02:00:42 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="102" svc_name="general" protocol="tcp" severity="4" pluginID="503112" pluginName="Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Siemens SIMATIC S7-1500 CPU &lt; V3.0.1 Private Key Exposure (SSA-568427)</synopsis>
+        <solution>Upgrade CPU firmware to V3.0.1 or later after OEM approval and a planned outage.</solution>
+        <cvss3_base_score>9.3</cvss3_base_score>
+        <cve>CVE-2022-38465</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Siemens SIMATIC S7-1500 CPU
+  Installed firmware : V2.9.4
+  Fixed firmware     : V3.0.1
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+  </Report>
+</NessusClientData_v2>

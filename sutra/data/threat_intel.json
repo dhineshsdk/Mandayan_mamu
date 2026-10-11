@@ -7,6 +7,7 @@
   "CVE-2023-4911": {"exploitation": "active", "name": "Looney Tunables (glibc)"},
   "CVE-2024-4947": {"exploitation": "active", "name": "Chrome V8 type confusion"},
   "CVE-2023-44487": {"exploitation": "active", "name": "HTTP/2 Rapid Reset"},
+  "CVE-2018-13379": {"exploitation": "active", "name": "FortiOS SSL-VPN path traversal"},
   "CVE-2021-45046": {"exploitation": "poc", "name": "Log4j follow-up"},
   "CVE-2023-38408": {"exploitation": "poc", "name": "OpenSSH ssh-agent RCE"},
   "CVE-2023-22809": {"exploitation": "poc", "name": "sudoedit privilege escalation"},

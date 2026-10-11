@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from sutra import pipeline, report, synth
+from sutra import ingest, pipeline, report, synth
 from sutra.money import inr
 
 
@@ -12,8 +12,9 @@ class EndToEnd(unittest.TestCase):
     def setUpClass(cls):
         cls.tmp = tempfile.TemporaryDirectory()
         root = Path(cls.tmp.name)
-        paths = synth.generate(root / "data", seed=7)
-        cls.res = pipeline.run([paths["qualys"]], [paths["tenable"]], paths["cmdb"], org=synth.ORG)
+        cls.paths = synth.generate(root / "data", seed=7)
+        files = [p for k, p in cls.paths.items() if k != "cmdb"]
+        cls.res = pipeline.run(files, cls.paths["cmdb"], org=synth.ORG)
         cls.board = report.write_all(cls.res, root / "out")
         cls.out = root / "out"
         cls.rc = {r.key: r for r in cls.res.root_causes}
@@ -65,12 +66,32 @@ class EndToEnd(unittest.TestCase):
     def test_rupee_risk_is_deterministic_and_ranked(self):
         rcs = self.res.root_causes
         self.assertEqual([r.ale_mean for r in rcs], sorted((r.ale_mean for r in rcs), reverse=True))
-        again = pipeline.run(*self._paths_again())
+        files = [p for k, p in self.paths.items() if k != "cmdb"]
+        again = pipeline.run(files, self.paths["cmdb"])
         self.assertAlmostEqual(again.portfolio["ale_mean"], self.res.portfolio["ale_mean"])
 
-    def _paths_again(self):
-        d = Path(self.tmp.name) / "data"
-        return [d / "qualys_vm_export.csv"], [d / "tenable_sc_export.csv"], d / "cmdb_assets.csv"
+    def test_formats_are_detected_from_content(self):
+        fmt = {k: ingest.detect_format(p) for k, p in self.paths.items()}
+        self.assertEqual(fmt, {"qualys": "qualys", "tenable": "tenable", "nessus_baseline": "nessus",
+                               "nessus": "nessus", "cmdb": "cmdb"})
+
+    def test_nessus_age_comes_from_the_earliest_scan(self):
+        hmi = self.rc["hmi-win7e-vendor-2016"]
+        by_id = {f.finding_id: f for f in self.res.findings}
+        f = by_id[hmi.finding_ids[0]]
+        self.assertEqual({s.source_file for s in f.sources},
+                         {"tenable_plant_scan_baseline.nessus", "tenable_plant_scan.nessus"})
+        self.assertLess(f.first_seen, self.res.as_of)
+
+
+class Manufacturing(unittest.TestCase):
+    def test_manufacturing_profile_runs(self):
+        with tempfile.TemporaryDirectory() as d:
+            paths = synth.generate(Path(d), seed=7, profile="manufacturing")
+            res = pipeline.run([p for k, p in paths.items() if k != "cmdb"], paths["cmdb"])
+            keys = {r.key: r for r in res.root_causes}
+            self.assertEqual(keys["Fortinet FortiOS SSL-VPN|6.0.5"].ssvc, "Act")
+            self.assertTrue(keys["ftview-win10-oem-2019"].is_ot)
 
 
 class Money(unittest.TestCase):

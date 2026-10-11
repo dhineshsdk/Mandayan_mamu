@@ -1,21 +1,51 @@
-# Sutra prototype: root causes and rupee risk from scanner exports
+# Sutra: root causes and rupee risk from scanner exports
 
-The Weeks 4–8 prototype from the Sutra startup plan. A local tool that reads Qualys and Tenable exports, merges
-duplicate findings, groups them by the one thing that fixes them, and writes a one-page board summary with risk in
-rupees. It runs on synthetic data only.
+Sutra reads Qualys and Tenable exports, merges duplicate findings, groups them by the one thing that fixes them,
+and shows the board its cyber risk in rupees. It runs entirely on one machine; files never leave it. Until a design
+partner shares real exports, it runs on realistic synthetic data in the same formats.
+
+## Run the app
 
 ```
-python3 -m sutra demo
+python3 -m sutra serve
 ```
 
-That generates a synthetic estate into `data/synthetic/`, analyses it, and writes `out/board_summary.html`
-(prints to one A4 page). A copy of the output is in [`examples/`](examples/). Python 3.10+ standard library only;
-nothing to install.
+A browser opens at http://127.0.0.1:8765 with the power-utility demo loaded. Python 3.10+ standard library only;
+nothing to install. The app has six views:
+
+- **Board**: expected annual loss in ₹, the CEA fix clock, SSVC triage, blind spots, risk by process and site, and
+  a printable one-page board pack.
+- **Root causes**: the analyst queue with filters, and a page per root cause showing the fix, why it got its SSVC
+  call, the rupee-risk inputs, hosts, and every finding's receipts (scanner, QID or plugin, file and row).
+- **Assets and coverage**: registered assets that are never scanned, and scanned hosts missing from the CMDB.
+- **Owners**: each team's top tasks with due dates.
+- **Headline check**: "are we exposed?" for a CVE or product in the news.
+- **Import data**: switch between the power and manufacturing demos, or drop in real exports.
+
+[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) walks through a 15-minute customer demo.
+
+## Command line
+
+```
+python3 -m sutra demo --profile power            # or manufacturing; writes out/board_summary.html
+python3 -m sutra analyze a.csv b.nessus --cmdb cmdb.csv --org "Plant name" --out out/
+python3 -m sutra synth --profile manufacturing --out data/synthetic/manufacturing
+```
+
+`analyze` detects each file's format from its content.
+
+## Supported inputs
+
+| Source | Format |
+| --- | --- |
+| Qualys VM | Detection report CSV (the preamble lines are skipped) |
+| Tenable.sc, Tenable.io, Nessus | Vulnerability CSV export (column names from any of the three) |
+| Nessus / Tenable | `.nessus` XML (NessusClientData_v2). It has no first-seen date, so a finding's age comes from the earliest scan file that contains it. |
+| Asset register | CSV with `asset_id, hostname, ip, site, zone, os, owner, business_process, inr_per_hour, criticality, image, config_template, is_ot, safety_critical, personal_data` |
 
 ## What it does
 
-1. **Ingest** a Qualys VM detection CSV (preamble lines are skipped) and a Tenable.sc / Tenable.io vulnerability CSV,
-   plus an optional CMDB asset register.
+1. **Ingest** any mix of the inputs above. The CMDB is optional, but rupee impact needs it.
 2. **Resolve assets** by IP, then hostname. Hosts the scanners found but the CMDB lacks are kept and counted.
 3. **Dedupe** across scanners: rows on the same asset merge when they share a package and fixed version, a
    misconfigured control, a credential fingerprint, or any CVE.
@@ -34,23 +64,19 @@ nothing to install.
 8. **Report**: the board page, plus `receipts.json`, `root_causes.csv` and `findings.csv`. Every root-cause ID traces
    to its findings, hosts, scanner references (QID or plugin ID) and the exact source-file rows.
 
-## On your own exports
-
-```
-python3 -m sutra analyze --qualys qualys.csv --tenable tenable.csv --cmdb cmdb.csv --org "Plant name" --out out/
-```
-
-`--qualys` and `--tenable` can repeat. The CMDB columns are in `sutra/synth.py` (`CMDB_COLS`); without a CMDB the
-grouping still works but rupee impact falls back to a flat default. Only use public or synthetic data until the
-plan's IP and employment checks are done.
-
 ## Synthetic data
 
-`python3 -m sutra synth --seed 7` builds a fictional power company: an HQ with RHEL, Ubuntu Kubernetes and Windows
-server fleets and 80 laptops, internet-facing NetScaler gateways, a thermal plant with Windows 7 HMIs, engineering
-workstations and Siemens S7-1500 PLCs, plus 9 hosts missing from the CMDB and 12 registered assets that are never
-scanned. The organisation, hostnames, IPs, QIDs, plugin IDs and advisory numbers are invented; CVE IDs are real so the
-threat-intel lookup behaves as it would on real data.
+Two fictional companies, each written as a Qualys CSV, a Tenable.sc CSV of the IT estate, two `.nessus` plant scans
+six months apart, and a CMDB:
+
+- **power**: an HQ with RHEL, Ubuntu Kubernetes and Windows server fleets and 80 laptops, internet-facing NetScaler
+  gateways, a thermal plant with Windows 7 HMIs, engineering workstations and Siemens S7-1500 PLCs, and a solar park.
+- **manufacturing**: press, paint and assembly lines with Rockwell ControlLogix PLCs and FactoryTalk HMIs, MES
+  servers sharing an `sa` password, a FortiGate SSL-VPN edge, and a second plant that is never scanned.
+
+Both include hosts missing from the CMDB and registered assets that are never scanned. The organisations,
+hostnames, IPs, QIDs, plugin IDs and advisory numbers are invented; CVE IDs are real so the threat-intel lookup
+behaves as it would on real data.
 
 ## Assumptions to argue with
 

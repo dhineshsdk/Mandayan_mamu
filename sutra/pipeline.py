@@ -23,16 +23,12 @@ class Result:
     coverage: dict = field(default_factory=dict)
 
 
-def run(qualys: list[Path], tenable: list[Path], cmdb: Path | None, org: str = "",
-        intel_path: Path | None = None) -> Result:
+def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: Path | None = None) -> Result:
+    """Analyse any mix of Qualys CSV, Tenable CSV and .nessus files; the format is detected from content."""
     cmdb_assets = ingest.load_cmdb(cmdb) if cmdb else []
     raws, sources = [], {}
-    for p in qualys:
-        rows = ingest.load_qualys(p)
-        sources[p.name] = sum(1 for r in rows if r["kind"] != "info")
-        raws += rows
-    for p in tenable:
-        rows = ingest.load_tenable(p)
+    for p in files:
+        rows = ingest.LOADERS[ingest.detect_format(p)](p)
         sources[p.name] = sum(1 for r in rows if r["kind"] != "info")
         raws += rows
     if not raws:

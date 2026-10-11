@@ -1,0 +1,166 @@
+asset_id,hostname,ip,site,zone,os,owner,business_process,inr_per_hour,criticality,image,config_template,is_ot,safety_critical,personal_data
+AST-0001,che-app-rhel-001,10.30.20.1,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0002,che-app-rhel-002,10.30.20.2,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0003,che-app-rhel-003,10.30.20.3,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0004,che-app-rhel-004,10.30.20.4,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0005,che-app-rhel-005,10.30.20.5,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0006,che-app-rhel-006,10.30.20.6,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0007,che-app-rhel-007,10.30.20.7,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0008,che-app-rhel-008,10.30.20.8,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0009,che-app-rhel-009,10.30.20.9,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0010,che-app-rhel-010,10.30.20.10,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0011,che-app-rhel-011,10.30.20.11,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0012,che-app-rhel-012,10.30.20.12,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0013,che-app-rhel-013,10.30.20.13,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0014,che-app-rhel-014,10.30.20.14,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0015,che-app-rhel-015,10.30.20.15,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0016,che-app-rhel-016,10.30.20.16,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0017,che-app-rhel-017,10.30.20.17,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0018,che-app-rhel-018,10.30.20.18,HQ Chennai,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,300000,4,rhel8-base-v3,,0,0,1
+AST-0019,che-win-srv-01,10.30.40.1,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0020,che-win-srv-02,10.30.40.2,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0021,che-win-srv-03,10.30.40.3,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0022,che-win-srv-04,10.30.40.4,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0023,che-win-srv-05,10.30.40.5,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0024,che-win-srv-06,10.30.40.6,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0025,che-win-srv-07,10.30.40.7,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0026,che-win-srv-08,10.30.40.8,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0027,che-win-srv-09,10.30.40.9,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0028,che-win-srv-10,10.30.40.10,HQ Chennai,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,30000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0029,che-win-srv-11,10.30.40.11,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0030,che-win-srv-12,10.30.40.12,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0031,che-win-srv-13,10.30.40.13,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0032,che-win-srv-14,10.30.40.14,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0033,che-win-srv-15,10.30.40.15,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0034,che-win-srv-16,10.30.40.16,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0035,che-win-srv-17,10.30.40.17,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0036,che-win-srv-18,10.30.40.18,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0037,che-win-srv-19,10.30.40.19,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0038,che-win-srv-20,10.30.40.20,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0039,che-win-srv-21,10.30.40.21,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0040,che-win-srv-22,10.30.40.22,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0041,che-win-srv-23,10.30.40.23,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0042,che-win-srv-24,10.30.40.24,Sriperumbudur Plant,corp,Windows Server 2019 Standard,Manufacturing IT,MES and part traceability,350000,4,win2019-std-tmpl-2023,,0,0,0
+AST-0043,lt-che-0001,10.40.0.2,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0044,lt-che-0002,10.40.0.3,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0045,lt-che-0003,10.40.0.4,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0046,lt-che-0004,10.40.0.5,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0047,lt-che-0005,10.40.0.6,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0048,lt-che-0006,10.40.0.7,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0049,lt-che-0007,10.40.0.8,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0050,lt-che-0008,10.40.0.9,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0051,lt-che-0009,10.40.0.10,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0052,lt-che-0010,10.40.0.11,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0053,lt-che-0011,10.40.0.12,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0054,lt-che-0012,10.40.0.13,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0055,lt-che-0013,10.40.0.14,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0056,lt-che-0014,10.40.0.15,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0057,lt-che-0015,10.40.0.16,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0058,lt-che-0016,10.40.0.17,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0059,lt-che-0017,10.40.0.18,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0060,lt-che-0018,10.40.0.19,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0061,lt-che-0019,10.40.0.20,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0062,lt-che-0020,10.40.0.21,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0063,lt-che-0021,10.40.0.22,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0064,lt-che-0022,10.40.0.23,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0065,lt-che-0023,10.40.0.24,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0066,lt-che-0024,10.40.0.25,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0067,lt-che-0025,10.40.0.26,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0068,lt-che-0026,10.40.0.27,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0069,lt-che-0027,10.40.0.28,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0070,lt-che-0028,10.40.0.29,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0071,lt-che-0029,10.40.0.30,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0072,lt-che-0030,10.40.0.31,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0073,lt-che-0031,10.40.0.32,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0074,lt-che-0032,10.40.0.33,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0075,lt-che-0033,10.40.0.34,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0076,lt-che-0034,10.40.0.35,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0077,lt-che-0035,10.40.0.36,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0078,lt-che-0036,10.40.0.37,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0079,lt-che-0037,10.40.0.38,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0080,lt-che-0038,10.40.0.39,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0081,lt-che-0039,10.40.0.40,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0082,lt-che-0040,10.40.0.41,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0083,lt-che-0041,10.40.0.42,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0084,lt-che-0042,10.40.0.43,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0085,lt-che-0043,10.40.0.44,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0086,lt-che-0044,10.40.0.45,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0087,lt-che-0045,10.40.0.46,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0088,lt-che-0046,10.40.0.47,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0089,lt-che-0047,10.40.0.48,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0090,lt-che-0048,10.40.0.49,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0091,lt-che-0049,10.40.0.50,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0092,lt-che-0050,10.40.0.51,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0093,lt-che-0051,10.40.0.52,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0094,lt-che-0052,10.40.0.53,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0095,lt-che-0053,10.40.0.54,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0096,lt-che-0054,10.40.0.55,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0097,lt-che-0055,10.40.0.56,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0098,lt-che-0056,10.40.0.57,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0099,lt-che-0057,10.40.0.58,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0100,lt-che-0058,10.40.0.59,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0101,lt-che-0059,10.40.0.60,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0102,lt-che-0060,10.40.0.61,HQ Chennai,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,40000,1,win11-corp-2024q2,,0,0,0
+AST-0103,edge-fgt-01,198.51.100.1,HQ Chennai,internet,Fortinet FortiOS 6.0.4,Network Security,Remote access for staff and vendors,80000,4,,,0,0,0
+AST-0104,edge-fgt-02,198.51.100.2,HQ Chennai,internet,Fortinet FortiOS 6.0.4,Network Security,Remote access for staff and vendors,80000,4,,,0,0,0
+AST-0105,sw-che-01,10.30.0.1,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0106,sw-che-02,10.30.0.2,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0107,sw-che-03,10.30.0.3,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0108,sw-che-04,10.30.0.4,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0109,sw-che-05,10.30.0.5,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0110,sw-che-06,10.30.0.6,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0111,sw-che-07,10.30.0.7,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0112,sw-che-08,10.30.0.8,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0113,sw-che-09,10.30.0.9,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0114,sw-che-10,10.30.0.10,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0115,sw-che-11,10.30.0.11,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0116,sw-che-12,10.30.0.12,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0117,sw-che-13,10.30.0.13,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0118,sw-che-14,10.30.0.14,HQ Chennai,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,150000,3,,switch-baseline-2019,0,0,0
+AST-0119,spb-hmi-01,192.168.150.1,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0120,spb-hmi-02,192.168.150.2,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0121,spb-hmi-03,192.168.150.3,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0122,spb-hmi-04,192.168.150.4,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0123,spb-hmi-05,192.168.150.5,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0124,spb-hmi-06,192.168.150.6,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0125,spb-hmi-07,192.168.150.7,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0126,spb-hmi-08,192.168.150.8,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Press,Line 1 press shop,800000,5,ftview-win10-oem-2019,,1,1,0
+AST-0127,spb-hmi-09,192.168.150.9,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0128,spb-hmi-10,192.168.150.10,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0129,spb-hmi-11,192.168.150.11,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0130,spb-hmi-12,192.168.150.12,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0131,spb-hmi-13,192.168.150.13,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0132,spb-hmi-14,192.168.150.14,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0133,spb-hmi-15,192.168.150.15,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0134,spb-hmi-16,192.168.150.16,Sriperumbudur Plant,ot-l2,Windows 10 Enterprise LTSB 2016,Plant Engineering - Assembly,Line 2 assembly,900000,5,ftview-win10-oem-2019,,1,1,0
+AST-0135,spb-ews-01,192.168.140.1,Sriperumbudur Plant,ot-l3,Windows 10 Enterprise LTSC 2019,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0136,spb-ews-02,192.168.140.2,Sriperumbudur Plant,ot-l3,Windows 10 Enterprise LTSC 2019,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0137,spb-ews-03,192.168.140.3,Sriperumbudur Plant,ot-l3,Windows 10 Enterprise LTSC 2019,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0138,spb-plc-01,192.168.160.1,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0139,spb-plc-02,192.168.160.2,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0140,spb-plc-03,192.168.160.3,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0141,spb-plc-04,192.168.160.4,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0142,spb-plc-05,192.168.160.5,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0143,spb-plc-06,192.168.160.6,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0144,spb-plc-07,192.168.160.7,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0145,spb-plc-08,192.168.160.8,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0146,spb-plc-09,192.168.160.9,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0147,spb-plc-10,192.168.160.10,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0148,spb-plc-11,192.168.160.11,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0149,spb-plc-12,192.168.160.12,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0150,spb-plc-13,192.168.160.13,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0151,spb-plc-14,192.168.160.14,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0152,spb-plc-15,192.168.160.15,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0153,spb-plc-16,192.168.160.16,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0154,spb-plc-17,192.168.160.17,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0155,spb-plc-18,192.168.160.18,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 2 assembly,900000,5,,,1,1,0
+AST-0156,spb-plc-19,192.168.160.19,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Line 1 press shop,800000,5,,,1,1,0
+AST-0157,spb-plc-20,192.168.160.20,Sriperumbudur Plant,ot-l1,Rockwell ControlLogix 5580 with 1756-EN2T,Plant Engineering - Controls,Paint shop,600000,5,,,1,1,0
+AST-0162,pne-plc-01,192.168.210.1,Pune Plant,ot-l1,Siemens SIMATIC S7-1200,Pune Plant Engineering,Pune plant machining,500000,5,,,1,1,0
+AST-0163,pne-plc-02,192.168.210.2,Pune Plant,ot-l1,Siemens SIMATIC S7-1200,Pune Plant Engineering,Pune plant machining,500000,5,,,1,1,0
+AST-0164,pne-plc-03,192.168.210.3,Pune Plant,ot-l1,Siemens SIMATIC S7-1200,Pune Plant Engineering,Pune plant machining,500000,5,,,1,1,0
+AST-0165,pne-plc-04,192.168.210.4,Pune Plant,ot-l1,Siemens SIMATIC S7-1200,Pune Plant Engineering,Pune plant machining,500000,5,,,1,1,0
+AST-0166,pne-plc-05,192.168.210.5,Pune Plant,ot-l1,Siemens SIMATIC S7-1200,Pune Plant Engineering,Pune plant machining,500000,5,,,1,1,0
+AST-0167,pne-plc-06,192.168.210.6,Pune Plant,ot-l1,Siemens SIMATIC S7-1200,Pune Plant Engineering,Pune plant machining,500000,5,,,1,1,0
+AST-0168,che-mesdb-01,10.30.45.1,Sriperumbudur Plant,corp,Windows Server 2016 + SQL Server 2016,Manufacturing IT,MES and part traceability,350000,5,,,0,0,0
+AST-0169,che-mesdb-02,10.30.45.2,Sriperumbudur Plant,corp,Windows Server 2016 + SQL Server 2016,Manufacturing IT,MES and part traceability,350000,5,,,0,0,0

@@ -40,7 +40,7 @@ def headline(res: Result) -> dict:
     }
 
 
-def write_board_html(res: Result, path: Path) -> None:
+def render_board_html(res: Result) -> str:
     h = headline(res)
     cov = res.coverage
     top = res.root_causes[:TOP_N]
@@ -180,7 +180,7 @@ def write_board_html(res: Result, path: Path) -> None:
 </footer>
 </body></html>
 """
-    path.write_text(doc, encoding="utf-8")
+    return doc
 
 
 def write_receipts(res: Result, out: Path) -> None:
@@ -243,6 +243,6 @@ def console_summary(res: Result) -> str:
 def write_all(res: Result, out: Path) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     board = out / "board_summary.html"
-    write_board_html(res, board)
+    board.write_text(render_board_html(res), encoding="utf-8")
     write_receipts(res, out)
     return board
