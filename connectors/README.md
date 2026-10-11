@@ -11,6 +11,7 @@ customers already run, so nobody has to export a file:
 | `CrowdStrikeConnector` | CrowdStrike Falcon Spotlight | `/spotlight/combined/vulnerabilities/v1` | `/devices/queries/devices/v1` and `/devices/entities/devices/v2` |
 | `AwsInspectorConnector` | Amazon Inspector (one region) | `POST /findings/list` | `POST /coverage/list` |
 | `AzureDefenderConnector` | Microsoft Defender for Cloud (servers) | `GET /{scope}/providers/Microsoft.Security/subAssessments` | `GET /{scope}/providers/Microsoft.Security/assessments` |
+| `NozomiConnector` | Nozomi Networks Guardian or CMC (OT) | `GET /api/open/query/do`, `node_cves` | `GET /api/open/query/do`, `assets` |
 
 This is a plain Python library. Scheduling, credential storage and wiring into the Sutra app come with the app's
 database milestone; nothing here touches the app server, auth or database.

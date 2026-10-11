@@ -315,3 +315,38 @@ def test_defender_for_cloud_connection_needs_its_options_and_pulls(tmp_path):
     assert done["results"][0]["findings"] == 1 and done["results"][0]["hosts"] == 2
     (f,) = app.state.analysis.result.findings
     assert f.package == "libxml2_for_linux" and "CVE-2025-49796" in f.cves
+
+
+def test_nozomi_pull_through_the_real_connector(tmp_path):
+    """A Nozomi Networks connection (the OT source) pulled with the real connector against its own fake Open API
+    (fixtures from Elastic's Nozomi Networks integration test data)."""
+    import sys
+    from pathlib import Path
+
+    import httpx
+
+    sys.path.insert(0, str(Path(__file__).parents[1] / "connectors" / "tests"))
+    try:
+        from test_nozomi import FakeNozomi
+    finally:
+        sys.path.pop(0)
+    settings = Settings(workspace=tmp_path, database_url=f"sqlite:///{tmp_path / 'sutra.db'}")
+    passwords = {e: pw for e, pw, _ in cli.demo_users(settings, "power", months=0)}
+    app = create_app(settings, background=False)
+    app.state.puller.transport = httpx.MockTransport(FakeNozomi())
+    with TestClient(app, base_url="https://testserver"):
+        env = (app, passwords)
+        admin = client(env, ADMIN)
+        conn = {"kind": "nozomi", "name": "Plant Guardian", "username": "sutra-reader", "secret": "s3cret"}
+        assert admin.post("/api/data/connections", json={**conn, "base_url": ""}).status_code == 400
+        r = admin.post("/api/data/connections", json={**conn, "base_url": "https://guardian.plant.example"})
+        assert r.status_code == 201, r.text
+        pull = client(env, VM).post("/api/data/pulls").json()["pull"]
+        _wait(app)
+        done = client(env, VM).get(f"/api/data/pulls/{pull}").json()
+    # Three unresolved vulnerabilities; the fixture assets were last active in 2025 and 2026-06, too long ago.
+    assert done["status"] == "ok", done
+    assert done["results"][0]["findings"] == 3 and done["results"][0]["hosts"] == 0
+    res = app.state.analysis.result
+    modicon = next(f for f in res.findings if "CVE-2018-7844" in f.cves)
+    assert modicon.installed == "v2.9" and res.assets[modicon.asset_id].ip == "81.2.69.142"
