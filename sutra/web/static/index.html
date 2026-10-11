@@ -5,36 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sutra</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b5cad'/%3E%3Cpath d='M9 22c3 0 4-2 7-6s4-6 7-6' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/app.css">
+<link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
-<div class="shell">
+<div id="signin" class="signin" hidden></div>
+<div class="shell" id="shell" hidden>
   <aside class="nav">
     <div class="brand"><span class="logo"></span>Sutra</div>
-    <nav>
-      <a href="#/board" data-view="board">Board</a>
-      <a href="#/queue" data-view="queue">Root causes</a>
-      <a href="#/assets" data-view="assets">Assets and coverage</a>
-      <a href="#/portal" data-view="portal">Team portal</a>
-      <a href="#/jobs" data-view="jobs">Patch jobs <span id="inbox" class="count" hidden></span></a>
-      <a href="#/headline" data-view="headline">Headline check</a>
-      <a href="#/import" data-view="import">Import data</a>
-    </nav>
-    <div class="nav-foot">Runs on this machine. Files never leave it.</div>
+    <nav id="nav"></nav>
+    <div class="nav-foot" id="me-foot"></div>
   </aside>
   <div class="main">
     <header class="top">
       <div class="org"><span id="org">No data loaded</span> <span id="synthetic" class="badge warn" hidden>Synthetic data</span></div>
       <div class="top-right"><span id="asof" class="muted"></span>
-        <label class="persona">Signed in as <select id="persona" aria-label="Signed in as"></select></label>
-        <select id="dataset" aria-label="Switch demo company">
-          <option value="">Switch demo…</option>
-        </select>
+        <span class="who" id="who"></span>
+        <a href="#/account" class="btn small">Account</a>
+        <button class="btn small" id="signout" type="button">Sign out</button>
       </div>
     </header>
     <main id="view" tabindex="-1"><div class="loading">Loading…</div></main>
   </div>
 </div>
-<script src="/app.js"></script>
+<script src="/static/app.js"></script>
 </body>
 </html>

@@ -128,8 +128,8 @@ def assess(rcs: list[RootCause], assets: dict[str, Asset], findings: list[Findin
                           "processes": sorted(per_process), "outage_hours_pert": outage, "personal_data": pii}
 
         due = A["cea_due_days"]
-        rc.cea_overdue = sum(1 for fid in rc.finding_ids
-                             if by_id[fid].first_seen and (as_of - by_id[fid].first_seen).days > due[by_id[fid].severity])
+        members = [by_id[fid] for fid in rc.finding_ids]
+        rc.cea_overdue = sum(1 for f in members if f.first_seen and (as_of - f.first_seen).days > due[f.severity])
 
     portfolio.sort()
     return {"ale_mean": sum(portfolio) / iters, "ale_p10": portfolio[int(0.10 * iters)],

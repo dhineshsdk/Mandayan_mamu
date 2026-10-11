@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import date
 from pathlib import Path
 
 from . import ingest, risk, rootcause
-from .model import Asset, Finding, RootCause
+from .model import SEVERITY_ORDER, Asset, Finding, RootCause
 
 
 @dataclass
@@ -70,3 +70,44 @@ def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: 
     }
     return Result(org=org, as_of=as_of, sources=sources, raw_rows=sum(sources.values()), assets=assets,
                   findings=findings, root_causes=rcs, portfolio=portfolio, coverage=coverage)
+
+
+def restrict(res: Result, asset_ids: set[str], intel: dict) -> Result:
+    """The same analysis seen through a scope: only these assets, with risk re-computed for them.
+
+    Root causes keep their IDs and titles; their hosts, findings and rupee risk shrink to the scope.
+    """
+    if asset_ids >= set(res.assets):
+        return res
+    assets = {k: a for k, a in res.assets.items() if k in asset_ids}
+    findings = [f for f in res.findings if f.asset_id in asset_ids]
+    kept = {f.finding_id for f in findings}
+    by_id = {f.finding_id: f for f in findings}
+    rcs = []
+    for rc in res.root_causes:
+        fids = [f for f in rc.finding_ids if f in kept]
+        if not fids:
+            continue
+        members = [by_id[f] for f in fids]
+        sub = replace(rc, finding_ids=fids, asset_ids=sorted({f.asset_id for f in members}),
+                      cves=sorted({c for f in members for c in f.cves}),
+                      max_severity=max((f.severity for f in members), key=SEVERITY_ORDER.get),
+                      max_cvss=max((f.cvss or 0.0 for f in members), default=0.0),
+                      risk_inputs={})
+        sub.is_ot = any(assets[a].is_ot for a in sub.asset_ids)
+        rcs.append(sub)
+    portfolio = risk.assess(rcs, assets, findings, intel, res.as_of) if rcs else {
+        "ale_mean": 0.0, "ale_p10": 0.0, "ale_p90": 0.0, "iterations": 0}
+    rcs.sort(key=lambda r: (-r.ale_mean, risk.SSVC_ORDER[r.ssvc]))
+    cov = res.coverage
+    coverage = {
+        "cmdb_assets": sum(1 for a in assets.values() if a.in_cmdb),
+        "scanned_assets": sum(1 for a in assets.values() if a.scanned_by),
+        "unscanned": [a for a in cov["unscanned"] if a.asset_id in asset_ids],
+        "unknown": [a for a in cov["unknown"] if a.asset_id in asset_ids],
+        "inferred_images": [a for a in cov["inferred_images"] if a.asset_id in asset_ids],
+        "multi_scanner_findings": sum(1 for f in findings if len(f.scanners) > 1),
+    }
+    sources = dict(res.sources)
+    return Result(org=res.org, as_of=res.as_of, sources=sources, raw_rows=sum(len(f.sources) for f in findings),
+                  assets=assets, findings=findings, root_causes=rcs, portfolio=portfolio, coverage=coverage)

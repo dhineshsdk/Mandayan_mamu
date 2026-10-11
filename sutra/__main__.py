@@ -1,4 +1,4 @@
-"""Command line: python -m sutra {synth,analyze,demo,serve}."""
+"""Command line: python -m sutra {synth,analyze,demo,serve,db-upgrade,create-admin,demo-users}."""
 
 from __future__ import annotations
 
@@ -32,17 +32,43 @@ def main(argv: list[str] | None = None) -> None:
     d.add_argument("--out", type=Path, default=Path("out"))
     d.add_argument("--seed", type=int, default=7)
 
-    w = sub.add_parser("serve", help="run the web app on this machine")
+    w = sub.add_parser("serve", help="run the web application")
     w.add_argument("--host", default="127.0.0.1")
     w.add_argument("--port", type=int, default=8765)
-    w.add_argument("--workspace", type=Path, default=Path("workspace"))
-    w.add_argument("--no-demo", action="store_true", help="start empty instead of loading the power demo")
-    w.add_argument("--no-browser", action="store_true", help="do not open a browser tab")
+    w.add_argument("--workspace", type=Path, help="data folder (default: $SUTRA_WORKSPACE or ./workspace)")
+
+    u = sub.add_parser("db-upgrade", help="create or upgrade the database schema")
+    u.add_argument("--workspace", type=Path)
+
+    c = sub.add_parser("create-admin", help="create the first administrator account")
+    c.add_argument("--email", required=True)
+    c.add_argument("--name", required=True)
+    c.add_argument("--workspace", type=Path)
+
+    m = sub.add_parser("demo-users", help="load a SYNTHETIC demo company and create one account per role "
+                                          "(random passwords, printed once)")
+    m.add_argument("--profile", choices=sorted(synth.PROFILES), default="power")
+    m.add_argument("--workspace", type=Path)
 
     args = ap.parse_args(argv)
-    if args.cmd == "serve":
-        from .web.server import serve
-        serve(args.host, args.port, args.workspace, preload=not args.no_demo, open_browser=not args.no_browser)
+    if args.cmd in ("serve", "db-upgrade", "create-admin", "demo-users"):
+        from .app import cli
+        from .app.config import Settings
+
+        settings = Settings(workspace=args.workspace) if args.workspace else Settings()
+        if args.cmd == "serve":
+            cli.serve(settings, args.host, args.port)
+        elif args.cmd == "db-upgrade":
+            cli.db_upgrade(settings)
+        elif args.cmd == "create-admin":
+            cli.create_admin(settings, args.email, args.name)
+        else:
+            made = cli.demo_users(settings, args.profile)
+            print(f"Loaded the synthetic {synth.PROFILES[args.profile]['org']} and set up {len(made)} accounts.")
+            print("Passwords are shown once. These accounts are for synthetic demo data only.\n")
+            width = max(len(e) for e, _, _ in made)
+            for email, password, roles in made:
+                print(f"{email:<{width}}  {password}  {roles}")
         return
 
     if args.cmd == "synth":

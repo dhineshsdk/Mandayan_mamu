@@ -9,7 +9,7 @@
         <tag name="HOST_END">Wed Apr 08 02:40:46 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.1</tag>
-        <tag name="host-fqdn">spb-hmi-01.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-01.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-01</tag>
         <tag name="HOST_START">Wed Apr 08 02:40:46 2026</tag>
       </HostProperties>
@@ -64,7 +64,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:32:06 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.2</tag>
-        <tag name="host-fqdn">spb-hmi-02.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-02.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-02</tag>
         <tag name="HOST_START">Wed Apr 08 02:32:06 2026</tag>
       </HostProperties>
@@ -119,7 +119,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:29:53 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.3</tag>
-        <tag name="host-fqdn">spb-hmi-03.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-03.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-03</tag>
         <tag name="HOST_START">Wed Apr 08 02:29:53 2026</tag>
       </HostProperties>
@@ -174,7 +174,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:43:25 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.4</tag>
-        <tag name="host-fqdn">spb-hmi-04.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-04.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-04</tag>
         <tag name="HOST_START">Wed Apr 08 02:43:25 2026</tag>
       </HostProperties>
@@ -229,7 +229,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:34:10 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.5</tag>
-        <tag name="host-fqdn">spb-hmi-05.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-05.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-05</tag>
         <tag name="HOST_START">Wed Apr 08 02:34:10 2026</tag>
       </HostProperties>
@@ -284,7 +284,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:12:36 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.6</tag>
-        <tag name="host-fqdn">spb-hmi-06.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-06.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-06</tag>
         <tag name="HOST_START">Wed Apr 08 02:12:36 2026</tag>
       </HostProperties>
@@ -339,7 +339,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:30:49 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.7</tag>
-        <tag name="host-fqdn">spb-hmi-07.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-07.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-07</tag>
         <tag name="HOST_START">Wed Apr 08 02:30:49 2026</tag>
       </HostProperties>
@@ -394,7 +394,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:05:08 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.8</tag>
-        <tag name="host-fqdn">spb-hmi-08.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-08.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-08</tag>
         <tag name="HOST_START">Wed Apr 08 02:05:08 2026</tag>
       </HostProperties>
@@ -449,7 +449,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:23:49 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.9</tag>
-        <tag name="host-fqdn">spb-hmi-09.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-09.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-09</tag>
         <tag name="HOST_START">Wed Apr 08 02:23:49 2026</tag>
       </HostProperties>
@@ -492,7 +492,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:39:03 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.10</tag>
-        <tag name="host-fqdn">spb-hmi-10.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-10.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-10</tag>
         <tag name="HOST_START">Wed Apr 08 02:39:03 2026</tag>
       </HostProperties>
@@ -535,7 +535,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:25:15 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.11</tag>
-        <tag name="host-fqdn">spb-hmi-11.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-11.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-11</tag>
         <tag name="HOST_START">Wed Apr 08 02:25:15 2026</tag>
       </HostProperties>
@@ -578,7 +578,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:03:23 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.12</tag>
-        <tag name="host-fqdn">spb-hmi-12.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-12.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-12</tag>
         <tag name="HOST_START">Wed Apr 08 02:03:23 2026</tag>
       </HostProperties>
@@ -621,7 +621,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:02:00 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.13</tag>
-        <tag name="host-fqdn">spb-hmi-13.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-13.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-13</tag>
         <tag name="HOST_START">Wed Apr 08 02:02:00 2026</tag>
       </HostProperties>
@@ -664,7 +664,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:44:38 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.14</tag>
-        <tag name="host-fqdn">spb-hmi-14.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-14.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-14</tag>
         <tag name="HOST_START">Wed Apr 08 02:44:38 2026</tag>
       </HostProperties>
@@ -707,7 +707,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:13:29 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.15</tag>
-        <tag name="host-fqdn">spb-hmi-15.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-15.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-15</tag>
         <tag name="HOST_START">Wed Apr 08 02:13:29 2026</tag>
       </HostProperties>
@@ -750,7 +750,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:19:07 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
         <tag name="host-ip">192.168.150.16</tag>
-        <tag name="host-fqdn">spb-hmi-16.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-hmi-16.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-HMI-16</tag>
         <tag name="HOST_START">Wed Apr 08 02:19:07 2026</tag>
       </HostProperties>
@@ -793,7 +793,7 @@ The remote host is missing one of the following security updates :
         <tag name="HOST_END">Wed Apr 08 02:45:08 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.140.1</tag>
-        <tag name="host-fqdn">spb-ews-01.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-ews-01.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-EWS-01</tag>
         <tag name="HOST_START">Wed Apr 08 02:45:08 2026</tag>
       </HostProperties>
@@ -822,7 +822,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:27:58 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.140.2</tag>
-        <tag name="host-fqdn">spb-ews-02.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-ews-02.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-EWS-02</tag>
         <tag name="HOST_START">Wed Apr 08 02:27:58 2026</tag>
       </HostProperties>
@@ -839,7 +839,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:56:05 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.140.3</tag>
-        <tag name="host-fqdn">spb-ews-03.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-ews-03.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-EWS-03</tag>
         <tag name="HOST_START">Wed Apr 08 02:56:05 2026</tag>
       </HostProperties>
@@ -868,7 +868,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:39:55 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.1</tag>
-        <tag name="host-fqdn">spb-plc-01.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-01.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-01</tag>
         <tag name="HOST_START">Wed Apr 08 02:39:55 2026</tag>
       </HostProperties>
@@ -898,7 +898,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:12:36 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.2</tag>
-        <tag name="host-fqdn">spb-plc-02.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-02.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-02</tag>
         <tag name="HOST_START">Wed Apr 08 02:12:36 2026</tag>
       </HostProperties>
@@ -928,7 +928,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:07:58 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.3</tag>
-        <tag name="host-fqdn">spb-plc-03.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-03.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-03</tag>
         <tag name="HOST_START">Wed Apr 08 02:07:58 2026</tag>
       </HostProperties>
@@ -958,7 +958,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:46:55 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.4</tag>
-        <tag name="host-fqdn">spb-plc-04.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-04.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-04</tag>
         <tag name="HOST_START">Wed Apr 08 02:46:55 2026</tag>
       </HostProperties>
@@ -988,7 +988,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:22:10 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.5</tag>
-        <tag name="host-fqdn">spb-plc-05.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-05.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-05</tag>
         <tag name="HOST_START">Wed Apr 08 02:22:10 2026</tag>
       </HostProperties>
@@ -1018,7 +1018,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:23:47 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.6</tag>
-        <tag name="host-fqdn">spb-plc-06.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-06.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-06</tag>
         <tag name="HOST_START">Wed Apr 08 02:23:47 2026</tag>
       </HostProperties>
@@ -1048,7 +1048,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:53:21 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.7</tag>
-        <tag name="host-fqdn">spb-plc-07.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-07.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-07</tag>
         <tag name="HOST_START">Wed Apr 08 02:53:21 2026</tag>
       </HostProperties>
@@ -1078,7 +1078,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:51:48 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.8</tag>
-        <tag name="host-fqdn">spb-plc-08.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-08.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-08</tag>
         <tag name="HOST_START">Wed Apr 08 02:51:48 2026</tag>
       </HostProperties>
@@ -1108,7 +1108,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:47:43 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.9</tag>
-        <tag name="host-fqdn">spb-plc-09.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-09.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-09</tag>
         <tag name="HOST_START">Wed Apr 08 02:47:43 2026</tag>
       </HostProperties>
@@ -1138,7 +1138,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:00:52 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.10</tag>
-        <tag name="host-fqdn">spb-plc-10.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-10.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-10</tag>
         <tag name="HOST_START">Wed Apr 08 02:00:52 2026</tag>
       </HostProperties>
@@ -1168,7 +1168,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:16:07 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.11</tag>
-        <tag name="host-fqdn">spb-plc-11.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-11.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-11</tag>
         <tag name="HOST_START">Wed Apr 08 02:16:07 2026</tag>
       </HostProperties>
@@ -1198,7 +1198,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:15:23 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.12</tag>
-        <tag name="host-fqdn">spb-plc-12.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-12.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-12</tag>
         <tag name="HOST_START">Wed Apr 08 02:15:23 2026</tag>
       </HostProperties>
@@ -1228,7 +1228,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:32:47 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.13</tag>
-        <tag name="host-fqdn">spb-plc-13.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-13.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-13</tag>
         <tag name="HOST_START">Wed Apr 08 02:32:47 2026</tag>
       </HostProperties>
@@ -1258,7 +1258,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:33:22 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.14</tag>
-        <tag name="host-fqdn">spb-plc-14.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-14.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-14</tag>
         <tag name="HOST_START">Wed Apr 08 02:33:22 2026</tag>
       </HostProperties>
@@ -1288,7 +1288,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:46:31 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.15</tag>
-        <tag name="host-fqdn">spb-plc-15.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-15.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-15</tag>
         <tag name="HOST_START">Wed Apr 08 02:46:31 2026</tag>
       </HostProperties>
@@ -1318,7 +1318,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:02:52 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.16</tag>
-        <tag name="host-fqdn">spb-plc-16.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-16.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-16</tag>
         <tag name="HOST_START">Wed Apr 08 02:02:52 2026</tag>
       </HostProperties>
@@ -1348,7 +1348,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:38:22 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.17</tag>
-        <tag name="host-fqdn">spb-plc-17.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-17.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-17</tag>
         <tag name="HOST_START">Wed Apr 08 02:38:22 2026</tag>
       </HostProperties>
@@ -1378,7 +1378,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:06:22 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.18</tag>
-        <tag name="host-fqdn">spb-plc-18.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-18.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-18</tag>
         <tag name="HOST_START">Wed Apr 08 02:06:22 2026</tag>
       </HostProperties>
@@ -1395,7 +1395,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:35:20 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.19</tag>
-        <tag name="host-fqdn">spb-plc-19.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-19.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-19</tag>
         <tag name="HOST_START">Wed Apr 08 02:35:20 2026</tag>
       </HostProperties>
@@ -1425,7 +1425,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Wed Apr 08 02:51:38 2026</tag>
         <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
         <tag name="host-ip">192.168.160.20</tag>
-        <tag name="host-fqdn">spb-plc-20.shaktiauto.example.in</tag>
+        <tag name="host-fqdn">spb-plc-20.shaktiauto.example</tag>
         <tag name="netbios-name">SPB-PLC-20</tag>
         <tag name="HOST_START">Wed Apr 08 02:51:38 2026</tag>
       </HostProperties>

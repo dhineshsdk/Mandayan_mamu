@@ -5,11 +5,13 @@ For a CISO, plant head or IT head at a power or manufacturing company. Pick the 
 ## Before the meeting
 
 ```
-python3 -m sutra serve
+SUTRA_COOKIE_SECURE=0 sutra demo-users --profile power     # or manufacturing; prints one account per role
+SUTRA_COOKIE_SECURE=0 sutra serve
 ```
 
-The browser opens on the power demo. To show the manufacturer instead, use **Switch demo** at the top right.
-Everything runs on your laptop, with no internet needed. Say clearly that the data is synthetic.
+Keep the printed accounts to hand: you will sign in as several people. Open http://127.0.0.1:8765 in two browser
+windows (one private) so you can be the team and an approver side by side. Everything runs on your laptop, with no
+internet needed. Say clearly that the data is synthetic; every screen marks it.
 
 ## 1. The problem (1 minute)
 
@@ -17,6 +19,8 @@ Everything runs on your laptop, with no internet needed. Say clearly that the da
 give you one month for critical and high findings from April 2027."
 
 ## 2. Board view (3 minutes)
+
+Sign in as the CISO (`ciso@…`).
 
 - **Expected annual loss** in rupees, with a range. "This is the number your board asks for, and every rupee
   traces back to a scanner row."
@@ -47,27 +51,30 @@ listed. Sutra matched them to the image by their packages.
 
 ## 5. Team portal and patch approvals (4 minutes)
 
-- Open **Team portal**, then **Open as this team** on *C&I - Unit 2* (power) or *Plant Engineering - Press*
-  (manufacturing). "The plant team sees only its own assets, with their Jira project and manager."
+- Sign in as the team account for *C&I - Unit 2* (power) or *Plant Engineering - Press* (manufacturing). It has
+  only **Team portal** and **Patch jobs**. "The plant team sees only its own assets, with their Jira project and
+  manager. Each person gets only the modules their role needs."
 - Click **Draft staged plan** on the HMI image. Show the draft: OEM approval pending, compensating control, shutdown
   date, rollback. "For OT, nothing runs by itself. A plant engineer executes it at the shutdown."
 - Show the route: manager, VM analyst, plant head. "The route comes from fixed rules, so a drafted job can never lower
   its own approval level."
-- Switch **Signed in as** to the manager: the **Patch jobs** badge shows one waiting. Approve with a comment, then
-  approve as the VM analyst and the vertical head. Point at the audit trail: "this is your CEA evidence."
-- For IT, sign in as *Network Security team* and build the NetScaler job (power): it is Act, so the vertical head can
-  approve it as an emergency change.
+- In the other window, sign in as that team's manager: the **Patch jobs** badge shows one waiting. Approve with a
+  comment, then sign in as the VM analyst and the vertical head in turn. Point at the audit trail: "this is your CEA
+  evidence." Show that the team account has no Approve button: "whoever raises a job can never approve it."
+- For IT, sign in as the *Network Security* team and build the NetScaler job (power): it is Act, so the vertical head
+  can approve it as an emergency change.
+- Sign in as the admin and open **Audit log**: every sign-in, refusal and approval is there.
 
 ## 6. Headline check (2 minutes)
 
-Click **CVE-2023-4966** (power) or **CVE-2018-13379** (manufacturing). "A CVE is in the news this morning. You know
+As the VM analyst, click **CVE-2023-4966** (power) or **CVE-2018-13379** (manufacturing). "A CVE is in the news this morning. You know
 within seconds whether you are exposed, which hosts, and which fix closes it." Then try **CVE-2024-3400**: not
 found, and the page reminds you about the unscanned assets.
 
 ## 7. Their data (2 minutes)
 
-Open **Import data**. "Export from Qualys and Tenable the way you already do, CSV or .nessus, drop them here, and you
-see this view for your own estate in minutes. The files never leave your machine." Ask for the 14-day assessment.
+As the VM analyst, open **Import data**. "Export from Qualys and Tenable the way you already do, CSV or .nessus, drop them here, and you
+see this view for your own estate in minutes. Sutra runs on your own server; the files never leave it." Ask for the 14-day assessment.
 
 ## Questions to ask them
 

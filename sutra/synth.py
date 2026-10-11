@@ -408,13 +408,22 @@ MANUFACTURING_ORG = {
     "heads": {"Corporate IT": "Neha Joshi (CIO)", "Manufacturing": "S. Raghavan (VP Manufacturing)"},
     "vm_analyst": "Aisha Khan (VM analyst)",
 }
-TEAMS_COLS = ["team", "jira_project", "manager", "vertical", "vertical_head", "vm_analyst"]
+TEAMS_COLS = ["team", "jira_project", "manager", "manager_email", "vertical", "vertical_head", "vertical_head_email",
+              "vm_analyst", "vm_analyst_email"]
+
+
+def person_email(name: str, domain: str) -> str:
+    """'P. Venkatesh (Plant Head, Vindhya)' -> 'p.venkatesh@domain'."""
+    base = name.split("(")[0]
+    parts = ["".join(ch for ch in w.lower() if ch.isalpha()) for w in base.split()]
+    return ".".join(p for p in parts if p) + "@" + domain
 
 PROFILES = {
-    "power": {"org": "Demo Vindhya Power Ltd (SYNTHETIC)", "processes": POWER_PROCESSES, "build": build_power, "org_chart": POWER_ORG,
-              "domain": "vindhyapower.example.in"},
+    "power": {"org": "Demo Vindhya Power Ltd (SYNTHETIC)", "processes": POWER_PROCESSES,
+              "build": build_power, "org_chart": POWER_ORG,
+              "domain": "vindhyapower.example"},
     "manufacturing": {"org": "Demo Shakti Auto Components Ltd (SYNTHETIC)", "processes": MANUFACTURING_PROCESSES,
-                      "build": build_manufacturing, "org_chart": MANUFACTURING_ORG, "domain": "shaktiauto.example.in"},
+                      "build": build_manufacturing, "org_chart": MANUFACTURING_ORG, "domain": "shaktiauto.example"},
 }
 ORG = PROFILES["power"]["org"]
 
@@ -529,8 +538,11 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
     with paths["teams"].open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(TEAMS_COLS)
+        dom = prof["domain"]
         for team, (jira, manager, vertical) in oc["teams"].items():
-            w.writerow([team, jira, manager, vertical, oc["heads"][vertical], oc["vm_analyst"]])
+            head = oc["heads"][vertical]
+            w.writerow([team, jira, manager, person_email(manager, dom), vertical, head, person_email(head, dom),
+                        oc["vm_analyst"], person_email(oc["vm_analyst"], dom)])
 
     q_rows, t_rows, plant = [], [], []
     for h in hosts:

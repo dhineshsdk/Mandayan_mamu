@@ -1,773 +1,773 @@
 "Plugin","Plugin Name","Family","Severity","IP Address","Protocol","Port","Exploit?","DNS Name","NetBIOS Name","Plugin Output","Synopsis","Description","Solution","See Also","CVSS V3 Base Score","CVE","First Discovered","Last Observed","Exploit Frameworks"
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.9","TCP","0","Yes","che-app-rhel-009.shaktiauto.example.in","CHE-APP-RHEL-00","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.9","TCP","0","Yes","che-app-rhel-009.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Apr 18, 2026 01:17:06 UTC","Oct 05, 2026 01:53:42 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example.in","CHE-WIN-SRV-18","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example","CHE-WIN-SRV-18","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Aug 06, 2025 12:10:50 UTC","Oct 05, 2026 03:07:49 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.3","TCP","0","No","che-win-srv-03.shaktiauto.example.in","CHE-WIN-SRV-03","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:23:17 UTC","Oct 05, 2026 02:23:17 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.4","TCP","0","No","che-win-srv-04.shaktiauto.example.in","CHE-WIN-SRV-04","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:24 UTC","Oct 05, 2026 02:49:24 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.8","TCP","0","No","che-win-srv-08.shaktiauto.example.in","CHE-WIN-SRV-08","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:06:00 UTC","Oct 05, 2026 02:06:00 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.5","TCP","0","No","che-win-srv-05.shaktiauto.example.in","CHE-WIN-SRV-05","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.3","TCP","0","No","che-win-srv-03.shaktiauto.example","CHE-WIN-SRV-03","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:23:17 UTC","Oct 05, 2026 02:23:17 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.4","TCP","0","No","che-win-srv-04.shaktiauto.example","CHE-WIN-SRV-04","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:24 UTC","Oct 05, 2026 02:49:24 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.8","TCP","0","No","che-win-srv-08.shaktiauto.example","CHE-WIN-SRV-08","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:06:00 UTC","Oct 05, 2026 02:06:00 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.5","TCP","0","No","che-win-srv-05.shaktiauto.example","CHE-WIN-SRV-05","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Oct 18, 2025 01:30:35 UTC","Oct 05, 2026 05:20:10 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.2","TCP","0","No","che-win-srv-02.shaktiauto.example.in","CHE-WIN-SRV-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:12:20 UTC","Oct 05, 2026 02:12:20 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example.in","CHE-WIN-SRV-23","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:46:31 UTC","Oct 05, 2026 02:46:31 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.3","TCP","0","No","che-win-srv-03.shaktiauto.example.in","CHE-WIN-SRV-03","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.2","TCP","0","No","che-win-srv-02.shaktiauto.example","CHE-WIN-SRV-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:12:20 UTC","Oct 05, 2026 02:12:20 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example","CHE-WIN-SRV-23","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:46:31 UTC","Oct 05, 2026 02:46:31 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.3","TCP","0","No","che-win-srv-03.shaktiauto.example","CHE-WIN-SRV-03","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Apr 27, 2026 09:00:46 UTC","Oct 05, 2026 05:58:51 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.202","TCP","0","Yes","tmp-build-03.shaktiauto.example.in","TMP-BUILD-03","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.202","TCP","0","Yes","tmp-build-03.shaktiauto.example","TMP-BUILD-03","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Jan 17, 2026 22:29:18 UTC","Oct 05, 2026 06:22:18 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.3","TCP","0","Yes","che-app-rhel-003.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.3","TCP","0","Yes","che-app-rhel-003.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Jul 21, 2026 08:52:05 UTC","Oct 05, 2026 02:25:37 UTC","Metasploit"
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.9","TCP","0","Yes","che-app-rhel-009.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.9","TCP","0","Yes","che-app-rhel-009.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Aug 03, 2026 12:24:55 UTC","Oct 05, 2026 05:04:23 UTC","Metasploit"
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example.in","CHE-WIN-SRV-19","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example","CHE-WIN-SRV-19","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","May 03, 2026 12:23:36 UTC","Oct 05, 2026 02:23:21 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.6","TCP","0","Yes","che-app-rhel-006.shaktiauto.example.in","CHE-APP-RHEL-00","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.6","TCP","0","Yes","che-app-rhel-006.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Apr 03, 2026 19:36:08 UTC","Oct 05, 2026 01:30:03 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.14","TCP","0","Yes","che-app-rhel-014.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.14","TCP","0","Yes","che-app-rhel-014.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Aug 16, 2026 00:50:08 UTC","Oct 05, 2026 02:36:58 UTC","Metasploit"
-"19506","Nessus Scan Information","Settings","Info","10.30.40.12","TCP","0","No","che-win-srv-12.shaktiauto.example.in","CHE-WIN-SRV-12","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:05:36 UTC","Oct 05, 2026 02:05:36 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.2","UDP","161","No","sw-che-02.shaktiauto.example.in","SW-CHE-02","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jun 24, 2026 09:53:09 UTC","Oct 05, 2026 05:09:17 UTC",""
-"57582","SSL Self-Signed Certificate","General","Medium","10.30.20.3","TCP","8443","No","che-app-rhel-003.shaktiauto.example.in","CHE-APP-RHEL-00","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Jul 04, 2025 10:46:31 UTC","Oct 05, 2026 02:18:46 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.202","TCP","0","No","tmp-build-03.shaktiauto.example.in","TMP-BUILD-03","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.12","TCP","0","No","che-win-srv-12.shaktiauto.example","CHE-WIN-SRV-12","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:05:36 UTC","Oct 05, 2026 02:05:36 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.2","UDP","161","No","sw-che-02.shaktiauto.example","SW-CHE-02","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jun 24, 2026 09:53:09 UTC","Oct 05, 2026 05:09:17 UTC",""
+"57582","SSL Self-Signed Certificate","General","Medium","10.30.20.3","TCP","8443","No","che-app-rhel-003.shaktiauto.example","CHE-APP-RHEL-00","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Jul 04, 2025 10:46:31 UTC","Oct 05, 2026 02:18:46 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.202","TCP","0","No","tmp-build-03.shaktiauto.example","TMP-BUILD-03","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Feb 07, 2026 17:37:07 UTC","Oct 05, 2026 04:25:36 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.4","TCP","0","No","che-win-srv-04.shaktiauto.example.in","CHE-WIN-SRV-04","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.4","TCP","0","No","che-win-srv-04.shaktiauto.example","CHE-WIN-SRV-04","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","May 10, 2026 13:52:31 UTC","Oct 05, 2026 02:59:31 UTC",""
-"57582","SSL Self-Signed Certificate","General","Medium","10.30.40.6","TCP","8443","No","che-win-srv-06.shaktiauto.example.in","CHE-WIN-SRV-06","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Oct 10, 2025 09:17:36 UTC","Oct 05, 2026 03:23:16 UTC",""
-"57582","SSL Self-Signed Certificate","General","Medium","10.30.40.9","TCP","8443","No","che-win-srv-09.shaktiauto.example.in","CHE-WIN-SRV-09","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Mar 29, 2025 02:26:06 UTC","Oct 05, 2026 04:42:35 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.7","TCP","0","No","che-app-rhel-007.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:17:43 UTC","Oct 05, 2026 02:17:43 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.7","TCP","0","No","che-win-srv-07.shaktiauto.example.in","CHE-WIN-SRV-07","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:16:12 UTC","Oct 05, 2026 02:16:12 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example.in","CHE-WIN-SRV-16","
+"57582","SSL Self-Signed Certificate","General","Medium","10.30.40.6","TCP","8443","No","che-win-srv-06.shaktiauto.example","CHE-WIN-SRV-06","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Oct 10, 2025 09:17:36 UTC","Oct 05, 2026 03:23:16 UTC",""
+"57582","SSL Self-Signed Certificate","General","Medium","10.30.40.9","TCP","8443","No","che-win-srv-09.shaktiauto.example","CHE-WIN-SRV-09","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Mar 29, 2025 02:26:06 UTC","Oct 05, 2026 04:42:35 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.20.7","TCP","0","No","che-app-rhel-007.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:17:43 UTC","Oct 05, 2026 02:17:43 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.7","TCP","0","No","che-win-srv-07.shaktiauto.example","CHE-WIN-SRV-07","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:16:12 UTC","Oct 05, 2026 02:16:12 UTC",""
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example","CHE-WIN-SRV-16","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Jun 11, 2026 02:39:46 UTC","Oct 05, 2026 06:52:07 UTC",""
-"19506","Nessus Scan Information","Settings","Info","198.51.100.2","TCP","0","No","edge-fgt-02.shaktiauto.example.in","EDGE-FGT-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:24:38 UTC","Oct 05, 2026 02:24:38 UTC",""
-"136929","jQuery < 3.5.0 Multiple XSS","CGI abuses : XSS","Medium","10.30.40.15","TCP","443","No","che-win-srv-15.shaktiauto.example.in","CHE-WIN-SRV-15","
+"19506","Nessus Scan Information","Settings","Info","198.51.100.2","TCP","0","No","edge-fgt-02.shaktiauto.example","EDGE-FGT-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:24:38 UTC","Oct 05, 2026 02:24:38 UTC",""
+"136929","jQuery < 3.5.0 Multiple XSS","CGI abuses : XSS","Medium","10.30.40.15","TCP","443","No","che-win-srv-15.shaktiauto.example","CHE-WIN-SRV-15","
   Path              : /var/www/static/js/jquery-3.4.1.min.js
   Installed version : 3.4.1
   Fixed version     : 3.5.0
 ","jQuery < 3.5.0 Multiple XSS","jQuery < 3.5.0 Multiple XSS","Upgrade jQuery to version 3.5.0 or later.","","6.1","CVE-2020-11022,CVE-2020-11023","Mar 12, 2026 02:51:28 UTC","Oct 05, 2026 05:32:42 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.14","TCP","0","No","che-app-rhel-014.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:33:43 UTC","Oct 05, 2026 02:33:43 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example.in","CHE-WIN-SRV-11","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.14","TCP","0","No","che-app-rhel-014.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:33:43 UTC","Oct 05, 2026 02:33:43 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example","CHE-WIN-SRV-11","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Jul 31, 2026 12:36:56 UTC","Oct 05, 2026 03:29:49 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.6","UDP","161","No","sw-che-06.shaktiauto.example.in","SW-CHE-06","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Aug 08, 2025 02:14:25 UTC","Oct 05, 2026 05:33:57 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.5","TCP","0","No","sw-che-05.shaktiauto.example.in","SW-CHE-05","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:13:59 UTC","Oct 05, 2026 02:13:59 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example.in","CHE-WIN-SRV-15","
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.6","UDP","161","No","sw-che-06.shaktiauto.example","SW-CHE-06","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Aug 08, 2025 02:14:25 UTC","Oct 05, 2026 05:33:57 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.0.5","TCP","0","No","sw-che-05.shaktiauto.example","SW-CHE-05","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:13:59 UTC","Oct 05, 2026 02:13:59 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example","CHE-WIN-SRV-15","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Mar 11, 2026 14:32:28 UTC","Oct 05, 2026 02:01:00 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.8","TCP","0","No","che-win-srv-08.shaktiauto.example.in","CHE-WIN-SRV-08","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.8","TCP","0","No","che-win-srv-08.shaktiauto.example","CHE-WIN-SRV-08","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","May 19, 2026 03:03:12 UTC","Oct 05, 2026 05:52:37 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.4","TCP","0","No","sw-che-04.shaktiauto.example.in","SW-CHE-04","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:24:12 UTC","Oct 05, 2026 02:24:12 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.10","TCP","0","No","che-app-rhel-010.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.4","TCP","0","No","sw-che-04.shaktiauto.example","SW-CHE-04","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:24:12 UTC","Oct 05, 2026 02:24:12 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.10","TCP","0","No","che-app-rhel-010.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Jan 29, 2026 00:51:48 UTC","Oct 05, 2026 06:25:58 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.11","TCP","0","No","sw-che-11.shaktiauto.example.in","SW-CHE-11","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:33:38 UTC","Oct 05, 2026 02:33:38 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.11","TCP","0","Yes","che-app-rhel-011.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.11","TCP","0","No","sw-che-11.shaktiauto.example","SW-CHE-11","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:33:38 UTC","Oct 05, 2026 02:33:38 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.11","TCP","0","Yes","che-app-rhel-011.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Dec 25, 2025 17:14:28 UTC","Oct 05, 2026 03:48:28 UTC",""
-"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.40.18","TCP","0","Yes","che-win-srv-18.shaktiauto.example.in","CHE-WIN-SRV-18","
+"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.40.18","TCP","0","Yes","che-win-srv-18.shaktiauto.example","CHE-WIN-SRV-18","
   Path              : /opt/app/lib/log4j-core-2.14.1.jar
   Installed version : 2.14.1
   Fixed version     : 2.17.1
 ","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Upgrade Apache Log4j to version 2.17.1 or later.","","10.0","CVE-2021-44228,CVE-2021-45046,CVE-2021-45105,CVE-2021-44832","Apr 29, 2025 20:54:23 UTC","Oct 05, 2026 04:35:33 UTC","Metasploit"
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.200","TCP","0","No","tmp-build-01.shaktiauto.example.in","TMP-BUILD-01","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.200","TCP","0","No","tmp-build-01.shaktiauto.example","TMP-BUILD-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Nov 24, 2025 10:31:17 UTC","Oct 05, 2026 03:56:13 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example.in","CHE-WIN-SRV-14","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:10:24 UTC","Oct 05, 2026 02:10:24 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.6","TCP","0","No","che-win-srv-06.shaktiauto.example.in","CHE-WIN-SRV-06","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:31:45 UTC","Oct 05, 2026 02:31:45 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example.in","CHE-WIN-SRV-11","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example","CHE-WIN-SRV-14","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:10:24 UTC","Oct 05, 2026 02:10:24 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.6","TCP","0","No","che-win-srv-06.shaktiauto.example","CHE-WIN-SRV-06","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:31:45 UTC","Oct 05, 2026 02:31:45 UTC",""
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example","CHE-WIN-SRV-11","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Feb 24, 2026 00:03:35 UTC","Oct 05, 2026 02:41:51 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.5","TCP","0","No","che-win-srv-05.shaktiauto.example.in","CHE-WIN-SRV-05","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.5","TCP","0","No","che-win-srv-05.shaktiauto.example","CHE-WIN-SRV-05","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Dec 27, 2025 06:25:48 UTC","Oct 05, 2026 02:15:26 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.13","TCP","0","No","sw-che-13.shaktiauto.example.in","SW-CHE-13","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:16:53 UTC","Oct 05, 2026 02:16:53 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.7","TCP","0","No","che-win-srv-07.shaktiauto.example.in","CHE-WIN-SRV-07","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.13","TCP","0","No","sw-che-13.shaktiauto.example","SW-CHE-13","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:16:53 UTC","Oct 05, 2026 02:16:53 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.7","TCP","0","No","che-win-srv-07.shaktiauto.example","CHE-WIN-SRV-07","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Feb 03, 2026 07:11:15 UTC","Oct 05, 2026 02:09:18 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example.in","CHE-WIN-SRV-14","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example","CHE-WIN-SRV-14","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Aug 10, 2025 03:24:38 UTC","Oct 05, 2026 04:35:54 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.10","TCP","0","No","che-win-srv-10.shaktiauto.example.in","CHE-WIN-SRV-10","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:40:34 UTC","Oct 05, 2026 02:40:34 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.201","TCP","0","Yes","tmp-build-02.shaktiauto.example.in","TMP-BUILD-02","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.10","TCP","0","No","che-win-srv-10.shaktiauto.example","CHE-WIN-SRV-10","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:40:34 UTC","Oct 05, 2026 02:40:34 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.201","TCP","0","Yes","tmp-build-02.shaktiauto.example","TMP-BUILD-02","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Apr 21, 2026 20:45:40 UTC","Oct 05, 2026 06:08:26 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.8","TCP","0","Yes","che-app-rhel-008.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.8","TCP","0","Yes","che-app-rhel-008.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Dec 25, 2025 15:25:01 UTC","Oct 05, 2026 02:00:31 UTC","Metasploit"
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.7","TCP","0","No","che-app-rhel-007.shaktiauto.example.in","CHE-APP-RHEL-00","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.7","TCP","0","No","che-app-rhel-007.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Jul 17, 2026 22:13:43 UTC","Oct 05, 2026 04:18:45 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example.in","CHE-WIN-SRV-24","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:33:38 UTC","Oct 05, 2026 02:33:38 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.8","TCP","0","No","che-win-srv-08.shaktiauto.example.in","CHE-WIN-SRV-08","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example","CHE-WIN-SRV-24","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:33:38 UTC","Oct 05, 2026 02:33:38 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.8","TCP","0","No","che-win-srv-08.shaktiauto.example","CHE-WIN-SRV-08","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jan 15, 2026 07:53:28 UTC","Oct 05, 2026 03:02:56 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.18","TCP","0","No","che-app-rhel-018.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:38:09 UTC","Oct 05, 2026 02:38:09 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.3","UDP","161","No","sw-che-03.shaktiauto.example.in","SW-CHE-03","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Mar 13, 2025 11:34:05 UTC","Oct 05, 2026 05:35:31 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.4","TCP","0","No","che-win-srv-04.shaktiauto.example.in","CHE-WIN-SRV-04","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.18","TCP","0","No","che-app-rhel-018.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:38:09 UTC","Oct 05, 2026 02:38:09 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.3","UDP","161","No","sw-che-03.shaktiauto.example","SW-CHE-03","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Mar 13, 2025 11:34:05 UTC","Oct 05, 2026 05:35:31 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.4","TCP","0","No","che-win-srv-04.shaktiauto.example","CHE-WIN-SRV-04","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Sep 11, 2026 23:19:52 UTC","Oct 05, 2026 06:49:09 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.14","UDP","161","No","sw-che-14.shaktiauto.example.in","SW-CHE-14","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jul 24, 2025 22:29:31 UTC","Oct 05, 2026 01:55:38 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example.in","CHE-WIN-SRV-20","
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.14","UDP","161","No","sw-che-14.shaktiauto.example","SW-CHE-14","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jul 24, 2025 22:29:31 UTC","Oct 05, 2026 01:55:38 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example","CHE-WIN-SRV-20","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","May 09, 2026 09:40:55 UTC","Oct 05, 2026 05:59:42 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example.in","CHE-WIN-SRV-14","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example","CHE-WIN-SRV-14","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Mar 16, 2026 03:09:15 UTC","Oct 05, 2026 06:52:57 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.12","TCP","0","No","che-app-rhel-012.shaktiauto.example.in","CHE-APP-RHEL-01","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.12","TCP","0","No","che-app-rhel-012.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","May 30, 2026 07:05:11 UTC","Oct 05, 2026 03:35:05 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.1","TCP","445","No","che-win-srv-01.shaktiauto.example.in","CHE-WIN-SRV-01","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","May 09, 2026 01:45:30 UTC","Oct 05, 2026 02:23:34 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.7","UDP","161","No","sw-che-07.shaktiauto.example.in","SW-CHE-07","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Feb 18, 2025 10:30:32 UTC","Oct 05, 2026 05:12:12 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.9","TCP","445","No","che-win-srv-09.shaktiauto.example.in","CHE-WIN-SRV-09","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Jan 29, 2026 19:19:04 UTC","Oct 05, 2026 02:02:50 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.8","TCP","445","No","che-win-srv-08.shaktiauto.example.in","CHE-WIN-SRV-08","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","May 22, 2026 11:32:55 UTC","Oct 05, 2026 02:28:38 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.8","TCP","0","Yes","che-app-rhel-008.shaktiauto.example.in","CHE-APP-RHEL-00","
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.1","TCP","445","No","che-win-srv-01.shaktiauto.example","CHE-WIN-SRV-01","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","May 09, 2026 01:45:30 UTC","Oct 05, 2026 02:23:34 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.7","UDP","161","No","sw-che-07.shaktiauto.example","SW-CHE-07","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Feb 18, 2025 10:30:32 UTC","Oct 05, 2026 05:12:12 UTC",""
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.9","TCP","445","No","che-win-srv-09.shaktiauto.example","CHE-WIN-SRV-09","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Jan 29, 2026 19:19:04 UTC","Oct 05, 2026 02:02:50 UTC",""
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.8","TCP","445","No","che-win-srv-08.shaktiauto.example","CHE-WIN-SRV-08","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","May 22, 2026 11:32:55 UTC","Oct 05, 2026 02:28:38 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.8","TCP","0","Yes","che-app-rhel-008.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Mar 28, 2026 03:53:21 UTC","Oct 05, 2026 01:20:48 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.203","TCP","0","Yes","tmp-build-04.shaktiauto.example.in","TMP-BUILD-04","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.203","TCP","0","Yes","tmp-build-04.shaktiauto.example","TMP-BUILD-04","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Mar 20, 2026 10:53:38 UTC","Oct 05, 2026 02:20:13 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example.in","CHE-WIN-SRV-17","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example","CHE-WIN-SRV-17","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Aug 10, 2025 19:17:57 UTC","Oct 05, 2026 04:09:16 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example.in","CHE-WIN-SRV-19","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example","CHE-WIN-SRV-19","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Apr 15, 2026 14:14:11 UTC","Oct 05, 2026 05:47:03 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Dec 21, 2025 04:58:33 UTC","Oct 05, 2026 05:36:53 UTC","Metasploit"
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.203","TCP","0","Yes","tmp-build-04.shaktiauto.example.in","TMP-BUILD-04","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.203","TCP","0","Yes","tmp-build-04.shaktiauto.example","TMP-BUILD-04","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Jun 23, 2026 13:36:24 UTC","Oct 05, 2026 05:14:05 UTC","Metasploit"
-"19506","Nessus Scan Information","Settings","Info","10.30.0.14","TCP","0","No","sw-che-14.shaktiauto.example.in","SW-CHE-14","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:02:35 UTC","Oct 05, 2026 02:02:35 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.13","TCP","0","Yes","che-app-rhel-013.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.14","TCP","0","No","sw-che-14.shaktiauto.example","SW-CHE-14","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:02:35 UTC","Oct 05, 2026 02:02:35 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.13","TCP","0","Yes","che-app-rhel-013.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Sep 07, 2025 15:37:31 UTC","Oct 05, 2026 01:04:25 UTC",""
-"19506","Nessus Scan Information","Settings","Info","198.51.100.1","TCP","0","No","edge-fgt-01.shaktiauto.example.in","EDGE-FGT-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:38:53 UTC","Oct 05, 2026 02:38:53 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.14","TCP","0","No","che-app-rhel-014.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","198.51.100.1","TCP","0","No","edge-fgt-01.shaktiauto.example","EDGE-FGT-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:38:53 UTC","Oct 05, 2026 02:38:53 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.14","TCP","0","No","che-app-rhel-014.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Jul 12, 2026 23:44:41 UTC","Oct 05, 2026 04:05:35 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.201","TCP","0","Yes","tmp-build-02.shaktiauto.example.in","TMP-BUILD-02","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.201","TCP","0","Yes","tmp-build-02.shaktiauto.example","TMP-BUILD-02","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Apr 17, 2026 16:06:47 UTC","Oct 05, 2026 06:59:48 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.12","TCP","0","Yes","che-app-rhel-012.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.12","TCP","0","Yes","che-app-rhel-012.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","May 06, 2026 11:16:51 UTC","Oct 05, 2026 05:12:56 UTC","Metasploit"
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.5","TCP","0","Yes","che-app-rhel-005.shaktiauto.example.in","CHE-APP-RHEL-00","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.5","TCP","0","Yes","che-app-rhel-005.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Dec 05, 2025 02:42:33 UTC","Oct 05, 2026 01:47:47 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.2","TCP","445","No","che-win-srv-02.shaktiauto.example.in","CHE-WIN-SRV-02","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Jun 04, 2026 08:12:47 UTC","Oct 05, 2026 01:57:38 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.9","TCP","0","No","che-app-rhel-009.shaktiauto.example.in","CHE-APP-RHEL-00","
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.2","TCP","445","No","che-win-srv-02.shaktiauto.example","CHE-WIN-SRV-02","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Jun 04, 2026 08:12:47 UTC","Oct 05, 2026 01:57:38 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.9","TCP","0","No","che-app-rhel-009.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Jul 06, 2026 06:45:00 UTC","Oct 05, 2026 06:18:16 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.14","TCP","0","Yes","che-app-rhel-014.shaktiauto.example.in","CHE-APP-RHEL-01","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.14","TCP","0","Yes","che-app-rhel-014.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Jan 25, 2026 22:48:07 UTC","Oct 05, 2026 01:04:19 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.17","TCP","0","Yes","che-app-rhel-017.shaktiauto.example.in","CHE-APP-RHEL-01","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.17","TCP","0","Yes","che-app-rhel-017.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Aug 08, 2026 19:09:59 UTC","Oct 05, 2026 04:03:13 UTC",""
-"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.40.15","TCP","0","Yes","che-win-srv-15.shaktiauto.example.in","CHE-WIN-SRV-15","
+"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.40.15","TCP","0","Yes","che-win-srv-15.shaktiauto.example","CHE-WIN-SRV-15","
   Path              : /opt/app/lib/log4j-core-2.14.1.jar
   Installed version : 2.14.1
   Fixed version     : 2.17.1
 ","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Upgrade Apache Log4j to version 2.17.1 or later.","","10.0","CVE-2021-44228,CVE-2021-45046,CVE-2021-45105,CVE-2021-44832","Feb 21, 2025 15:25:06 UTC","Oct 05, 2026 01:08:22 UTC","Metasploit"
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.10","UDP","161","No","sw-che-10.shaktiauto.example.in","SW-CHE-10","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Apr 19, 2025 02:09:20 UTC","Oct 05, 2026 05:01:22 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.11","UDP","161","No","sw-che-11.shaktiauto.example.in","SW-CHE-11","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jul 16, 2026 03:02:13 UTC","Oct 05, 2026 05:31:37 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.1","TCP","0","No","sw-che-01.shaktiauto.example.in","SW-CHE-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:27:10 UTC","Oct 05, 2026 02:27:10 UTC",""
-"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example.in","CHE-APP-RHEL-00","
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.10","UDP","161","No","sw-che-10.shaktiauto.example","SW-CHE-10","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Apr 19, 2025 02:09:20 UTC","Oct 05, 2026 05:01:22 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.11","UDP","161","No","sw-che-11.shaktiauto.example","SW-CHE-11","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jul 16, 2026 03:02:13 UTC","Oct 05, 2026 05:31:37 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.0.1","TCP","0","No","sw-che-01.shaktiauto.example","SW-CHE-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:27:10 UTC","Oct 05, 2026 02:27:10 UTC",""
+"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example","CHE-APP-RHEL-00","
   Path              : /opt/app/lib/log4j-core-2.14.1.jar
   Installed version : 2.14.1
   Fixed version     : 2.17.1
 ","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Upgrade Apache Log4j to version 2.17.1 or later.","","10.0","CVE-2021-44228,CVE-2021-45046,CVE-2021-45105,CVE-2021-44832","Nov 12, 2024 14:35:03 UTC","Oct 05, 2026 06:01:40 UTC","Metasploit"
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.203","TCP","0","Yes","tmp-build-04.shaktiauto.example.in","TMP-BUILD-04","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.203","TCP","0","Yes","tmp-build-04.shaktiauto.example","TMP-BUILD-04","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Aug 31, 2026 00:03:16 UTC","Oct 05, 2026 05:57:31 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.4","TCP","445","No","che-win-srv-04.shaktiauto.example.in","CHE-WIN-SRV-04","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Dec 08, 2025 10:55:20 UTC","Oct 05, 2026 04:23:50 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.2","TCP","0","Yes","che-app-rhel-002.shaktiauto.example.in","CHE-APP-RHEL-00","
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.4","TCP","445","No","che-win-srv-04.shaktiauto.example","CHE-WIN-SRV-04","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Dec 08, 2025 10:55:20 UTC","Oct 05, 2026 04:23:50 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.2","TCP","0","Yes","che-app-rhel-002.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","May 04, 2026 22:18:02 UTC","Oct 05, 2026 04:11:10 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example.in","CHE-WIN-SRV-14","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.14","TCP","0","No","che-win-srv-14.shaktiauto.example","CHE-WIN-SRV-14","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Aug 25, 2026 17:53:48 UTC","Oct 05, 2026 06:02:42 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.11","TCP","0","No","che-app-rhel-011.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:26:21 UTC","Oct 05, 2026 02:26:21 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.18","TCP","0","Yes","che-app-rhel-018.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.11","TCP","0","No","che-app-rhel-011.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:26:21 UTC","Oct 05, 2026 02:26:21 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.18","TCP","0","Yes","che-app-rhel-018.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","May 31, 2026 05:41:59 UTC","Oct 05, 2026 05:47:29 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.2","TCP","0","No","che-win-srv-02.shaktiauto.example.in","CHE-WIN-SRV-02","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.2","TCP","0","No","che-win-srv-02.shaktiauto.example","CHE-WIN-SRV-02","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Oct 30, 2025 12:02:24 UTC","Oct 05, 2026 01:29:04 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example.in","CHE-WIN-SRV-16","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:02:40 UTC","Oct 05, 2026 02:02:40 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.202","TCP","0","Yes","tmp-build-03.shaktiauto.example.in","TMP-BUILD-03","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example","CHE-WIN-SRV-16","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:02:40 UTC","Oct 05, 2026 02:02:40 UTC",""
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.202","TCP","0","Yes","tmp-build-03.shaktiauto.example","TMP-BUILD-03","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Feb 04, 2026 08:55:39 UTC","Oct 05, 2026 05:07:24 UTC","Metasploit"
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.2","TCP","0","Yes","che-app-rhel-002.shaktiauto.example.in","CHE-APP-RHEL-00","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.2","TCP","0","Yes","che-app-rhel-002.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Jan 20, 2026 00:16:23 UTC","Oct 05, 2026 03:35:20 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.201","TCP","0","Yes","tmp-build-02.shaktiauto.example.in","TMP-BUILD-02","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.201","TCP","0","Yes","tmp-build-02.shaktiauto.example","TMP-BUILD-02","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Mar 17, 2026 21:22:08 UTC","Oct 05, 2026 06:12:39 UTC","Metasploit"
-"19506","Nessus Scan Information","Settings","Info","10.30.0.10","TCP","0","No","sw-che-10.shaktiauto.example.in","SW-CHE-10","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:23:40 UTC","Oct 05, 2026 02:23:40 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.11","TCP","0","No","che-app-rhel-011.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.10","TCP","0","No","sw-che-10.shaktiauto.example","SW-CHE-10","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:23:40 UTC","Oct 05, 2026 02:23:40 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.11","TCP","0","No","che-app-rhel-011.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Apr 14, 2026 09:16:47 UTC","Oct 05, 2026 06:41:16 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.13","TCP","0","Yes","che-app-rhel-013.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.13","TCP","0","Yes","che-app-rhel-013.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Jan 20, 2026 13:19:54 UTC","Oct 05, 2026 01:08:02 UTC","Metasploit"
-"19506","Nessus Scan Information","Settings","Info","10.30.20.16","TCP","0","No","che-app-rhel-016.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:41:26 UTC","Oct 05, 2026 02:41:26 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.1","TCP","0","Yes","che-app-rhel-001.shaktiauto.example.in","CHE-APP-RHEL-00","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.16","TCP","0","No","che-app-rhel-016.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:41:26 UTC","Oct 05, 2026 02:41:26 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.1","TCP","0","Yes","che-app-rhel-001.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","May 27, 2026 22:46:40 UTC","Oct 05, 2026 02:25:22 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.1","TCP","0","No","che-app-rhel-001.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:16:02 UTC","Oct 05, 2026 02:16:02 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example.in","CHE-WIN-SRV-13","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.1","TCP","0","No","che-app-rhel-001.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:16:02 UTC","Oct 05, 2026 02:16:02 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example","CHE-WIN-SRV-13","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Oct 25, 2025 12:05:57 UTC","Oct 05, 2026 06:39:44 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example.in","CHE-WIN-SRV-23","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example","CHE-WIN-SRV-23","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Jun 25, 2026 19:35:42 UTC","Oct 05, 2026 02:09:26 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.10","TCP","0","No","che-win-srv-10.shaktiauto.example.in","CHE-WIN-SRV-10","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.10","TCP","0","No","che-win-srv-10.shaktiauto.example","CHE-WIN-SRV-10","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Oct 09, 2025 09:26:03 UTC","Oct 05, 2026 03:47:36 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.5","TCP","0","No","che-app-rhel-005.shaktiauto.example.in","CHE-APP-RHEL-00","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.5","TCP","0","No","che-app-rhel-005.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Dec 29, 2025 08:00:29 UTC","Oct 05, 2026 01:47:59 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example.in","CHE-WIN-SRV-11","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example","CHE-WIN-SRV-11","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jun 03, 2026 00:27:57 UTC","Oct 05, 2026 02:27:07 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example.in","CHE-WIN-SRV-24","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example","CHE-WIN-SRV-24","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Dec 29, 2025 09:04:19 UTC","Oct 05, 2026 06:03:56 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.9","TCP","0","No","che-win-srv-09.shaktiauto.example.in","CHE-WIN-SRV-09","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.9","TCP","0","No","che-win-srv-09.shaktiauto.example","CHE-WIN-SRV-09","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Oct 17, 2025 06:52:00 UTC","Oct 05, 2026 03:26:43 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.2","TCP","0","No","che-app-rhel-002.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:53:08 UTC","Oct 05, 2026 02:53:08 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example.in","CHE-WIN-SRV-22","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.2","TCP","0","No","che-app-rhel-002.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:53:08 UTC","Oct 05, 2026 02:53:08 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example","CHE-WIN-SRV-22","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Oct 10, 2025 08:25:51 UTC","Oct 05, 2026 03:00:03 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.10","TCP","0","Yes","che-app-rhel-010.shaktiauto.example.in","CHE-APP-RHEL-01","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.10","TCP","0","Yes","che-app-rhel-010.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Feb 07, 2026 14:39:48 UTC","Oct 05, 2026 02:41:55 UTC",""
-"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.40.12","TCP","0","Yes","che-win-srv-12.shaktiauto.example.in","CHE-WIN-SRV-12","
+"156860","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Misc.","Critical","10.30.40.12","TCP","0","Yes","che-win-srv-12.shaktiauto.example","CHE-WIN-SRV-12","
   Path              : /opt/app/lib/log4j-core-2.14.1.jar
   Installed version : 2.14.1
   Fixed version     : 2.17.1
 ","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Apache Log4j < 2.17.1 Multiple Vulnerabilities (Log4Shell)","Upgrade Apache Log4j to version 2.17.1 or later.","","10.0","CVE-2021-44228,CVE-2021-45046,CVE-2021-45105,CVE-2021-44832","May 03, 2024 06:19:08 UTC","Oct 05, 2026 01:58:30 UTC","Metasploit"
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.11","TCP","0","Yes","che-app-rhel-011.shaktiauto.example.in","CHE-APP-RHEL-01","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.11","TCP","0","Yes","che-app-rhel-011.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Jun 12, 2026 20:10:04 UTC","Oct 05, 2026 02:32:57 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.4","TCP","0","No","che-app-rhel-004.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:41:09 UTC","Oct 05, 2026 02:41:09 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example.in","CHE-WIN-SRV-21","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.4","TCP","0","No","che-app-rhel-004.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:41:09 UTC","Oct 05, 2026 02:41:09 UTC",""
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example","CHE-WIN-SRV-21","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Feb 21, 2026 06:23:39 UTC","Oct 05, 2026 04:10:08 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.8","TCP","0","No","sw-che-08.shaktiauto.example.in","SW-CHE-08","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:12:05 UTC","Oct 05, 2026 02:12:05 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.18","TCP","0","No","che-app-rhel-018.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.8","TCP","0","No","sw-che-08.shaktiauto.example","SW-CHE-08","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:12:05 UTC","Oct 05, 2026 02:12:05 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.18","TCP","0","No","che-app-rhel-018.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Feb 05, 2026 01:45:03 UTC","Oct 05, 2026 02:25:28 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example.in","CHE-WIN-SRV-22","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example","CHE-WIN-SRV-22","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Dec 09, 2024 11:38:41 UTC","Oct 05, 2026 05:28:38 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.10","TCP","445","No","che-win-srv-10.shaktiauto.example.in","CHE-WIN-SRV-10","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Aug 06, 2025 13:26:01 UTC","Oct 05, 2026 03:41:12 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.16","TCP","0","Yes","che-app-rhel-016.shaktiauto.example.in","CHE-APP-RHEL-01","
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.10","TCP","445","No","che-win-srv-10.shaktiauto.example","CHE-WIN-SRV-10","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Aug 06, 2025 13:26:01 UTC","Oct 05, 2026 03:41:12 UTC",""
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.16","TCP","0","Yes","che-app-rhel-016.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Dec 27, 2025 01:44:21 UTC","Oct 05, 2026 06:26:23 UTC","Metasploit"
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example.in","CHE-WIN-SRV-23","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example","CHE-WIN-SRV-23","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Feb 20, 2026 05:15:10 UTC","Oct 05, 2026 01:58:49 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.3","TCP","0","No","sw-che-03.shaktiauto.example.in","SW-CHE-03","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:51:51 UTC","Oct 05, 2026 02:51:51 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.8","TCP","0","No","che-app-rhel-008.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:08:38 UTC","Oct 05, 2026 02:08:38 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example.in","CHE-WIN-SRV-16","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.3","TCP","0","No","sw-che-03.shaktiauto.example","SW-CHE-03","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:51:51 UTC","Oct 05, 2026 02:51:51 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.20.8","TCP","0","No","che-app-rhel-008.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:08:38 UTC","Oct 05, 2026 02:08:38 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example","CHE-WIN-SRV-16","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Aug 06, 2026 01:48:32 UTC","Oct 05, 2026 04:41:50 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.1","TCP","0","No","che-win-srv-01.shaktiauto.example.in","CHE-WIN-SRV-01","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.1","TCP","0","No","che-win-srv-01.shaktiauto.example","CHE-WIN-SRV-01","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Aug 06, 2026 08:05:22 UTC","Oct 05, 2026 04:56:07 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.13","TCP","0","No","che-app-rhel-013.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:32:33 UTC","Oct 05, 2026 02:32:33 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.13","UDP","161","No","sw-che-13.shaktiauto.example.in","SW-CHE-13","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jun 29, 2026 10:12:11 UTC","Oct 05, 2026 04:05:01 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.9","TCP","0","No","che-win-srv-09.shaktiauto.example.in","CHE-WIN-SRV-09","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.13","TCP","0","No","che-app-rhel-013.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:32:33 UTC","Oct 05, 2026 02:32:33 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.13","UDP","161","No","sw-che-13.shaktiauto.example","SW-CHE-13","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Jun 29, 2026 10:12:11 UTC","Oct 05, 2026 04:05:01 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.9","TCP","0","No","che-win-srv-09.shaktiauto.example","CHE-WIN-SRV-09","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Mar 25, 2026 04:02:13 UTC","Oct 05, 2026 03:02:38 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.11","TCP","0","Yes","che-app-rhel-011.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.11","TCP","0","Yes","che-app-rhel-011.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Oct 05, 2025 07:19:30 UTC","Oct 05, 2026 05:42:25 UTC","Metasploit"
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.3","TCP","0","No","che-app-rhel-003.shaktiauto.example.in","CHE-APP-RHEL-00","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.3","TCP","0","No","che-app-rhel-003.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Apr 16, 2026 16:41:12 UTC","Oct 05, 2026 02:32:49 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.9","TCP","0","No","sw-che-09.shaktiauto.example.in","SW-CHE-09","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:33 UTC","Oct 05, 2026 02:49:33 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example.in","CHE-WIN-SRV-20","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.9","TCP","0","No","sw-che-09.shaktiauto.example","SW-CHE-09","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:33 UTC","Oct 05, 2026 02:49:33 UTC",""
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example","CHE-WIN-SRV-20","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Apr 08, 2026 23:00:47 UTC","Oct 05, 2026 01:14:09 UTC",""
-"186365","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Web Servers","High","10.30.20.2","TCP","0","No","che-app-rhel-002.shaktiauto.example.in","CHE-APP-RHEL-00","
+"186365","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Web Servers","High","10.30.20.2","TCP","0","No","che-app-rhel-002.shaktiauto.example","CHE-APP-RHEL-00","
   Path              : /opt/tomcat/lib/catalina.jar
   Installed version : 9.0.50
   Fixed version     : 9.0.83
 ","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Upgrade Apache Tomcat to version 9.0.83 or later.","","7.5","CVE-2023-46589,CVE-2023-44487","Aug 29, 2026 09:13:22 UTC","Oct 05, 2026 02:00:21 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.3","TCP","0","Yes","che-app-rhel-003.shaktiauto.example.in","CHE-APP-RHEL-00","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.3","TCP","0","Yes","che-app-rhel-003.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Feb 16, 2026 00:19:19 UTC","Oct 05, 2026 06:14:05 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.200","TCP","0","Yes","tmp-build-01.shaktiauto.example.in","TMP-BUILD-01","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.200","TCP","0","Yes","tmp-build-01.shaktiauto.example","TMP-BUILD-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Jan 23, 2026 21:03:33 UTC","Oct 05, 2026 04:53:28 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example.in","CHE-WIN-SRV-17","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example","CHE-WIN-SRV-17","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","May 25, 2026 02:53:22 UTC","Oct 05, 2026 05:48:16 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example.in","CHE-WIN-SRV-19","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:44:56 UTC","Oct 05, 2026 02:44:56 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.202","TCP","0","No","tmp-build-03.shaktiauto.example.in","TMP-BUILD-03","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:06:00 UTC","Oct 05, 2026 02:06:00 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example.in","CHE-WIN-SRV-15","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example","CHE-WIN-SRV-19","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:44:56 UTC","Oct 05, 2026 02:44:56 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.20.202","TCP","0","No","tmp-build-03.shaktiauto.example","TMP-BUILD-03","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:06:00 UTC","Oct 05, 2026 02:06:00 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example","CHE-WIN-SRV-15","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Oct 18, 2025 13:19:37 UTC","Oct 05, 2026 02:27:24 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.12","TCP","0","No","che-app-rhel-012.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:08:35 UTC","Oct 05, 2026 02:08:35 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.16","TCP","0","Yes","che-app-rhel-016.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.12","TCP","0","No","che-app-rhel-012.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:08:35 UTC","Oct 05, 2026 02:08:35 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.16","TCP","0","Yes","che-app-rhel-016.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Feb 15, 2026 06:00:51 UTC","Oct 05, 2026 03:47:54 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example.in","CHE-WIN-SRV-18","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example","CHE-WIN-SRV-18","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Aug 28, 2026 06:11:25 UTC","Oct 05, 2026 02:40:59 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.201","TCP","0","No","tmp-build-02.shaktiauto.example.in","TMP-BUILD-02","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.201","TCP","0","No","tmp-build-02.shaktiauto.example","TMP-BUILD-02","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Jul 12, 2026 16:14:43 UTC","Oct 05, 2026 06:59:09 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.2","TCP","0","No","che-win-srv-02.shaktiauto.example.in","CHE-WIN-SRV-02","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.2","TCP","0","No","che-win-srv-02.shaktiauto.example","CHE-WIN-SRV-02","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Mar 13, 2026 23:57:30 UTC","Oct 05, 2026 01:40:26 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example.in","CHE-WIN-SRV-24","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example","CHE-WIN-SRV-24","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Mar 05, 2025 22:34:00 UTC","Oct 05, 2026 04:54:27 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.9","UDP","161","No","sw-che-09.shaktiauto.example.in","SW-CHE-09","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Mar 07, 2026 07:02:59 UTC","Oct 05, 2026 04:23:55 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.5","TCP","0","Yes","che-app-rhel-005.shaktiauto.example.in","CHE-APP-RHEL-00","
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.9","UDP","161","No","sw-che-09.shaktiauto.example","SW-CHE-09","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Mar 07, 2026 07:02:59 UTC","Oct 05, 2026 04:23:55 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.5","TCP","0","Yes","che-app-rhel-005.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Apr 29, 2026 02:54:16 UTC","Oct 05, 2026 02:46:48 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example.in","CHE-WIN-SRV-23","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.23","TCP","0","No","che-win-srv-23.shaktiauto.example","CHE-WIN-SRV-23","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","May 11, 2026 05:57:00 UTC","Oct 05, 2026 01:03:34 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example.in","CHE-WIN-SRV-11","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:46:25 UTC","Oct 05, 2026 02:46:25 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.9","TCP","0","Yes","che-app-rhel-009.shaktiauto.example.in","CHE-APP-RHEL-00","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.11","TCP","0","No","che-win-srv-11.shaktiauto.example","CHE-WIN-SRV-11","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:46:25 UTC","Oct 05, 2026 02:46:25 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.9","TCP","0","Yes","che-app-rhel-009.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Oct 15, 2025 04:15:17 UTC","Oct 05, 2026 04:32:20 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.1","TCP","0","No","che-win-srv-01.shaktiauto.example.in","CHE-WIN-SRV-01","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.1","TCP","0","No","che-win-srv-01.shaktiauto.example","CHE-WIN-SRV-01","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Jun 01, 2026 12:22:49 UTC","Oct 05, 2026 03:52:51 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.15","TCP","0","Yes","che-app-rhel-015.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.15","TCP","0","Yes","che-app-rhel-015.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Apr 04, 2026 14:17:20 UTC","Oct 05, 2026 06:53:56 UTC","Metasploit"
-"186365","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Web Servers","High","10.30.20.7","TCP","0","No","che-app-rhel-007.shaktiauto.example.in","CHE-APP-RHEL-00","
+"186365","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Web Servers","High","10.30.20.7","TCP","0","No","che-app-rhel-007.shaktiauto.example","CHE-APP-RHEL-00","
   Path              : /opt/tomcat/lib/catalina.jar
   Installed version : 9.0.50
   Fixed version     : 9.0.83
 ","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Upgrade Apache Tomcat to version 9.0.83 or later.","","7.5","CVE-2023-46589,CVE-2023-44487","Aug 08, 2026 18:05:09 UTC","Oct 05, 2026 06:33:16 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.3","TCP","0","No","che-win-srv-03.shaktiauto.example.in","CHE-WIN-SRV-03","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.3","TCP","0","No","che-win-srv-03.shaktiauto.example","CHE-WIN-SRV-03","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Mar 28, 2026 19:02:16 UTC","Oct 05, 2026 06:45:44 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.2","TCP","0","No","che-app-rhel-002.shaktiauto.example.in","CHE-APP-RHEL-00","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.2","TCP","0","No","che-app-rhel-002.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Aug 29, 2026 02:40:47 UTC","Oct 05, 2026 03:27:10 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.2","TCP","0","Yes","che-app-rhel-002.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.2","TCP","0","Yes","che-app-rhel-002.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Jul 24, 2026 21:53:24 UTC","Oct 05, 2026 05:42:18 UTC","Metasploit"
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.7","TCP","0","Yes","che-app-rhel-007.shaktiauto.example.in","CHE-APP-RHEL-00","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.7","TCP","0","Yes","che-app-rhel-007.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Mar 30, 2026 02:59:30 UTC","Oct 05, 2026 01:18:29 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example.in","CHE-APP-RHEL-00","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Aug 28, 2026 21:37:51 UTC","Oct 05, 2026 06:43:44 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.12","TCP","0","Yes","che-app-rhel-012.shaktiauto.example.in","CHE-APP-RHEL-01","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.12","TCP","0","Yes","che-app-rhel-012.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Mar 16, 2026 01:31:17 UTC","Oct 05, 2026 05:23:08 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.13","TCP","0","No","che-app-rhel-013.shaktiauto.example.in","CHE-APP-RHEL-01","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.13","TCP","0","No","che-app-rhel-013.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Oct 18, 2025 06:05:17 UTC","Oct 05, 2026 02:24:25 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example.in","CHE-WIN-SRV-16","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.16","TCP","0","No","che-win-srv-16.shaktiauto.example","CHE-WIN-SRV-16","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jul 11, 2026 02:59:46 UTC","Oct 05, 2026 03:49:46 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example.in","CHE-WIN-SRV-17","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:08:56 UTC","Oct 05, 2026 02:08:56 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.15","TCP","0","No","che-app-rhel-015.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:37:12 UTC","Oct 05, 2026 02:37:12 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.202","TCP","0","Yes","tmp-build-03.shaktiauto.example.in","TMP-BUILD-03","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example","CHE-WIN-SRV-17","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:08:56 UTC","Oct 05, 2026 02:08:56 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.20.15","TCP","0","No","che-app-rhel-015.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:37:12 UTC","Oct 05, 2026 02:37:12 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.202","TCP","0","Yes","tmp-build-03.shaktiauto.example","TMP-BUILD-03","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Feb 17, 2026 16:35:38 UTC","Oct 05, 2026 04:41:20 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.5","TCP","0","No","che-app-rhel-005.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:43:15 UTC","Oct 05, 2026 02:43:15 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.18","TCP","0","Yes","che-app-rhel-018.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.5","TCP","0","No","che-app-rhel-005.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:43:15 UTC","Oct 05, 2026 02:43:15 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.18","TCP","0","Yes","che-app-rhel-018.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Mar 30, 2026 21:46:24 UTC","Oct 05, 2026 03:21:28 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example.in","CHE-WIN-SRV-22","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example","CHE-WIN-SRV-22","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","May 14, 2026 22:09:28 UTC","Oct 05, 2026 01:04:40 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.16","TCP","0","Yes","che-app-rhel-016.shaktiauto.example.in","CHE-APP-RHEL-01","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.16","TCP","0","Yes","che-app-rhel-016.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Aug 02, 2026 06:31:12 UTC","Oct 05, 2026 03:49:52 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.12","TCP","0","No","che-win-srv-12.shaktiauto.example.in","CHE-WIN-SRV-12","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.12","TCP","0","No","che-win-srv-12.shaktiauto.example","CHE-WIN-SRV-12","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Nov 01, 2025 11:47:32 UTC","Oct 05, 2026 02:09:22 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.10","TCP","0","No","che-app-rhel-010.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:23 UTC","Oct 05, 2026 02:49:23 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.12","TCP","0","No","sw-che-12.shaktiauto.example.in","SW-CHE-12","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:13:16 UTC","Oct 05, 2026 02:13:16 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.5","TCP","445","No","che-win-srv-05.shaktiauto.example.in","CHE-WIN-SRV-05","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Apr 21, 2026 02:16:39 UTC","Oct 05, 2026 01:13:06 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.9","TCP","0","No","che-win-srv-09.shaktiauto.example.in","CHE-WIN-SRV-09","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:02:23 UTC","Oct 05, 2026 02:02:23 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example.in","CHE-WIN-SRV-18","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.10","TCP","0","No","che-app-rhel-010.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:23 UTC","Oct 05, 2026 02:49:23 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.0.12","TCP","0","No","sw-che-12.shaktiauto.example","SW-CHE-12","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:13:16 UTC","Oct 05, 2026 02:13:16 UTC",""
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.5","TCP","445","No","che-win-srv-05.shaktiauto.example","CHE-WIN-SRV-05","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Apr 21, 2026 02:16:39 UTC","Oct 05, 2026 01:13:06 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.9","TCP","0","No","che-win-srv-09.shaktiauto.example","CHE-WIN-SRV-09","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:02:23 UTC","Oct 05, 2026 02:02:23 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example","CHE-WIN-SRV-18","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jun 01, 2026 18:16:39 UTC","Oct 05, 2026 05:15:20 UTC",""
-"11213","HTTP TRACE / TRACK Methods Allowed","Web Servers","Medium","10.30.20.5","TCP","80","No","che-app-rhel-005.shaktiauto.example.in","CHE-APP-RHEL-00","TRACE / HTTP/1.1 returned 200","HTTP TRACE / TRACK Methods Allowed","HTTP TRACE / TRACK Methods Allowed","Disable TRACE and TRACK in the web server configuration.","","5.3","","Dec 13, 2025 23:41:29 UTC","Oct 05, 2026 04:54:24 UTC",""
-"186365","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Web Servers","High","10.30.20.13","TCP","0","No","che-app-rhel-013.shaktiauto.example.in","CHE-APP-RHEL-01","
+"11213","HTTP TRACE / TRACK Methods Allowed","Web Servers","Medium","10.30.20.5","TCP","80","No","che-app-rhel-005.shaktiauto.example","CHE-APP-RHEL-00","TRACE / HTTP/1.1 returned 200","HTTP TRACE / TRACK Methods Allowed","HTTP TRACE / TRACK Methods Allowed","Disable TRACE and TRACK in the web server configuration.","","5.3","","Dec 13, 2025 23:41:29 UTC","Oct 05, 2026 04:54:24 UTC",""
+"186365","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Web Servers","High","10.30.20.13","TCP","0","No","che-app-rhel-013.shaktiauto.example","CHE-APP-RHEL-01","
   Path              : /opt/tomcat/lib/catalina.jar
   Installed version : 9.0.50
   Fixed version     : 9.0.83
 ","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Apache Tomcat < 9.0.83 Multiple Vulnerabilities","Upgrade Apache Tomcat to version 9.0.83 or later.","","7.5","CVE-2023-46589,CVE-2023-44487","Dec 19, 2025 14:28:15 UTC","Oct 05, 2026 01:14:09 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.201","TCP","0","No","tmp-build-02.shaktiauto.example.in","TMP-BUILD-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:47:48 UTC","Oct 05, 2026 02:47:48 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.17","TCP","0","No","che-app-rhel-017.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.201","TCP","0","No","tmp-build-02.shaktiauto.example","TMP-BUILD-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:47:48 UTC","Oct 05, 2026 02:47:48 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.17","TCP","0","No","che-app-rhel-017.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","May 15, 2026 08:48:56 UTC","Oct 05, 2026 03:06:39 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example.in","CHE-APP-RHEL-00","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.4","TCP","0","Yes","che-app-rhel-004.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","May 11, 2026 02:01:02 UTC","Oct 05, 2026 02:40:23 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.5","UDP","161","No","sw-che-05.shaktiauto.example.in","SW-CHE-05","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Nov 19, 2025 18:48:00 UTC","Oct 05, 2026 04:29:34 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example.in","CHE-WIN-SRV-24","
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.5","UDP","161","No","sw-che-05.shaktiauto.example","SW-CHE-05","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Nov 19, 2025 18:48:00 UTC","Oct 05, 2026 04:29:34 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.24","TCP","0","No","che-win-srv-24.shaktiauto.example","CHE-WIN-SRV-24","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Oct 21, 2025 16:41:41 UTC","Oct 05, 2026 04:52:39 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.1","TCP","0","Yes","che-app-rhel-001.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.1","TCP","0","Yes","che-app-rhel-001.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","May 03, 2026 14:06:42 UTC","Oct 05, 2026 06:27:42 UTC","Metasploit"
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.4","UDP","161","No","sw-che-04.shaktiauto.example.in","SW-CHE-04","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Dec 10, 2025 09:38:03 UTC","Oct 05, 2026 06:25:29 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.4","TCP","0","No","che-app-rhel-004.shaktiauto.example.in","CHE-APP-RHEL-00","
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.4","UDP","161","No","sw-che-04.shaktiauto.example","SW-CHE-04","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Dec 10, 2025 09:38:03 UTC","Oct 05, 2026 06:25:29 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.4","TCP","0","No","che-app-rhel-004.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Aug 14, 2026 22:57:32 UTC","Oct 05, 2026 06:27:46 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example.in","CHE-WIN-SRV-13","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:03:38 UTC","Oct 05, 2026 02:03:38 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.12","UDP","161","No","sw-che-12.shaktiauto.example.in","SW-CHE-12","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Oct 24, 2025 13:06:28 UTC","Oct 05, 2026 05:52:38 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.200","TCP","0","No","tmp-build-01.shaktiauto.example.in","TMP-BUILD-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:15:20 UTC","Oct 05, 2026 02:15:20 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.6","TCP","0","No","sw-che-06.shaktiauto.example.in","SW-CHE-06","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:34:51 UTC","Oct 05, 2026 02:34:51 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example.in","CHE-WIN-SRV-13","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example","CHE-WIN-SRV-13","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:03:38 UTC","Oct 05, 2026 02:03:38 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.12","UDP","161","No","sw-che-12.shaktiauto.example","SW-CHE-12","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Oct 24, 2025 13:06:28 UTC","Oct 05, 2026 05:52:38 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.20.200","TCP","0","No","tmp-build-01.shaktiauto.example","TMP-BUILD-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:15:20 UTC","Oct 05, 2026 02:15:20 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.0.6","TCP","0","No","sw-che-06.shaktiauto.example","SW-CHE-06","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:34:51 UTC","Oct 05, 2026 02:34:51 UTC",""
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example","CHE-WIN-SRV-13","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Dec 19, 2025 15:11:36 UTC","Oct 05, 2026 02:02:25 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.7","TCP","445","No","che-win-srv-07.shaktiauto.example.in","CHE-WIN-SRV-07","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Feb 14, 2025 07:41:51 UTC","Oct 05, 2026 01:41:29 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.203","TCP","0","No","tmp-build-04.shaktiauto.example.in","TMP-BUILD-04","
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.7","TCP","445","No","che-win-srv-07.shaktiauto.example","CHE-WIN-SRV-07","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Feb 14, 2025 07:41:51 UTC","Oct 05, 2026 01:41:29 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.203","TCP","0","No","tmp-build-04.shaktiauto.example","TMP-BUILD-04","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Dec 24, 2025 12:28:19 UTC","Oct 05, 2026 02:34:19 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.17","TCP","0","No","che-app-rhel-017.shaktiauto.example.in","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:14:29 UTC","Oct 05, 2026 02:14:29 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.8","TCP","0","Yes","che-app-rhel-008.shaktiauto.example.in","CHE-APP-RHEL-00","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.17","TCP","0","No","che-app-rhel-017.shaktiauto.example","CHE-APP-RHEL-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:14:29 UTC","Oct 05, 2026 02:14:29 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.8","TCP","0","Yes","che-app-rhel-008.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Jan 18, 2026 12:19:46 UTC","Oct 05, 2026 02:26:22 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.2","TCP","0","No","sw-che-02.shaktiauto.example.in","SW-CHE-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:37:58 UTC","Oct 05, 2026 02:37:58 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.6","TCP","445","No","che-win-srv-06.shaktiauto.example.in","CHE-WIN-SRV-06","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Dec 09, 2025 23:34:54 UTC","Oct 05, 2026 06:48:07 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.16","TCP","0","No","che-app-rhel-016.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.2","TCP","0","No","sw-che-02.shaktiauto.example","SW-CHE-02","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:37:58 UTC","Oct 05, 2026 02:37:58 UTC",""
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.6","TCP","445","No","che-win-srv-06.shaktiauto.example","CHE-WIN-SRV-06","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Dec 09, 2025 23:34:54 UTC","Oct 05, 2026 06:48:07 UTC",""
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.16","TCP","0","No","che-app-rhel-016.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Jul 26, 2026 08:14:42 UTC","Oct 05, 2026 04:59:23 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example.in","CHE-WIN-SRV-21","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example","CHE-WIN-SRV-21","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Dec 22, 2025 11:34:14 UTC","Oct 05, 2026 04:37:19 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.6","TCP","0","No","che-app-rhel-006.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:30:58 UTC","Oct 05, 2026 02:30:58 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.10","TCP","0","Yes","che-app-rhel-010.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.6","TCP","0","No","che-app-rhel-006.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:30:58 UTC","Oct 05, 2026 02:30:58 UTC",""
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.10","TCP","0","Yes","che-app-rhel-010.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Nov 26, 2025 17:13:46 UTC","Oct 05, 2026 01:03:59 UTC","Metasploit"
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.15","TCP","0","Yes","che-app-rhel-015.shaktiauto.example.in","CHE-APP-RHEL-01","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.15","TCP","0","Yes","che-app-rhel-015.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Oct 08, 2025 09:03:01 UTC","Oct 05, 2026 02:31:56 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.14","TCP","0","Yes","che-app-rhel-014.shaktiauto.example.in","CHE-APP-RHEL-01","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.14","TCP","0","Yes","che-app-rhel-014.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Oct 10, 2025 22:19:08 UTC","Oct 05, 2026 06:16:33 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.3","TCP","0","Yes","che-app-rhel-003.shaktiauto.example.in","CHE-APP-RHEL-00","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.3","TCP","0","Yes","che-app-rhel-003.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Dec 09, 2025 04:42:57 UTC","Oct 05, 2026 06:50:56 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.3","TCP","0","No","che-app-rhel-003.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:05:30 UTC","Oct 05, 2026 02:05:30 UTC",""
-"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.8","UDP","161","No","sw-che-08.shaktiauto.example.in","SW-CHE-08","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Feb 02, 2026 22:18:23 UTC","Oct 05, 2026 05:36:22 UTC",""
-"57582","SSL Self-Signed Certificate","General","Medium","10.30.40.8","TCP","8443","No","che-win-srv-08.shaktiauto.example.in","CHE-WIN-SRV-08","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Jul 31, 2026 03:40:38 UTC","Oct 05, 2026 06:39:22 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.1","TCP","0","No","che-win-srv-01.shaktiauto.example.in","CHE-WIN-SRV-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:06:00 UTC","Oct 05, 2026 02:06:00 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.1","TCP","0","Yes","che-app-rhel-001.shaktiauto.example.in","CHE-APP-RHEL-00","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.3","TCP","0","No","che-app-rhel-003.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:05:30 UTC","Oct 05, 2026 02:05:30 UTC",""
+"41028","SNMP Agent Default Community Name (public)","SNMP","High","10.30.0.8","UDP","161","No","sw-che-08.shaktiauto.example","SW-CHE-08","Community name: public","SNMP Agent Default Community Name (public)","SNMP Agent Default Community Name (public)","Replace the default community with SNMPv3 in the switch baseline.","","7.5","","Feb 02, 2026 22:18:23 UTC","Oct 05, 2026 05:36:22 UTC",""
+"57582","SSL Self-Signed Certificate","General","Medium","10.30.40.8","TCP","8443","No","che-win-srv-08.shaktiauto.example","CHE-WIN-SRV-08","Certificate #0 CN=localhost is self-signed","SSL Self-Signed Certificate","SSL Self-Signed Certificate","Issue certificates from the internal CA.","","6.5","","Jul 31, 2026 03:40:38 UTC","Oct 05, 2026 06:39:22 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.40.1","TCP","0","No","che-win-srv-01.shaktiauto.example","CHE-WIN-SRV-01","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:06:00 UTC","Oct 05, 2026 02:06:00 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.1","TCP","0","Yes","che-app-rhel-001.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Nov 30, 2025 12:32:19 UTC","Oct 05, 2026 06:13:14 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.15","TCP","0","No","che-app-rhel-015.shaktiauto.example.in","CHE-APP-RHEL-01","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.15","TCP","0","No","che-app-rhel-015.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Feb 19, 2026 08:14:50 UTC","Oct 05, 2026 05:00:00 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example.in","CHE-WIN-SRV-20","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example","CHE-WIN-SRV-20","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Apr 21, 2025 13:32:23 UTC","Oct 05, 2026 01:08:31 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.6","TCP","0","Yes","che-app-rhel-006.shaktiauto.example.in","CHE-APP-RHEL-00","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.6","TCP","0","Yes","che-app-rhel-006.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Sep 20, 2025 09:49:02 UTC","Oct 05, 2026 05:40:41 UTC","Metasploit"
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.10","TCP","0","Yes","che-app-rhel-010.shaktiauto.example.in","CHE-APP-RHEL-01","
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.10","TCP","0","Yes","che-app-rhel-010.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Dec 31, 2025 01:58:59 UTC","Oct 05, 2026 05:08:10 UTC",""
-"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.3","TCP","445","No","che-win-srv-03.shaktiauto.example.in","CHE-WIN-SRV-03","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Jun 01, 2026 00:52:14 UTC","Oct 05, 2026 01:30:45 UTC",""
-"125885","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Firewalls","Critical","198.51.100.2","TCP","443","Yes","edge-fgt-02.shaktiauto.example.in","EDGE-FGT-02","
+"100464","Server Message Block (SMB) Protocol Version 1 Enabled","Windows","Medium","10.30.40.3","TCP","445","No","che-win-srv-03.shaktiauto.example","CHE-WIN-SRV-03","SMBv1 is enabled: HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters SMB1 = 1","Server Message Block (SMB) Protocol Version 1 Enabled","Server Message Block (SMB) Protocol Version 1 Enabled","Disable SMBv1 in the server baseline.","","5.9","","Jun 01, 2026 00:52:14 UTC","Oct 05, 2026 01:30:45 UTC",""
+"125885","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Firewalls","Critical","198.51.100.2","TCP","443","Yes","edge-fgt-02.shaktiauto.example","EDGE-FGT-02","
   Path              : /remote/fgt_lang
   Installed version : 6.0.4
   Fixed version     : 6.0.5
 ","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Upgrade Fortinet FortiOS SSL-VPN to version 6.0.5 or later.","","9.8","CVE-2018-13379","Sep 03, 2026 14:18:44 UTC","Oct 05, 2026 01:20:16 UTC","Metasploit"
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.7","TCP","0","No","che-win-srv-07.shaktiauto.example.in","CHE-WIN-SRV-07","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.7","TCP","0","No","che-win-srv-07.shaktiauto.example","CHE-WIN-SRV-07","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Nov 23, 2025 06:20:04 UTC","Oct 05, 2026 04:16:15 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example.in","CHE-WIN-SRV-15","
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example","CHE-WIN-SRV-15","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Feb 21, 2025 14:15:28 UTC","Oct 05, 2026 05:49:52 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.8","TCP","0","No","che-app-rhel-008.shaktiauto.example.in","CHE-APP-RHEL-00","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.8","TCP","0","No","che-app-rhel-008.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Oct 17, 2025 16:17:56 UTC","Oct 05, 2026 01:45:23 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example.in","CHE-WIN-SRV-19","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.19","TCP","0","No","che-win-srv-19.shaktiauto.example","CHE-WIN-SRV-19","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jul 24, 2026 08:34:40 UTC","Oct 05, 2026 04:47:51 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example.in","CHE-WIN-SRV-20","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:52:33 UTC","Oct 05, 2026 02:52:33 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.9","TCP","0","No","che-app-rhel-009.shaktiauto.example.in","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:53:25 UTC","Oct 05, 2026 02:53:25 UTC",""
-"125885","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Firewalls","Critical","198.51.100.1","TCP","443","Yes","edge-fgt-01.shaktiauto.example.in","EDGE-FGT-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.20","TCP","0","No","che-win-srv-20.shaktiauto.example","CHE-WIN-SRV-20","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:52:33 UTC","Oct 05, 2026 02:52:33 UTC",""
+"19506","Nessus Scan Information","Settings","Info","10.30.20.9","TCP","0","No","che-app-rhel-009.shaktiauto.example","CHE-APP-RHEL-00","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:53:25 UTC","Oct 05, 2026 02:53:25 UTC",""
+"125885","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Firewalls","Critical","198.51.100.1","TCP","443","Yes","edge-fgt-01.shaktiauto.example","EDGE-FGT-01","
   Path              : /remote/fgt_lang
   Installed version : 6.0.4
   Fixed version     : 6.0.5
 ","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Fortinet FortiOS SSL-VPN < 6.0.5 Path Traversal Credential Disclosure","Upgrade Fortinet FortiOS SSL-VPN to version 6.0.5 or later.","","9.8","CVE-2018-13379","Sep 01, 2026 18:27:56 UTC","Oct 05, 2026 02:24:24 UTC","Metasploit"
-"19506","Nessus Scan Information","Settings","Info","10.30.40.5","TCP","0","No","che-win-srv-05.shaktiauto.example.in","CHE-WIN-SRV-05","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:38:05 UTC","Oct 05, 2026 02:38:05 UTC",""
-"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.12","TCP","0","No","che-win-srv-12.shaktiauto.example.in","CHE-WIN-SRV-12","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.5","TCP","0","No","che-win-srv-05.shaktiauto.example","CHE-WIN-SRV-05","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:38:05 UTC","Oct 05, 2026 02:38:05 UTC",""
+"160411","Microsoft SQL Server Shared 'sa' Credential","Databases","High","10.30.40.12","TCP","0","No","che-win-srv-12.shaktiauto.example","CHE-WIN-SRV-12","
 It was possible to log in with the following credentials :
   Account : sa
   Credential fingerprint : mssql:sa:4be1d07a
 ","Microsoft SQL Server Shared 'sa' Credential","Microsoft SQL Server Shared 'sa' Credential","Give each SQL Server its own sa password from a vault, and disable sa where it is unused.","","8.8","","Jan 23, 2026 16:10:59 UTC","Oct 05, 2026 01:06:24 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.6","TCP","0","Yes","che-app-rhel-006.shaktiauto.example.in","CHE-APP-RHEL-00","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.6","TCP","0","Yes","che-app-rhel-006.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Jul 28, 2026 19:09:21 UTC","Oct 05, 2026 03:41:47 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.0.7","TCP","0","No","sw-che-07.shaktiauto.example.in","SW-CHE-07","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:56:53 UTC","Oct 05, 2026 02:56:53 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example.in","CHE-WIN-SRV-17","
+"19506","Nessus Scan Information","Settings","Info","10.30.0.7","TCP","0","No","sw-che-07.shaktiauto.example","SW-CHE-07","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:56:53 UTC","Oct 05, 2026 02:56:53 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.17","TCP","0","No","che-win-srv-17.shaktiauto.example","CHE-WIN-SRV-17","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jan 07, 2026 09:51:58 UTC","Oct 05, 2026 02:43:50 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.17","TCP","0","Yes","che-app-rhel-017.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.17","TCP","0","Yes","che-app-rhel-017.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Oct 28, 2025 05:57:14 UTC","Oct 05, 2026 04:26:58 UTC","Metasploit"
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.12","TCP","0","Yes","che-app-rhel-012.shaktiauto.example.in","CHE-APP-RHEL-01","
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.12","TCP","0","Yes","che-app-rhel-012.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Feb 06, 2026 12:26:47 UTC","Oct 05, 2026 05:13:24 UTC",""
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example.in","CHE-WIN-SRV-13","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.13","TCP","0","No","che-win-srv-13.shaktiauto.example","CHE-WIN-SRV-13","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Jun 25, 2026 20:50:54 UTC","Oct 05, 2026 02:39:25 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example.in","CHE-WIN-SRV-15","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:19 UTC","Oct 05, 2026 02:49:19 UTC",""
-"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.7","TCP","0","Yes","che-app-rhel-007.shaktiauto.example.in","CHE-APP-RHEL-00","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.15","TCP","0","No","che-win-srv-15.shaktiauto.example","CHE-WIN-SRV-15","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:49:19 UTC","Oct 05, 2026 02:49:19 UTC",""
+"182611","RHEL 8 : glibc (RHSA-2023:5455)","Red Hat Local Security Checks","High","10.30.20.7","TCP","0","Yes","che-app-rhel-007.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : glibc-2.28-211.el8
   Should be                : glibc-2.28-236.el8_9.7
 ","RHEL 8 : glibc (RHSA-2023:5455)","RHEL 8 : glibc (RHSA-2023:5455)","Update glibc to 2.28-236.el8_9.7 or later as described in RHSA-2023:5455.","","7.8","CVE-2023-4911","Dec 20, 2025 14:17:24 UTC","Oct 05, 2026 02:58:59 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example.in","CHE-WIN-SRV-22","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:59:51 UTC","Oct 05, 2026 02:59:51 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.200","TCP","0","Yes","tmp-build-01.shaktiauto.example.in","TMP-BUILD-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.22","TCP","0","No","che-win-srv-22.shaktiauto.example","CHE-WIN-SRV-22","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:59:51 UTC","Oct 05, 2026 02:59:51 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.200","TCP","0","Yes","tmp-build-01.shaktiauto.example","TMP-BUILD-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Aug 07, 2026 00:10:35 UTC","Oct 05, 2026 01:38:55 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.20.203","TCP","0","No","tmp-build-04.shaktiauto.example.in","TMP-BUILD-04","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:50:47 UTC","Oct 05, 2026 02:50:47 UTC",""
-"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.15","TCP","0","Yes","che-app-rhel-015.shaktiauto.example.in","CHE-APP-RHEL-01","
+"19506","Nessus Scan Information","Settings","Info","10.30.20.203","TCP","0","No","tmp-build-04.shaktiauto.example","TMP-BUILD-04","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:50:47 UTC","Oct 05, 2026 02:50:47 UTC",""
+"170122","RHEL 8 : sudo (RHSA-2023:0291)","Red Hat Local Security Checks","High","10.30.20.15","TCP","0","Yes","che-app-rhel-015.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : sudo-1.8.29-8.el8
   Should be                : sudo-1.8.29-9.el8
 ","RHEL 8 : sudo (RHSA-2023:0291)","RHEL 8 : sudo (RHSA-2023:0291)","Update sudo to 1.8.29-9.el8 or later as described in RHSA-2023:0291.","","7.8","CVE-2023-22809","Jan 05, 2026 16:15:35 UTC","Oct 05, 2026 02:01:26 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example.in","CHE-WIN-SRV-21","
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example","CHE-WIN-SRV-21","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Aug 23, 2026 00:03:00 UTC","Oct 05, 2026 05:22:19 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.18","TCP","0","Yes","che-app-rhel-018.shaktiauto.example.in","CHE-APP-RHEL-01","
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.18","TCP","0","Yes","che-app-rhel-018.shaktiauto.example","CHE-APP-RHEL-01","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Sep 06, 2025 10:46:07 UTC","Oct 05, 2026 01:59:10 UTC","Metasploit"
-"19506","Nessus Scan Information","Settings","Info","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example.in","CHE-WIN-SRV-18","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:58:30 UTC","Oct 05, 2026 02:58:30 UTC",""
-"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.7","TCP","0","Yes","che-app-rhel-007.shaktiauto.example.in","CHE-APP-RHEL-00","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.18","TCP","0","No","che-win-srv-18.shaktiauto.example","CHE-WIN-SRV-18","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:58:30 UTC","Oct 05, 2026 02:58:30 UTC",""
+"179104","RHEL 8 : openssh (RHSA-2023:4419)","Red Hat Local Security Checks","Critical","10.30.20.7","TCP","0","Yes","che-app-rhel-007.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssh-8.0p1-13.el8
   Should be                : openssh-8.0p1-19.el8_8
 ","RHEL 8 : openssh (RHSA-2023:4419)","RHEL 8 : openssh (RHSA-2023:4419)","Update openssh to 8.0p1-19.el8_8 or later as described in RHSA-2023:4419.","","9.8","CVE-2023-38408","Apr 12, 2026 14:29:29 UTC","Oct 05, 2026 01:57:35 UTC","Metasploit"
-"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.6","TCP","0","No","che-win-srv-06.shaktiauto.example.in","CHE-WIN-SRV-06","
+"183884","VMware Tools < 12.3.5 SAML Token Signature Bypass","Windows","High","10.30.40.6","TCP","0","No","che-win-srv-06.shaktiauto.example","CHE-WIN-SRV-06","
   Path              : C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
   Installed version : 11.3.5
   Fixed version     : 12.3.5
 ","VMware Tools < 12.3.5 SAML Token Signature Bypass","VMware Tools < 12.3.5 SAML Token Signature Bypass","Upgrade VMware Tools to version 12.3.5 or later.","","7.5","CVE-2023-34058","Jan 30, 2026 05:14:08 UTC","Oct 05, 2026 04:29:39 UTC",""
-"19506","Nessus Scan Information","Settings","Info","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example.in","CHE-WIN-SRV-21","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:39:41 UTC","Oct 05, 2026 02:39:41 UTC",""
-"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.10","TCP","0","No","che-win-srv-10.shaktiauto.example.in","CHE-WIN-SRV-10","
+"19506","Nessus Scan Information","Settings","Info","10.30.40.21","TCP","0","No","che-win-srv-21.shaktiauto.example","CHE-WIN-SRV-21","Credentialed checks : yes","","","","","","","Oct 05, 2026 02:39:41 UTC","Oct 05, 2026 02:39:41 UTC",""
+"180360","7-Zip < 23.01 Multiple Vulnerabilities","Windows","High","10.30.40.10","TCP","0","No","che-win-srv-10.shaktiauto.example","CHE-WIN-SRV-10","
   Path              : C:\Program Files\7-Zip\7z.exe
   Installed version : 19.00
   Fixed version     : 23.01
 ","7-Zip < 23.01 Multiple Vulnerabilities","7-Zip < 23.01 Multiple Vulnerabilities","Upgrade 7-Zip to version 23.01 or later.","","7.8","CVE-2023-31102,CVE-2023-40481","Jul 31, 2026 20:10:25 UTC","Oct 05, 2026 06:17:26 UTC",""
-"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.1","TCP","0","No","che-app-rhel-001.shaktiauto.example.in","CHE-APP-RHEL-00","
+"173210","RHEL 8 : openssl (RHSA-2023:1405)","Red Hat Local Security Checks","High","10.30.20.1","TCP","0","No","che-app-rhel-001.shaktiauto.example","CHE-APP-RHEL-00","
   Remote package installed : openssl-1.1.1k-7.el8_6
   Should be                : openssl-1.1.1k-12.el8_9
 ","RHEL 8 : openssl (RHSA-2023:1405)","RHEL 8 : openssl (RHSA-2023:1405)","Update openssl to 1:1.1.1k-12.el8_9 or later as described in RHSA-2023:1405.","","7.4","CVE-2023-0286,CVE-2023-0215","Aug 29, 2026 00:46:32 UTC","Oct 05, 2026 05:12:32 UTC",""

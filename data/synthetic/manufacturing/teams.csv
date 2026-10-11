@@ -1,11 +1,11 @@
-team,jira_project,manager,vertical,vertical_head,vm_analyst
-IT Infra - Linux,LNX,Arjun Mehta,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
-IT Infra - Windows,WIN,Kavya Iyer,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
-End-user Computing,EUC,Rohan Das,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
-Network Operations,NET,Farhan Qureshi,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
-Network Security,NSEC,Meera Pillai,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
-Manufacturing IT,MIT,Gopal Krishnan,Manufacturing,S. Raghavan (VP Manufacturing),Aisha Khan (VM analyst)
-Plant Engineering - Press,PRS,Lakshmi Narayan,Manufacturing,S. Raghavan (VP Manufacturing),Aisha Khan (VM analyst)
-Plant Engineering - Assembly,ASM,Deepak Nair,Manufacturing,S. Raghavan (VP Manufacturing),Aisha Khan (VM analyst)
-Plant Engineering - Controls,CTL,Harish Babu,Manufacturing,S. Raghavan (VP Manufacturing),Aisha Khan (VM analyst)
-Pune Plant Engineering,PUN,Sachin Deshmukh,Manufacturing,S. Raghavan (VP Manufacturing),Aisha Khan (VM analyst)
+team,jira_project,manager,manager_email,vertical,vertical_head,vertical_head_email,vm_analyst,vm_analyst_email
+IT Infra - Linux,LNX,Arjun Mehta,arjun.mehta@shaktiauto.example,Corporate IT,Neha Joshi (CIO),neha.joshi@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+IT Infra - Windows,WIN,Kavya Iyer,kavya.iyer@shaktiauto.example,Corporate IT,Neha Joshi (CIO),neha.joshi@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+End-user Computing,EUC,Rohan Das,rohan.das@shaktiauto.example,Corporate IT,Neha Joshi (CIO),neha.joshi@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Network Operations,NET,Farhan Qureshi,farhan.qureshi@shaktiauto.example,Corporate IT,Neha Joshi (CIO),neha.joshi@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Network Security,NSEC,Meera Pillai,meera.pillai@shaktiauto.example,Corporate IT,Neha Joshi (CIO),neha.joshi@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Manufacturing IT,MIT,Gopal Krishnan,gopal.krishnan@shaktiauto.example,Manufacturing,S. Raghavan (VP Manufacturing),s.raghavan@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Plant Engineering - Press,PRS,Lakshmi Narayan,lakshmi.narayan@shaktiauto.example,Manufacturing,S. Raghavan (VP Manufacturing),s.raghavan@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Plant Engineering - Assembly,ASM,Deepak Nair,deepak.nair@shaktiauto.example,Manufacturing,S. Raghavan (VP Manufacturing),s.raghavan@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Plant Engineering - Controls,CTL,Harish Babu,harish.babu@shaktiauto.example,Manufacturing,S. Raghavan (VP Manufacturing),s.raghavan@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example
+Pune Plant Engineering,PUN,Sachin Deshmukh,sachin.deshmukh@shaktiauto.example,Manufacturing,S. Raghavan (VP Manufacturing),s.raghavan@shaktiauto.example,Aisha Khan (VM analyst),aisha.khan@shaktiauto.example

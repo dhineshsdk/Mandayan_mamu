@@ -9,7 +9,7 @@
         <tag name="HOST_END">Mon Oct 05 02:58:36 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.1</tag>
-        <tag name="host-fqdn">vtp-hmi-01.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-01.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-01</tag>
         <tag name="HOST_START">Mon Oct 05 02:58:36 2026</tag>
       </HostProperties>
@@ -63,7 +63,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:02:29 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.2</tag>
-        <tag name="host-fqdn">vtp-hmi-02.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-02.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-02</tag>
         <tag name="HOST_START">Mon Oct 05 02:02:29 2026</tag>
       </HostProperties>
@@ -117,7 +117,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:37:36 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.3</tag>
-        <tag name="host-fqdn">vtp-hmi-03.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-03.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-03</tag>
         <tag name="HOST_START">Mon Oct 05 02:37:36 2026</tag>
       </HostProperties>
@@ -171,7 +171,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:27:01 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.4</tag>
-        <tag name="host-fqdn">vtp-hmi-04.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-04.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-04</tag>
         <tag name="HOST_START">Mon Oct 05 02:27:01 2026</tag>
       </HostProperties>
@@ -225,7 +225,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:45:08 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.5</tag>
-        <tag name="host-fqdn">vtp-hmi-05.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-05.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-05</tag>
         <tag name="HOST_START">Mon Oct 05 02:45:08 2026</tag>
       </HostProperties>
@@ -279,7 +279,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:27:05 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.6</tag>
-        <tag name="host-fqdn">vtp-hmi-06.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-06.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-06</tag>
         <tag name="HOST_START">Mon Oct 05 02:27:05 2026</tag>
       </HostProperties>
@@ -333,7 +333,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:11:33 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.7</tag>
-        <tag name="host-fqdn">vtp-hmi-07.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-07.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-07</tag>
         <tag name="HOST_START">Mon Oct 05 02:11:33 2026</tag>
       </HostProperties>
@@ -387,7 +387,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:18:52 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.8</tag>
-        <tag name="host-fqdn">vtp-hmi-08.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-08.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-08</tag>
         <tag name="HOST_START">Mon Oct 05 02:18:52 2026</tag>
       </HostProperties>
@@ -441,7 +441,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:32:50 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.9</tag>
-        <tag name="host-fqdn">vtp-hmi-09.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-09.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-09</tag>
         <tag name="HOST_START">Mon Oct 05 02:32:50 2026</tag>
       </HostProperties>
@@ -495,7 +495,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:47:22 2026</tag>
         <tag name="operating-system">Windows 7 Embedded SP1</tag>
         <tag name="host-ip">192.168.50.10</tag>
-        <tag name="host-fqdn">vtp-hmi-10.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-hmi-10.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-HMI-10</tag>
         <tag name="HOST_START">Mon Oct 05 02:47:22 2026</tag>
       </HostProperties>
@@ -549,7 +549,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:06:14 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.40.1</tag>
-        <tag name="host-fqdn">vtp-ews-01.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-ews-01.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-EWS-01</tag>
         <tag name="HOST_START">Mon Oct 05 02:06:14 2026</tag>
       </HostProperties>
@@ -578,7 +578,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:50:47 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.40.2</tag>
-        <tag name="host-fqdn">vtp-ews-02.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-ews-02.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-EWS-02</tag>
         <tag name="HOST_START">Mon Oct 05 02:50:47 2026</tag>
       </HostProperties>
@@ -607,7 +607,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:38:51 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.40.3</tag>
-        <tag name="host-fqdn">vtp-ews-03.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-ews-03.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-EWS-03</tag>
         <tag name="HOST_START">Mon Oct 05 02:38:51 2026</tag>
       </HostProperties>
@@ -636,7 +636,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:03:14 2026</tag>
         <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
         <tag name="host-ip">192.168.40.4</tag>
-        <tag name="host-fqdn">vtp-ews-04.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-ews-04.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-EWS-04</tag>
         <tag name="HOST_START">Mon Oct 05 02:03:14 2026</tag>
       </HostProperties>
@@ -665,7 +665,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:23:56 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.1</tag>
-        <tag name="host-fqdn">vtp-plc-01.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-01.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-01</tag>
         <tag name="HOST_START">Mon Oct 05 02:23:56 2026</tag>
       </HostProperties>
@@ -695,7 +695,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:47:27 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.2</tag>
-        <tag name="host-fqdn">vtp-plc-02.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-02.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-02</tag>
         <tag name="HOST_START">Mon Oct 05 02:47:27 2026</tag>
       </HostProperties>
@@ -725,7 +725,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:10:24 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.3</tag>
-        <tag name="host-fqdn">vtp-plc-03.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-03.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-03</tag>
         <tag name="HOST_START">Mon Oct 05 02:10:24 2026</tag>
       </HostProperties>
@@ -755,7 +755,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:40:45 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.4</tag>
-        <tag name="host-fqdn">vtp-plc-04.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-04.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-04</tag>
         <tag name="HOST_START">Mon Oct 05 02:40:45 2026</tag>
       </HostProperties>
@@ -785,7 +785,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:04:59 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.5</tag>
-        <tag name="host-fqdn">vtp-plc-05.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-05.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-05</tag>
         <tag name="HOST_START">Mon Oct 05 02:04:59 2026</tag>
       </HostProperties>
@@ -815,7 +815,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:26:12 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.6</tag>
-        <tag name="host-fqdn">vtp-plc-06.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-06.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-06</tag>
         <tag name="HOST_START">Mon Oct 05 02:26:12 2026</tag>
       </HostProperties>
@@ -845,7 +845,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:20:19 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.7</tag>
-        <tag name="host-fqdn">vtp-plc-07.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-07.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-07</tag>
         <tag name="HOST_START">Mon Oct 05 02:20:19 2026</tag>
       </HostProperties>
@@ -875,7 +875,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:21:32 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.8</tag>
-        <tag name="host-fqdn">vtp-plc-08.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-08.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-08</tag>
         <tag name="HOST_START">Mon Oct 05 02:21:32 2026</tag>
       </HostProperties>
@@ -905,7 +905,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:46:11 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.9</tag>
-        <tag name="host-fqdn">vtp-plc-09.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-09.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-09</tag>
         <tag name="HOST_START">Mon Oct 05 02:46:11 2026</tag>
       </HostProperties>
@@ -935,7 +935,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:31:34 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.10</tag>
-        <tag name="host-fqdn">vtp-plc-10.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-10.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-10</tag>
         <tag name="HOST_START">Mon Oct 05 02:31:34 2026</tag>
       </HostProperties>
@@ -965,7 +965,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:48:32 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.11</tag>
-        <tag name="host-fqdn">vtp-plc-11.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-11.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-11</tag>
         <tag name="HOST_START">Mon Oct 05 02:48:32 2026</tag>
       </HostProperties>
@@ -995,7 +995,7 @@ It was possible to log in with the following credentials :
         <tag name="HOST_END">Mon Oct 05 02:00:42 2026</tag>
         <tag name="operating-system">Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP</tag>
         <tag name="host-ip">192.168.60.12</tag>
-        <tag name="host-fqdn">vtp-plc-12.vindhyapower.example.in</tag>
+        <tag name="host-fqdn">vtp-plc-12.vindhyapower.example</tag>
         <tag name="netbios-name">VTP-PLC-12</tag>
         <tag name="HOST_START">Mon Oct 05 02:00:42 2026</tag>
       </HostProperties>

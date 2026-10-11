@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import csv
-import xml.etree.ElementTree as ET
 from datetime import date, datetime
 from pathlib import Path
+
+import defusedxml.ElementTree as ET
 
 from ..model import SEVERITY_ORDER, Asset, Finding, SourceRef
 from . import normalize as nz
@@ -30,17 +31,21 @@ def load_cmdb(path: Path) -> list[Asset]:
     return assets
 
 
-def load_teams(path: Path) -> dict:
-    """Ownership chart: team -> Jira project, manager, vertical, vertical head; plus the VM analyst."""
-    teams, analyst = {}, ""
+def load_teams(path: Path) -> list[dict]:
+    """Ownership chart rows: team, Jira project, manager, vertical, vertical head and VM analyst, with emails."""
+    rows = []
     with path.open(newline="", encoding="utf-8-sig") as f:
         for r in csv.DictReader(f):
-            teams[r["team"].strip()] = {"team": r["team"].strip(), "jira": r.get("jira_project", "").strip(),
-                                        "manager": r.get("manager", "").strip(),
-                                        "vertical": r.get("vertical", "").strip(),
-                                        "vertical_head": r.get("vertical_head", "").strip()}
-            analyst = analyst or r.get("vm_analyst", "").strip()
-    return {"teams": teams, "vm_analyst": analyst or "VM analyst"}
+            def g(k, r=r):
+                return (r.get(k) or "").strip()
+            if not g("team"):
+                continue
+            rows.append({"team": g("team"), "jira_project": g("jira_project"), "manager_name": g("manager"),
+                         "manager_email": g("manager_email").lower(), "vertical": g("vertical"),
+                         "vertical_head_name": g("vertical_head"),
+                         "vertical_head_email": g("vertical_head_email").lower(),
+                         "vm_analyst_name": g("vm_analyst"), "vm_analyst_email": g("vm_analyst_email").lower()})
+    return rows
 
 
 def _parse_date(value: str, fmts: list[str]) -> date | None:
@@ -81,7 +86,7 @@ def load_qualys(path: Path) -> list[dict]:
                 continue
             if not row or not any(row):
                 continue
-            r = dict(zip(header, row))
+            r = dict(zip(header, row, strict=False))
             fmts = ["%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M", "%Y-%m-%d"]
             out.append(_raw("Qualys", f"QID {r['QID']}", path, line_no, r["IP"], r.get("DNS") or r.get("NetBIOS", ""),
                             r.get("OS", ""), r["Title"], nz.severity_from_qualys(r["Severity"]),
@@ -124,14 +129,15 @@ NESSUS_SEVERITY = {"0": "info", "1": "low", "2": "medium", "3": "high", "4": "cr
 def load_nessus(path: Path) -> list[dict]:
     """Nessus / Tenable .nessus XML (NessusClientData_v2). It carries no first-seen date per finding."""
     out = []
-    tree = ET.parse(path)
+    tree = ET.parse(path)  # defusedxml: refuses entity expansion and external entities in uploads
     for host in tree.iter("ReportHost"):
         tags = {t.get("name"): (t.text or "") for t in host.iter("tag")}
         ip = tags.get("host-ip") or host.get("name", "")
         name = tags.get("host-fqdn") or tags.get("netbios-name") or tags.get("hostname") or ""
         scanned = _parse_date(tags.get("HOST_START", "").replace("  ", " "), ["%a %b %d %H:%M:%S %Y"])
         for n, item in enumerate(host.iter("ReportItem"), start=1):
-            text = lambda tag: (item.findtext(tag) or "")
+            def text(tag, item=item):
+                return item.findtext(tag) or ""
             out.append(_raw("Tenable", f"Plugin {item.get('pluginID')}", path, n, ip, name,
                             tags.get("operating-system", ""), item.get("pluginName", ""),
                             NESSUS_SEVERITY.get(item.get("severity", "0"), "info"),
