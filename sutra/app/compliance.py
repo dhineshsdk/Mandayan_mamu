@@ -12,6 +12,9 @@ audit pack lists it as a gap unless a piece of evidence backs it.
 from __future__ import annotations
 
 import hashlib
+import io
+import json
+import zipfile
 from datetime import UTC, date, datetime
 from functools import cache
 from pathlib import Path
@@ -20,14 +23,17 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sutra_compliance import (
     ActivityRecord,
+    Asset,
     Audit,
     AuditFinding,
+    AuditPack,
     CompensatingControl,
     Entity,
     EntityRecords,
     EvidenceItem,
     RulePack,
     ScheduledFix,
+    build_audit_pack,
     evaluate_entity,
     load_rule_pack,
 )
@@ -35,13 +41,16 @@ from sutra_compliance.model import AUDITOR_STATUSES, FINDING_SEVERITIES
 from sutra_compliance.rulepack import ENTITY_TYPES, PeriodicRule
 
 from .models import (
+    AssetSnapshot,
     CmpActivity,
+    CmpAsset,
     CmpAudit,
     CmpControl,
     CmpEntity,
     CmpEvidence,
     CmpEvidenceLink,
     CmpFinding,
+    Dataset,
     Job,
     JobCheck,
 )
@@ -67,11 +76,9 @@ EVIDENCE_KINDS = {
 }
 # What evidence can be attached to.
 OWNER_TYPES = ("audit_report", "audit_closure", "finding", "control", "activity")
-APP_NOTES = (
-    "Per-asset obligations (risk assessment every six months, backup age for critical systems) are not checked yet: "
-    "assets are not passed to the rule pack until each one is classed critical or not.",
-    "Incident reporting clocks (6 hours to CSIRT-Power and CERT-In) are not recorded here yet.",
-)
+APP_NOTES = ("Incident reporting clocks (6 hours to CSIRT-Power and CERT-In) are not recorded here yet.",)
+NO_ASSETS_NOTE = ("No assets are recorded for this entity, so per-asset obligations (a risk assessment every six "
+                  "months, backup age for critical systems) are not checked. Import them from the asset register.")
 
 
 @cache
@@ -83,9 +90,10 @@ def today_local() -> date:
     return datetime.now(UTC).astimezone(pack().local_tz).date()
 
 
-def entity_activities() -> dict[str, str]:
-    """Recurring activities recorded per entity, with the rule title: {activity: title}."""
-    return {r.activity: r.title for r in pack().rules_of(PeriodicRule) if r.scope == "entity"}
+def activities() -> dict[str, dict]:
+    """Recurring activities in the rule pack: {activity: {"title", "scope"}}. Scope "entity" is recorded once for
+    the entity; "asset" and "critical_asset" are recorded per asset."""
+    return {r.activity: {"title": r.title, "scope": r.scope} for r in pack().rules_of(PeriodicRule)}
 
 
 def check_entity_type(value: str) -> str:
@@ -196,6 +204,7 @@ class Loaded:
         if fids:
             for c in db.scalars(select(CmpControl).where(CmpControl.finding_id.in_(fids)).order_by(CmpControl.id)):
                 self.controls.setdefault(c.finding_id, []).append(c)
+        self.assets = list(db.scalars(select(CmpAsset).where(CmpAsset.entity_id == e.id).order_by(CmpAsset.asset_id)))
         self.activities = list(db.scalars(select(CmpActivity).where(CmpActivity.entity_id == e.id)
                                           .order_by(CmpActivity.performed_on.desc(), CmpActivity.id.desc())))
         self.evidence = list(db.scalars(select(CmpEvidence).where(CmpEvidence.entity_id == e.id)
@@ -256,11 +265,15 @@ class Loaded:
                              self.evidence_ids("audit_closure", a.id)) for a in self.audits)
         activities = tuple(ActivityRecord(x.activity, x.performed_on, x.asset_id or None, x.approved_by or None,
                                           self.evidence_ids("activity", x.id)) for x in self.activities)
-        return EntityRecords(entity=Entity(eid, e.name, e.entity_type, e.capacity_mw), audits=audits,
+        assets = tuple(Asset(x.asset_id, x.name, x.critical) for x in self.assets)
+        return EntityRecords(entity=Entity(eid, e.name, e.entity_type, e.capacity_mw), assets=assets, audits=audits,
                              findings=tuple(findings), activities=activities, evidence=tuple(items))
 
     def assess(self, now: datetime | None = None):
         return evaluate_entity(self.records, pack(), now or datetime.now(UTC))
+
+    def audit_pack(self, now: datetime | None = None) -> AuditPack:
+        return build_audit_pack(self.records, pack(), now or datetime.now(UTC))
 
 
 # ---------- JSON ----------
@@ -295,7 +308,9 @@ def job_json(job: Job, checks: list[JobCheck], proof: JobCheck | None) -> dict:
 
 def entity_detail(db: Session, e: CmpEntity, now: datetime | None = None) -> dict:
     loaded = Loaded(db, e)
+    now = now or datetime.now(UTC)
     a = loaded.assess(now).to_dict()
+    ap = loaded.audit_pack(now).content
     ev = {x.id: evidence_json(x) for x in loaded.evidence}
 
     def linked(owner_type: str, owner_id: int) -> list[dict]:
@@ -341,19 +356,30 @@ def entity_detail(db: Session, e: CmpEntity, now: datetime | None = None) -> dic
             "eligibility_citation": assessed.get("eligibility_citation"),
             "deliverables": assessed.get("deliverables", []), "findings": findings,
         })
-    activity_titles = entity_activities()
+    acts = activities()
+    register = register_hints(db, [x.asset_id for x in loaded.assets])
+    by_asset = {x["asset_id"]: x for x in ap["assets"]}
+    backups = {p["asset_id"]: p for p in a["periodic"] if p["activity"] == "backup" and p["asset_id"]}
     return {
         "entity": {"id": e.id, "name": e.name, "entity_type": e.entity_type,
                    "entity_type_label": ENTITY_TYPE_LABELS.get(e.entity_type, e.entity_type),
                    "capacity_mw": e.capacity_mw, "site": e.site},
         "assessment": a, "audits": audits,
-        "activities": [{"id": x.id, "activity": x.activity, "title": activity_titles.get(x.activity, x.activity),
-                        "performed_on": x.performed_on.isoformat(), "approved_by": x.approved_by,
-                        "evidence": linked("activity", x.id)} for x in loaded.activities],
+        "activities": [{"id": x.id, "activity": x.activity, "title": acts.get(x.activity, {}).get("title", x.activity),
+                        "asset_id": x.asset_id, "performed_on": x.performed_on.isoformat(),
+                        "approved_by": x.approved_by, "evidence": linked("activity", x.id)}
+                       for x in loaded.activities],
+        "assets": [{"id": x.id, "asset_id": x.asset_id, "name": x.name, "critical": x.critical,
+                    "register": register.get(x.asset_id),
+                    "risk_assessment": by_asset.get(x.asset_id, {}).get("risk_assessment"),
+                    "backup": backups.get(x.asset_id),
+                    "open_findings": by_asset.get(x.asset_id, {}).get("open_finding_ids", [])}
+                   for x in loaded.assets],
+        "evidence_gaps": ap["evidence_gaps"],
         "evidence": [{**ev[x.id], "links": [{"owner_type": t, "owner_id": o}
                                             for (t, o), ids in loaded.links.items() if x.id in ids]}
                      for x in loaded.evidence],
-        "notes": list(APP_NOTES),
+        "notes": list(APP_NOTES) + ([] if loaded.assets else [NO_ASSETS_NOTE]),
     }
 
 
@@ -361,4 +387,71 @@ def meta() -> dict:
     p = pack()
     return {"entity_types": ENTITY_TYPE_LABELS, "severities": list(FINDING_SEVERITIES),
             "auditor_statuses": AUDITOR_STATUS_LABELS, "evidence_kinds": EVIDENCE_KINDS,
-            "activities": entity_activities(), "pack": p.summary(), "today": today_local().isoformat()}
+            "activities": activities(), "pack": p.summary(), "today": today_local().isoformat()}
+
+
+# ---------- assets from the asset register ----------
+
+def current_dataset(db: Session) -> Dataset | None:
+    return db.scalars(select(Dataset).where(Dataset.is_current.is_(True)).order_by(Dataset.id.desc())).first()
+
+
+def register_hints(db: Session, asset_ids: list[str]) -> dict[str, dict]:
+    """What the current import says about these assets: host name, site, OT or IT, and the register's criticality
+    (1 to 5). Shown next to the CEA classification; never used to set it."""
+    ds = current_dataset(db)
+    if ds is None or not asset_ids:
+        return {}
+    rows = db.scalars(select(AssetSnapshot).where(AssetSnapshot.dataset_id == ds.id,
+                                                  AssetSnapshot.asset_id.in_(asset_ids)))
+    return {r.asset_id: {"hostname": r.hostname, "site": r.site, "is_ot": r.is_ot, "criticality": r.criticality}
+            for r in rows}
+
+
+def import_assets(db: Session, e: CmpEntity) -> tuple[int, int]:
+    """Add every asset the current import places at the entity's site. Returns (added, already recorded)."""
+    if not e.site:
+        raise ValueError("Set the entity's site first: assets are matched on the site name in the asset register.")
+    ds = current_dataset(db)
+    if ds is None:
+        raise ValueError("No data is loaded, so there is no asset register to import from.")
+    have = {a.asset_id for a in db.scalars(select(CmpAsset).where(CmpAsset.entity_id == e.id))}
+    rows = list(db.scalars(select(AssetSnapshot).where(AssetSnapshot.dataset_id == ds.id, AssetSnapshot.site == e.site)
+                           .order_by(AssetSnapshot.asset_id)))
+    if not rows:
+        raise ValueError(f"The asset register has no assets at the site {e.site}.")
+    added = 0
+    for r in rows:
+        if r.asset_id not in have:
+            db.add(CmpAsset(entity_id=e.id, asset_id=r.asset_id, name=r.hostname))
+            added += 1
+    return added, len(rows) - added
+
+
+PACK_README = """Sutra audit pack
+
+audit-pack.json is the pack: status, every audit and finding with its fix clock, the rules and sources it rests on,
+the per-asset risk review, an evidence index and the evidence gaps. Its "digest" is a SHA-256 over the rest of the
+JSON in canonical form (keys sorted, no spaces); sutra_compliance.verify_audit_pack() checks it.
+
+evidence/ holds every uploaded file the pack lists, named <evidence id>-<file name>. Each file's SHA-256 is in the
+pack's evidence index, so a reader can check that the file is the one Sutra stored. Rescan evidence (RESCAN-...) is
+Sutra's own record of the scan that proved a patch job fixed; it has no file.
+"""
+
+
+def pack_zip(workspace: Path, ap: AuditPack, evidence: list[CmpEvidence]) -> bytes:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("audit-pack.json", ap.to_json())
+        z.writestr("README.txt", PACK_README)
+        missing = []
+        for x in evidence:
+            path = evidence_path(workspace, x.sha256)
+            if path.exists():
+                z.write(path, f"evidence/{_ev_id(x.id)}-{x.filename}")
+            else:
+                missing.append({"evidence_id": _ev_id(x.id), "sha256": x.sha256})
+        if missing:
+            z.writestr("MISSING-FILES.json", json.dumps(missing, indent=2))
+    return buf.getvalue()

@@ -1222,6 +1222,30 @@ const ENTITY_FIELDS = (v, types) => `<label>Name <input name="name" maxlength="2
   <label>Capacity (MW, generators and storage) <input name="capacity_mw" data-num type="number" min="0" step="any" value="${v.capacity_mw ?? ""}"></label>
   <label>Site in the asset register <input name="site" maxlength="120" value="${esc(v.site)}"></label>`;
 
+const GAP = { missing_reference: "Missing file", no_fix_evidence: "No fix evidence", fix_evidence_predates_fix: "Evidence older than the fix",
+  control_without_evidence: "Control without evidence", activity_without_evidence: "Activity without evidence", evidence_after_as_of: "Evidence after the assessment date",
+  no_report_evidence: "No copy of the report" };
+function assetsHtml(d) {
+  const act = d.can_act;
+  const rows = d.assets.map((x) => {
+    const ra = x.risk_assessment, b = x.backup, r = x.register;
+    const state = (p) => (p ? `<span class="status ${p.state === "overdue" ? "st-rejected" : p.state === "current" ? "st-approved" : "st-cmp-amber"}">${esc(p.state.replace(/_/g, " "))}</span>${p.last_performed_on ? `<div class="fix">last ${esc(fmtDate(p.last_performed_on))}${p.due_on ? `, due ${esc(fmtDate(p.due_on))}` : ""}</div>` : ""}` : '<span class="muted">–</span>');
+    const cls = act ? `<select data-classify="${x.id}"><option value=""${x.critical == null ? " selected" : ""}>Not classed</option><option value="critical"${x.critical === true ? " selected" : ""}>Critical system</option><option value="not-critical"${x.critical === false ? " selected" : ""}>Not critical</option></select>`
+      : x.critical === true ? "Critical system" : x.critical === false ? "Not critical" : '<span class="warn-ink">Not classed</span>';
+    return `<tr><td class="mono">${esc(x.asset_id)}</td><td>${esc(x.name)}${r ? `<div class="fix">${r.is_ot ? "OT" : "IT"}, register criticality ${r.criticality} of 5</div>` : '<div class="fix">Not in the current import</div>'}</td>
+      <td>${cls}</td><td>${state(ra)}</td><td>${x.critical === true ? state(b) : '<span class="muted">–</span>'}</td>
+      <td>${x.open_findings.length ? x.open_findings.map((f) => `<span class="mono">${esc(f)}</span>`).join(", ") : '<span class="muted">None</span>'}</td>
+      <td>${act ? `<button class="btn small" data-delasset="${x.id}">Remove</button>` : ""}</td></tr>`;
+  }).join("");
+  return `<div class="card mt" id="cmp-assets"><h2>Per-asset risk review</h2>
+    <p class="muted" style="margin-top:0">For the six-monthly risk assessment: each asset's CEA class, its last risk assessment, backup age for critical systems, and the audit findings still open on it. The register's criticality is shown for reference only; the CEA class is set here by a person.</p>
+    ${rows ? `<div class="table-wrap"><table><thead><tr><th>Asset</th><th>Name</th><th>CEA class</th><th>Risk assessment</th><th>Backup</th><th>Open findings</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No assets recorded.</p>'}
+    ${act ? `<div class="toolbar" style="margin-top:10px"><button class="btn" id="cmp-import" ${d.entity.site ? "" : 'disabled title="Set the entity\'s site first"'}>Import assets at ${esc(d.entity.site || "the entity's site")} from the asset register</button></div>
+      <details><summary>Add an asset by hand</summary><form class="form-grid" data-cmp-url="/api/compliance/entities/${d.entity.id}/assets">
+        <label>Asset ID <input name="asset_id" maxlength="120" required></label><label>Name <input name="name" maxlength="255"></label>
+        <div class="toolbar"><button class="btn primary">Add asset</button></div></form></details>` : ""}</div>`;
+}
+
 VIEWS.compliance = {
   async load(arg) {
     const meta = await api("/api/compliance/meta");
@@ -1246,13 +1270,20 @@ VIEWS.compliance = {
         <div id="cmp-msg"></div></div>`;
     }
     const a = d.assessment, e = d.entity;
-    const issues = a.issues.map((i) => `<tr><td><span class="status ${i.severity === "breach" ? "st-rejected" : "st-cmp-amber"}">${i.severity === "breach" ? "Breach" : "Attention"}</span>${i.in_force ? "" : '<div class="fix">not yet in force</div>'}</td><td>${esc(i.subject.replace("_", " "))} <span class="mono">${esc(i.ref)}</span></td><td>${esc(i.message)}</td><td class="muted">${esc(i.rule_id || "")}</td></tr>`).join("");
-    const deadlines = a.upcoming_deadlines.slice(0, 12).map((x) => `<tr><td>${esc(fmtDate(x.due.slice(0, 10)))}</td><td class="n">${x.days_left}</td><td>${esc(x.subject.replace("_", " "))} <span class="mono">${esc(x.ref)}</span></td><td class="muted">${esc(x.rule_id || "")}</td></tr>`).join("");
-    const periodic = a.periodic.map((p) => `<tr><td>${esc((d.meta.activities[p.activity]) || p.activity.replace(/_/g, " "))}${p.asset_id ? ` <span class="mono">${esc(p.asset_id)}</span>` : ""}</td><td>${p.last_performed_on ? esc(fmtDate(p.last_performed_on)) : '<span class="muted">No record</span>'}</td><td>${p.due_on ? esc(fmtDate(p.due_on)) : "–"}</td><td><span class="status ${p.state === "overdue" ? "st-rejected" : p.state === "current" ? "st-approved" : "st-cmp-amber"}">${esc(p.state.replace(/_/g, " "))}</span></td><td class="muted">${esc(p.rule_id)}</td></tr>`).join("");
-    const acts = d.activities.map((x) => `<li>${esc(x.title)} on <b>${esc(fmtDate(x.performed_on))}</b>${x.approved_by ? ` <span class="muted">approved by ${esc(x.approved_by)}</span>` : ""}${d.can_act ? ` <button class="btn small" data-delact="${x.id}">Remove</button>` : ""}${evidenceList(x.evidence, { type: "activity", id: x.id }, d)}</li>`).join("");
+    // Per-asset obligations repeat once per asset; they are summed up here and listed in the per-asset review.
+    const assetIds = new Set(d.assets.map((x) => x.asset_id));
+    const perAsset = (x) => x.subject === "periodic" && assetIds.has(x.ref);
+    const groups = {};
+    a.issues.filter(perAsset).forEach((i) => { const k = `${i.severity}|${i.rule_id}|${i.message.replace(i.ref, "").slice(0, 24)}`; (groups[k] = groups[k] || []).push(i); });
+    const grouped = Object.values(groups).map((g) => `<tr><td><span class="status ${g[0].severity === "breach" ? "st-rejected" : "st-cmp-amber"}">${g[0].severity === "breach" ? "Breach" : "Attention"}</span>${g[0].in_force ? "" : '<div class="fix">not yet in force</div>'}</td><td>${g.length} asset${g.length === 1 ? "" : "s"}</td><td title="${esc(g.map((i) => i.ref).join(", "))}">${esc(g.length === 1 ? g[0].message : g[0].message.replace(g[0].ref, "each of them"))} See the per-asset review below.</td><td class="muted">${esc(g[0].rule_id || "")}</td></tr>`).join("");
+    const issues = a.issues.filter((i) => !perAsset(i)).map((i) => `<tr><td><span class="status ${i.severity === "breach" ? "st-rejected" : "st-cmp-amber"}">${i.severity === "breach" ? "Breach" : "Attention"}</span>${i.in_force ? "" : '<div class="fix">not yet in force</div>'}</td><td>${esc(i.subject.replace("_", " "))} <span class="mono">${esc(i.ref)}</span></td><td>${esc(i.message)}</td><td class="muted">${esc(i.rule_id || "")}</td></tr>`).join("") + grouped;
+    const deadlines = a.upcoming_deadlines.filter((x) => !perAsset(x)).slice(0, 12).map((x) => `<tr><td>${esc(fmtDate(x.due.slice(0, 10)))}</td><td class="n">${x.days_left}</td><td>${esc(x.subject.replace("_", " "))} <span class="mono">${esc(x.ref)}</span></td><td class="muted">${esc(x.rule_id || "")}</td></tr>`).join("");
+    const periodic = a.periodic.filter((p) => !p.asset_id).map((p) => `<tr><td>${esc((d.meta.activities[p.activity] || {}).title || p.activity.replace(/_/g, " "))}${p.asset_id ? ` <span class="mono">${esc(p.asset_id)}</span>` : ""}</td><td>${p.last_performed_on ? esc(fmtDate(p.last_performed_on)) : '<span class="muted">No record</span>'}</td><td>${p.due_on ? esc(fmtDate(p.due_on)) : "–"}</td><td><span class="status ${p.state === "overdue" ? "st-rejected" : p.state === "current" ? "st-approved" : "st-cmp-amber"}">${esc(p.state.replace(/_/g, " "))}</span></td><td class="muted">${esc(p.rule_id)}</td></tr>`).join("");
+    const acts = d.activities.map((x) => `<li>${esc(x.title)}${x.asset_id ? ` for <span class="mono">${esc(x.asset_id)}</span>` : ""} on <b>${esc(fmtDate(x.performed_on))}</b>${x.approved_by ? ` <span class="muted">approved by ${esc(x.approved_by)}</span>` : ""}${d.can_act ? ` <button class="btn small" data-delact="${x.id}">Remove</button>` : ""}${evidenceList(x.evidence, { type: "activity", id: x.id }, d)}</li>`).join("");
     const register = d.evidence.map((x) => `<tr><td><a href="/api/compliance/evidence/${x.id}/download">${esc(x.title)}</a><div class="fix">${esc(x.filename)}, ${kb(x.size)}</div></td><td>${esc(x.kind_label)}</td><td class="mono">${esc(fmtTime(x.captured_at))}</td><td class="mono" title="${esc(x.sha256)}">${esc(x.sha256.slice(0, 16))}…</td><td class="n">${x.links.length}</td></tr>`).join("");
     return `<div class="crumb"><a href="#/compliance">← Compliance</a></div>
-      <h1>${esc(e.name)} ${cmpStatus(a.status)}</h1>
+      <div class="toolbar" style="justify-content:space-between"><h1 style="margin:0">${esc(e.name)} ${cmpStatus(a.status)}</h1>
+        <span><a class="btn primary" href="/api/compliance/entities/${e.id}/audit-pack.zip">Download audit pack</a> <a class="btn" href="/api/compliance/entities/${e.id}/audit-pack.json">Pack JSON only</a></span></div>
       <p class="sub">${esc(e.entity_type_label)}${e.capacity_mw != null ? `, ${num(e.capacity_mw)} MW` : ""}${e.site ? `, ${esc(e.site)}` : ""}. ${esc(a.applicability.reason)} Assessed ${esc(fmtDate(a.as_of_date))} (Indian date).${a.regulation_in_force ? "" : ` Before the regulation is in force, the status counts nothing; once in force this would be <b>${esc((CMP_STATUS[a.status_if_in_force] || [0, a.status_if_in_force])[1])}</b>.`}</p>
       ${packNote}
       <div class="grid two"><div class="card"><h2>Breaches and attention</h2>${issues ? `<div class="table-wrap"><table><thead><tr><th></th><th>About</th><th>What</th><th>Rule</th></tr></thead><tbody>${issues}</tbody></table></div>` : '<p class="muted">Nothing needs attention.</p>'}</div>
@@ -1262,9 +1293,12 @@ VIEWS.compliance = {
       <div class="card mt"><h2>Recurring obligations</h2><div class="table-wrap"><table><thead><tr><th>Activity</th><th>Last done</th><th>Next due</th><th>State</th><th>Rule</th></tr></thead><tbody>${periodic}</tbody></table></div>
         ${acts ? `<h3>Records</h3><ul class="plain">${acts}</ul>` : ""}
         ${d.can_act ? `<details><summary>Record an activity</summary><form class="form-grid" data-cmp-url="/api/compliance/entities/${e.id}/activities">
-          <label>Activity <select name="activity">${Object.entries(d.meta.activities).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
+          <label>Activity <select name="activity">${Object.entries(d.meta.activities).map(([k, v]) => `<option value="${k}">${esc(v.title)}${v.scope === "entity" ? "" : v.scope === "critical_asset" ? " (per critical system)" : " (per asset)"}</option>`).join("")}</select></label>
+          <label>Asset (per-asset activities only) <select name="asset_id"><option value="">Whole entity</option>${d.assets.map((x) => `<option value="${esc(x.asset_id)}">${esc(x.asset_id)}${x.name ? ` ${esc(x.name)}` : ""}</option>`).join("")}</select></label>
           <label>Done on <input type="date" name="performed_on" max="${d.meta.today}" required></label><label>Approved by <input name="approved_by" maxlength="200"></label>
           <div class="toolbar"><button class="btn primary">Record</button></div></form></details>` : ""}</div>
+      ${assetsHtml(d)}
+      <div class="card mt"><h2>Evidence gaps</h2>${d.evidence_gaps.length ? `<p class="muted" style="margin-top:0">What an auditor would ask for and not find.</p><div class="table-wrap"><table><thead><tr><th>Gap</th><th>About</th><th>What</th></tr></thead><tbody>${d.evidence_gaps.map((g) => `<tr><td>${esc(GAP[g.kind] || g.kind)}</td><td class="mono">${esc(g.ref)}</td><td>${esc(g.message)}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">None: every closure, control, activity and report has its evidence on file.</p>'}</div>
       <div class="card mt"><h2>Evidence register</h2><p class="muted" style="margin-top:0">Every file is stored once under its SHA-256 and never changed. Downloads are logged.</p>
         ${register ? `<div class="table-wrap"><table><thead><tr><th>File</th><th>Kind</th><th>Uploaded (UTC)</th><th>SHA-256</th><th class="n">Attached to</th></tr></thead><tbody>${register}</tbody></table></div>` : '<p class="muted">No evidence uploaded.</p>'}</div>
       <div class="card mt"><h2>Not checked</h2><ul>${[...d.notes, ...a.unchecked].map((n) => `<li>${esc(n)}</li>`).join("")}</ul></div>
@@ -1305,6 +1339,16 @@ VIEWS.compliance = {
     }));
     del("data-delfinding", (id) => `/api/compliance/findings/${id}`, "Remove this finding, its compensating controls and its evidence links? Uploaded files are kept.");
     del("data-delaudit", (id) => `/api/compliance/audits/${id}`, "Remove this audit?");
+    del("data-delasset", (id) => `/api/compliance/assets/${id}`, "Remove this asset from the entity?");
+    root.querySelectorAll("[data-classify]").forEach((sel) => sel.addEventListener("change", async () => {
+      const critical = sel.value === "critical" ? true : sel.value === "not-critical" ? false : null;
+      try { await api(`/api/compliance/assets/${sel.dataset.classify}`, { method: "PUT", json: { critical } }); render(); } catch (err) { fail(err); }
+    }));
+    const imp = root.querySelector("#cmp-import");
+    if (imp) imp.addEventListener("click", async () => {
+      imp.disabled = true;
+      try { const r = await post(`/api/compliance/entities/${d.entity.id}/assets/import`, {}); alert(`${r.added} asset(s) added; ${r.already} already recorded.`); render(); } catch (err) { fail(err); imp.disabled = false; }
+    });
     del("data-delact", (id) => `/api/compliance/activities/${id}`, "Remove this activity record?");
     root.querySelectorAll("[data-unlink]").forEach((b) => b.addEventListener("click", async () => {
       const [type, id] = b.dataset.owner.split(":");
