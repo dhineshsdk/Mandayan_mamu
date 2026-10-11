@@ -54,7 +54,16 @@ def teams_for(p: Principal, db: Session, module: str, action: str) -> list[str]:
     return [t for t in teams if p.team_allowed(t, module, action)]
 
 
-def me_json(db: Session, p: Principal, sess: AuthSession) -> dict:
+def licence_notice(ent) -> str | None:
+    """A short line for the sidebar when the licence needs attention; None when all is well."""
+    if ent is None or ent.state == "open":
+        return None
+    if ent.state == "valid":
+        return ent.warnings[0] if ent.warnings else None
+    return ent.message
+
+
+def me_json(db: Session, p: Principal, sess: AuthSession, ent=None) -> dict:
     names = {m.key: m.name for m in db.scalars(select(Module))}
     mods = p.modules()
     return {
@@ -68,6 +77,7 @@ def me_json(db: Session, p: Principal, sess: AuthSession) -> dict:
         "raise_for_teams": teams_for(p, db, "M-PJ", "act"),
         "csrf_token": sess.csrf_token,
         "session_method": sess.method,
+        "licence_notice": licence_notice(ent),
     }
 
 
@@ -107,8 +117,9 @@ def login(body: LoginIn, request: Request, db: Session = Depends(get_db)):
     if needs_rehash(user):
         user.password_hash = hash_password(body.password)
     token, sess = start_session(request, db, user, "password")
-    p = build_principal(db, user)
-    response = JSONResponse(me_json(db, p, sess))
+    ent = request.app.state.licences.entitlement(db)
+    p = build_principal(db, user, ent)
+    response = JSONResponse(me_json(db, p, sess, ent))
     set_session_cookie(request, response, token)
     return response
 
@@ -128,7 +139,7 @@ def logout(request: Request, p: Principal = Depends(current_principal), db: Sess
 @router.get("/me")
 def me(request: Request, p: Principal = Depends(current_principal), db: Session = Depends(get_db)):
     sess, _ = load_session(request, db)
-    return me_json(db, p, sess)
+    return me_json(db, p, sess, request.app.state.licences.entitlement(db))
 
 
 @router.post("/password")

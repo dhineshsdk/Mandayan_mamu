@@ -424,3 +424,7 @@ open per team, and the counts reconcile with both imports.
 
 Every release is scored by Range: planted-cause scenarios, prompt-injection payloads and damaged model answers, with the
 result published in [`docs/range/SCORE.md`](docs/range/SCORE.md). See [`range/README.md`](range/README.md).
+
+## Licence keys
+
+Modules are switched on per customer by an offline-checked signed key. See [`docs/licensing.md`](docs/licensing.md).

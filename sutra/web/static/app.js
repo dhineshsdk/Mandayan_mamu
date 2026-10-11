@@ -90,6 +90,7 @@ function buildNav() {
   const u = ME.user;
   document.getElementById("who").textContent = u.name;
   document.getElementById("me-foot").innerHTML = ME.roles.map((r) => `${esc(ROLE_NAME[r.role] || r.role)}<br><span>${esc(r.scope)}</span>`).join("<br>") || "No role"
+  if (ME.licence_notice) document.getElementById("me-foot").innerHTML += `<br><span class="warn-ink">${esc(ME.licence_notice)}</span>`;
   if (u.expires_at) document.getElementById("me-foot").innerHTML += `<br><span class="warn-ink">${u.read_only ? "Read-only access" : "Access"} ends ${esc(fmtDate(u.expires_at))}</span>`;
 }
 function homeView() { const n = NAV.find(allowed); return n ? n.view : "account"; }
@@ -1815,17 +1816,35 @@ const ADMIN_TABS = {
   },
   licences: {
     html(d) {
-      return `<div class="card"><h2>Modules</h2>
-        <p class="muted" style="margin-top:0">A module gives access only when it is built and licensed. Switching a licence off removes it from everyone at once.</p>
+      const L = d.catalog.licence, lic = L.licence;
+      const licCard = `<div class="card"><h2>Licence key</h2>
+        <p style="margin-top:0"><b>${esc({ open: "No licence installed (evaluation)", none: "No licence installed", valid: "Valid", grace: "Expired, in grace period", expired: "Expired", invalid: "Not valid", no_vendor_key: "Cannot be checked" }[L.state] || L.state)}</b></p>
+        <p class="muted">${esc(L.message)}</p>
+        ${lic ? `<div class="table-wrap"><table><tbody>
+          <tr><td>Customer</td><td>${esc(lic.customer)}</td></tr><tr><td>Licence id</td><td class="mono">${esc(lic.id)}</td></tr>
+          <tr><td>Issued</td><td>${esc(lic.issued)}</td></tr><tr><td>Expires</td><td>${esc(lic.expires)}</td></tr>
+          <tr><td>Modules</td><td class="mono">${lic.modules.map(esc).join(", ")}</td></tr></tbody></table></div>` : ""}
+        ${(L.warnings || []).map((w) => `<p class="warn-ink">${esc(w)}</p>`).join("")}
+        <form id="lic-form"><label>Install or replace the key<textarea id="lic-key" rows="3" class="mono" placeholder="SUTRA1...." required></textarea></label>
+          <button class="btn primary">Install key</button></form>
+        <p class="muted">The key is checked on this server against the vendor's public key; nothing is sent over the network.</p></div>`;
+      return licCard + `<div class="card mt"><h2>Modules</h2>
+        <p class="muted" style="margin-top:0">A module gives access only when it is built, in the licence key and switched on here. Switching one off removes it from everyone at once; a module outside the key cannot be switched on.</p>
         <div class="table-wrap"><table><thead><tr><th>Module</th><th>Built</th><th>Licensed</th></tr></thead>
         <tbody>${d.catalog.modules.map((m) => `<tr><td><b>${esc(m.name)}</b> <span class="muted mono">${esc(m.key)}</span></td>
           <td>${m.built ? "Yes" : '<span class="muted">Not yet</span>'}</td>
-          <td><label class="check"><input type="checkbox" data-lic="${esc(m.key)}" ${m.licensed ? "checked" : ""} ${m.key === "M-ADM" ? "disabled" : ""}> ${m.licensed ? "On" : "Off"}</label></td></tr>`).join("")}</tbody></table></div></div>
+          <td><label class="check"><input type="checkbox" data-lic="${esc(m.key)}" ${m.licensed && m.in_licence ? "checked" : ""} ${m.key === "M-ADM" || !m.in_licence ? "disabled" : ""}> ${m.licensed && m.in_licence ? "On" : "Off"}</label>${m.in_licence ? "" : ' <span class="warn-ink">not in licence</span>'}</td></tr>`).join("")}</tbody></table></div></div>
       <div class="card mt"><h2>Roles</h2><div class="table-wrap"><table><thead><tr><th>Role</th><th>Assigned per</th><th>Modules and actions</th></tr></thead>
         <tbody>${d.catalog.roles.map((r) => `<tr><td><b>${esc(r.name)}</b><div class="fix">${esc(r.description)}</div></td><td>${esc(r.scope_type)}${r.time_limited ? " (time-limited)" : ""}</td>
           <td class="mono">${r.permissions.map(esc).join("<br>")}</td></tr>`).join("")}</tbody></table></div></div>`;
     },
     wire(root) {
+      const lf = root.querySelector("#lic-form");
+      if (lf) lf.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try { await api("/api/admin/licence", { method: "PUT", json: { key: root.querySelector("#lic-key").value } }); ME = await api("/api/auth/me"); buildNav(); await render(); }
+        catch (err) { adminMsg(root, esc(err.message), "error"); }
+      });
       root.querySelectorAll("[data-lic]").forEach((c) => c.addEventListener("change", async () => {
         try { await api(`/api/admin/modules/${encodeURIComponent(c.dataset.lic)}`, { method: "PATCH", json: { licensed: c.checked } }); await render(); }
         catch (e) { adminMsg(root, esc(e.message), "error"); c.checked = !c.checked; }

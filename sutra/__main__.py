@@ -53,7 +53,29 @@ def main(argv: list[str] | None = None) -> None:
     m.add_argument("--months", type=int, default=2, help="monthly imports to load, 30 days apart (default 2)")
     m.add_argument("--workspace", type=Path)
 
+    lic = sub.add_parser("licence", help="licence keys: vendor keygen/issue, and show/install on a server")
+    ls = lic.add_subparsers(dest="lcmd", required=True)
+    k = ls.add_parser("keygen", help="VENDOR: make the signing key pair (keep the private key offline)")
+    k.add_argument("--out", type=Path, default=Path("."))
+    i = ls.add_parser("issue", help="VENDOR: sign a licence key for one customer")
+    i.add_argument("--private-key", type=Path, required=True)
+    i.add_argument("--customer", required=True)
+    i.add_argument("--id", required=True, help="licence id, e.g. the contract number")
+    i.add_argument("--modules", required=True, help="comma-separated module keys, e.g. M-VM,M-PJ, or * for all")
+    i.add_argument("--expires", required=True, help="YYYY-MM-DD")
+    sh = ls.add_parser("show", help="check a key and print what it allows")
+    sh.add_argument("key", help="the key text, or @file")
+    sh.add_argument("--public-key", type=Path)
+    ins = ls.add_parser("install", help="install a key from the command line (same check as the Licences tab)")
+    ins.add_argument("key", help="the key text, or @file")
+    ins.add_argument("--workspace", type=Path)
+
     args = ap.parse_args(argv)
+    if args.cmd == "licence":
+        from .app import cli
+
+        cli.licence_command(args)
+        return
     if args.cmd in ("serve", "db-upgrade", "create-admin", "demo-users"):
         from .app import cli
         from .app.config import Settings
