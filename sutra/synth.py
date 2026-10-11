@@ -1,11 +1,12 @@
 """Generate a realistic, fully synthetic estate and its scanner exports.
 
-Two profiles, a power utility and an auto-components manufacturer. Each writes five files:
+Two profiles, a power utility and an auto-components manufacturer. Each writes six files:
 
 * ``qualys_vm_export.csv``       - a Qualys VM detection report (CSV, with Qualys' preamble)
 * ``tenable_sc_export.csv``      - a Tenable.sc vulnerability export of the IT estate (CSV)
 * ``tenable_plant_scan*.nessus`` - two Nessus scans of the plant network, six months apart (NessusClientData_v2 XML)
 * ``cmdb_assets.csv``            - the customer's asset register
+* ``teams.csv``                  - who owns what: team, Jira project, manager, vertical and vertical head
 
 The organisation, hosts, IPs, QIDs, plugin IDs and advisory numbers are invented.
 CVE IDs are real so that threat-intel lookups behave like they would on real data.
@@ -376,11 +377,44 @@ def build_manufacturing(rng: random.Random) -> list[Host]:
     return e.hosts
 
 
+# Ownership: team -> (Jira project, manager, vertical). Verticals have a head; one VM analyst serves everyone.
+# All names are invented.
+CORP_TEAMS = {
+    "IT Infra - Linux": ("LNX", "Arjun Mehta", "Corporate IT"),
+    "IT Infra - Windows": ("WIN", "Kavya Iyer", "Corporate IT"),
+    "End-user Computing": ("EUC", "Rohan Das", "Corporate IT"),
+    "Network Operations": ("NET", "Farhan Qureshi", "Corporate IT"),
+    "Network Security": ("NSEC", "Meera Pillai", "Corporate IT"),
+}
+POWER_ORG = {
+    "teams": {**CORP_TEAMS,
+              "Digital - Portal": ("DIG", "Sneha Kulkarni", "Digital"),
+              "Platform Engineering": ("PLAT", "Vikram Rao", "Digital"),
+              "DBA team": ("DBA", "Anil Sharma", "Corporate IT"),
+              "C&I - Unit 2": ("CIU2", "Suresh Patil", "Generation"),
+              "C&I - Coal Handling": ("CHP", "Ramesh Yadav", "Generation"),
+              "Solar O&M": ("SOL", "Divya Rathore", "Renewables")},
+    "heads": {"Corporate IT": "Neha Joshi (CIO)", "Digital": "Karan Malhotra (CDO)",
+              "Generation": "P. Venkatesh (Plant Head, Vindhya)", "Renewables": "Ritu Bansal (Head, Renewables)"},
+    "vm_analyst": "Aisha Khan (VM analyst)",
+}
+MANUFACTURING_ORG = {
+    "teams": {**CORP_TEAMS,
+              "Manufacturing IT": ("MIT", "Gopal Krishnan", "Manufacturing"),
+              "Plant Engineering - Press": ("PRS", "Lakshmi Narayan", "Manufacturing"),
+              "Plant Engineering - Assembly": ("ASM", "Deepak Nair", "Manufacturing"),
+              "Plant Engineering - Controls": ("CTL", "Harish Babu", "Manufacturing"),
+              "Pune Plant Engineering": ("PUN", "Sachin Deshmukh", "Manufacturing")},
+    "heads": {"Corporate IT": "Neha Joshi (CIO)", "Manufacturing": "S. Raghavan (VP Manufacturing)"},
+    "vm_analyst": "Aisha Khan (VM analyst)",
+}
+TEAMS_COLS = ["team", "jira_project", "manager", "vertical", "vertical_head", "vm_analyst"]
+
 PROFILES = {
-    "power": {"org": "Demo Vindhya Power Ltd (SYNTHETIC)", "processes": POWER_PROCESSES, "build": build_power,
+    "power": {"org": "Demo Vindhya Power Ltd (SYNTHETIC)", "processes": POWER_PROCESSES, "build": build_power, "org_chart": POWER_ORG,
               "domain": "vindhyapower.example.in"},
     "manufacturing": {"org": "Demo Shakti Auto Components Ltd (SYNTHETIC)", "processes": MANUFACTURING_PROCESSES,
-                      "build": build_manufacturing, "domain": "shaktiauto.example.in"},
+                      "build": build_manufacturing, "org_chart": MANUFACTURING_ORG, "domain": "shaktiauto.example.in"},
 }
 ORG = PROFILES["power"]["org"]
 
@@ -478,7 +512,8 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
     hosts = prof["build"](rng)
     paths = {"qualys": out_dir / "qualys_vm_export.csv", "tenable": out_dir / "tenable_sc_export.csv",
              "nessus_baseline": out_dir / "tenable_plant_scan_baseline.nessus",
-             "nessus": out_dir / "tenable_plant_scan.nessus", "cmdb": out_dir / "cmdb_assets.csv"}
+             "nessus": out_dir / "tenable_plant_scan.nessus", "cmdb": out_dir / "cmdb_assets.csv",
+             "teams": out_dir / "teams.csv"}
 
     with paths["cmdb"].open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -489,6 +524,13 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
             name, inr = prof["processes"][h.process]
             w.writerow([h.asset_id, h.hostname, h.ip, h.site, h.zone, h.os, h.owner, name, inr, h.criticality,
                         h.image, h.template, int(h.is_ot), int(h.safety), int(h.pii)])
+
+    oc = prof["org_chart"]
+    with paths["teams"].open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(TEAMS_COLS)
+        for team, (jira, manager, vertical) in oc["teams"].items():
+            w.writerow([team, jira, manager, vertical, oc["heads"][vertical], oc["vm_analyst"]])
 
     q_rows, t_rows, plant = [], [], []
     for h in hosts:

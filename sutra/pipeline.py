@@ -24,11 +24,19 @@ class Result:
 
 
 def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: Path | None = None) -> Result:
-    """Analyse any mix of Qualys CSV, Tenable CSV and .nessus files; the format is detected from content."""
+    """Analyse any mix of Qualys CSV, Tenable CSV and .nessus files; the format is detected from content.
+
+    A CMDB or ownership chart among ``files`` is recognised too, so a whole export folder can be passed.
+    """
     cmdb_assets = ingest.load_cmdb(cmdb) if cmdb else []
     raws, sources = [], {}
     for p in files:
-        rows = ingest.LOADERS[ingest.detect_format(p)](p)
+        fmt = ingest.detect_format(p)
+        if fmt not in ingest.LOADERS:
+            if fmt == "cmdb" and not cmdb_assets:
+                cmdb_assets = ingest.load_cmdb(p)
+            continue  # ownership charts and duplicate CMDBs are not scanner findings
+        rows = ingest.LOADERS[fmt](p)
         sources[p.name] = sum(1 for r in rows if r["kind"] != "info")
         raws += rows
     if not raws:

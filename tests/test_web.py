@@ -2,6 +2,7 @@ import json
 import tempfile
 import threading
 import unittest
+import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
@@ -54,6 +55,39 @@ class WebApp(unittest.TestCase):
             self.assertIn("board summary", r.read().decode())
         with urllib.request.urlopen(self.base + "/") as r:
             self.assertIn("Sutra", r.read().decode())
+
+
+    def test_patch_job_routes_by_criticality_and_walks_the_chain(self):
+        self.call("/api/demo", {"profile": "power"})
+        state = self.call("/api/state")
+        rcs = {r["key"]: r for r in state["data"]["root_causes"]}
+        org = state["org"]
+
+        hmi = rcs["hmi-win7e-vendor-2016"]
+        job = self.call("/api/jobs", {"rc_id": hmi["id"], "team": "C&I - Unit 2", "mode": "patch",
+                                      "actor": "C&I - Unit 2 team"})
+        self.assertEqual(job["route"]["type"], "staged-plan")
+        self.assertEqual([s["role"] for s in job["steps"]], ["manager", "vm_analyst", "vertical_head"])
+        self.assertEqual(job["draft"]["oem_approval"], "Pending")
+        self.assertTrue(job["jira"].startswith("CIU2-"))
+
+        with self.assertRaises(urllib.error.HTTPError):  # the analyst cannot jump the manager
+            self.call(f"/api/jobs/{job['id']}/decision", {"action": "approve", "actor": org["vm_analyst"]})
+        for step in job["steps"]:
+            job = self.call(f"/api/jobs/{job['id']}/decision", {"action": "approve", "actor": step["who"]})
+        self.assertEqual(job["status"], "approved")
+        self.assertEqual(len(job["audit"]), 4)
+
+        laptops = rcs["win11-corp-2024q2"]  # Attend on IT: needs the vertical head too
+        job = self.call("/api/jobs", {"rc_id": laptops["id"], "team": "End-user Computing", "mode": "patch"})
+        self.assertIn("vertical_head", [s["role"] for s in job["steps"]])
+        track = next(r for r in rcs.values() if r["ssvc"] == "Track" and not r["is_ot"]
+                     and r["key"].startswith("switch-baseline"))
+        job = self.call("/api/jobs", {"rc_id": track["id"], "team": "Network Operations", "mode": "patch"})
+        self.assertEqual([s["role"] for s in job["steps"]], ["manager", "vm_analyst"])
+        manual = self.call("/api/jobs", {"rc_id": rcs["Apache Tomcat|9.0.83"]["id"], "team": "IT Infra - Linux",
+                                         "mode": "manual", "ticket": "CHG0012345"})
+        self.assertEqual(manual["status"], "fixing-manually")
 
 
 if __name__ == "__main__":

@@ -73,7 +73,7 @@ class EndToEnd(unittest.TestCase):
     def test_formats_are_detected_from_content(self):
         fmt = {k: ingest.detect_format(p) for k, p in self.paths.items()}
         self.assertEqual(fmt, {"qualys": "qualys", "tenable": "tenable", "nessus_baseline": "nessus",
-                               "nessus": "nessus", "cmdb": "cmdb"})
+                               "nessus": "nessus", "cmdb": "cmdb", "teams": "teams"})
 
     def test_nessus_age_comes_from_the_earliest_scan(self):
         hmi = self.rc["hmi-win7e-vendor-2016"]

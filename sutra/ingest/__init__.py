@@ -30,6 +30,19 @@ def load_cmdb(path: Path) -> list[Asset]:
     return assets
 
 
+def load_teams(path: Path) -> dict:
+    """Ownership chart: team -> Jira project, manager, vertical, vertical head; plus the VM analyst."""
+    teams, analyst = {}, ""
+    with path.open(newline="", encoding="utf-8-sig") as f:
+        for r in csv.DictReader(f):
+            teams[r["team"].strip()] = {"team": r["team"].strip(), "jira": r.get("jira_project", "").strip(),
+                                        "manager": r.get("manager", "").strip(),
+                                        "vertical": r.get("vertical", "").strip(),
+                                        "vertical_head": r.get("vertical_head", "").strip()}
+            analyst = analyst or r.get("vm_analyst", "").strip()
+    return {"teams": teams, "vm_analyst": analyst or "VM analyst"}
+
+
 def _parse_date(value: str, fmts: list[str]) -> date | None:
     value = (value or "").replace(" UTC", "").strip()
     for fmt in fmts:
@@ -130,7 +143,7 @@ def load_nessus(path: Path) -> list[dict]:
 
 
 def detect_format(path: Path) -> str:
-    """qualys | tenable | nessus | cmdb, from the file's first bytes."""
+    """qualys | tenable | nessus | cmdb | teams, from the file's first bytes."""
     head = path.read_bytes()[:20000].decode("utf-8", "ignore")
     if "NessusClientData_v2" in head:
         return "nessus"
@@ -143,6 +156,8 @@ def detect_format(path: Path) -> str:
             return "tenable"
         if "asset_id" in cols and "hostname" in cols:
             return "cmdb"
+        if "team" in cols and "manager" in cols:
+            return "teams"
     raise ValueError(f"{path.name}: not a Qualys CSV, Tenable CSV, .nessus file or CMDB CSV")
 
 

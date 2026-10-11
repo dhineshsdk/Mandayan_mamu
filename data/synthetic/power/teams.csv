@@ -1,0 +1,12 @@
+team,jira_project,manager,vertical,vertical_head,vm_analyst
+IT Infra - Linux,LNX,Arjun Mehta,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
+IT Infra - Windows,WIN,Kavya Iyer,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
+End-user Computing,EUC,Rohan Das,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
+Network Operations,NET,Farhan Qureshi,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
+Network Security,NSEC,Meera Pillai,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
+Digital - Portal,DIG,Sneha Kulkarni,Digital,Karan Malhotra (CDO),Aisha Khan (VM analyst)
+Platform Engineering,PLAT,Vikram Rao,Digital,Karan Malhotra (CDO),Aisha Khan (VM analyst)
+DBA team,DBA,Anil Sharma,Corporate IT,Neha Joshi (CIO),Aisha Khan (VM analyst)
+C&I - Unit 2,CIU2,Suresh Patil,Generation,"P. Venkatesh (Plant Head, Vindhya)",Aisha Khan (VM analyst)
+C&I - Coal Handling,CHP,Ramesh Yadav,Generation,"P. Venkatesh (Plant Head, Vindhya)",Aisha Khan (VM analyst)
+Solar O&M,SOL,Divya Rathore,Renewables,"Ritu Bansal (Head, Renewables)",Aisha Khan (VM analyst)

@@ -15,7 +15,8 @@
       <a href="#/board" data-view="board">Board</a>
       <a href="#/queue" data-view="queue">Root causes</a>
       <a href="#/assets" data-view="assets">Assets and coverage</a>
-      <a href="#/owners" data-view="owners">Owners</a>
+      <a href="#/portal" data-view="portal">Team portal</a>
+      <a href="#/jobs" data-view="jobs">Patch jobs <span id="inbox" class="count" hidden></span></a>
       <a href="#/headline" data-view="headline">Headline check</a>
       <a href="#/import" data-view="import">Import data</a>
     </nav>
@@ -25,6 +26,7 @@
     <header class="top">
       <div class="org"><span id="org">No data loaded</span> <span id="synthetic" class="badge warn" hidden>Synthetic data</span></div>
       <div class="top-right"><span id="asof" class="muted"></span>
+        <label class="persona">Signed in as <select id="persona" aria-label="Signed in as"></select></label>
         <select id="dataset" aria-label="Switch demo company">
           <option value="">Switch demo…</option>
         </select>

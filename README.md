@@ -11,14 +11,20 @@ python3 -m sutra serve
 ```
 
 A browser opens at http://127.0.0.1:8765 with the power-utility demo loaded. Python 3.10+ standard library only;
-nothing to install. The app has six views:
+nothing to install. The app has seven views:
 
 - **Board**: expected annual loss in ₹, the CEA fix clock, SSVC triage, blind spots, risk by process and site, and
   a printable one-page board pack.
 - **Root causes**: the analyst queue with filters, and a page per root cause showing the fix, why it got its SSVC
   call, the rupee-risk inputs, hosts, and every finding's receipts (scanner, QID or plugin, file and row).
 - **Assets and coverage**: registered assets that are never scanned, and scanned hosts missing from the CMDB.
-- **Owners**: each team's top tasks with due dates.
+- **Team portal**: every asset maps to a team, manager, vertical and Jira project (from `teams.csv`). Signed in as a
+  team, you see only your assets and fixes, and can build a patch job or mark a fix as manual with a change ticket.
+- **Patch jobs**: each job gets a draft (targets, rings, playbook or staged plan, pre-checks, rollback, window) and an
+  approval route set by fixed rules: manager and VM analyst always, the vertical head for Act, Attend, Track\* or
+  crown-jewel assets, and OT jobs become staged plans with OEM approval and a shutdown slot. Approvers see an inbox;
+  every step lands in an audit trail. "Signed in as" at the top right switches between personas for the demo (real
+  deployments use SSO). Drafts come from templates for now; an AI drafting step slots in without changing routing.
 - **Headline check**: "are we exposed?" for a CVE or product in the news.
 - **Import data**: switch between the power and manufacturing demos, or drop in real exports.
 
@@ -41,6 +47,7 @@ python3 -m sutra synth --profile manufacturing --out data/synthetic/manufacturin
 | Qualys VM | Detection report CSV (the preamble lines are skipped) |
 | Tenable.sc, Tenable.io, Nessus | Vulnerability CSV export (column names from any of the three) |
 | Nessus / Tenable | `.nessus` XML (NessusClientData_v2). It has no first-seen date, so a finding's age comes from the earliest scan file that contains it. |
+| Ownership chart | CSV with `team, jira_project, manager, vertical, vertical_head, vm_analyst` |
 | Asset register | CSV with `asset_id, hostname, ip, site, zone, os, owner, business_process, inr_per_hour, criticality, image, config_template, is_ot, safety_critical, personal_data` |
 
 ## What it does
@@ -67,7 +74,7 @@ python3 -m sutra synth --profile manufacturing --out data/synthetic/manufacturin
 ## Synthetic data
 
 Two fictional companies, each written as a Qualys CSV, a Tenable.sc CSV of the IT estate, two `.nessus` plant scans
-six months apart, and a CMDB:
+six months apart, a CMDB and an ownership chart:
 
 - **power**: an HQ with RHEL, Ubuntu Kubernetes and Windows server fleets and 80 laptops, internet-facing NetScaler
   gateways, a thermal plant with Windows 7 HMIs, engineering workstations and Siemens S7-1500 PLCs, and a solar park.

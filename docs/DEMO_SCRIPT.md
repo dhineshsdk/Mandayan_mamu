@@ -1,4 +1,4 @@
-# Demo script (about 15 minutes)
+# Demo script (about 18 minutes)
 
 For a CISO, plant head or IT head at a power or manufacturing company. Pick the demo company that matches the room.
 
@@ -45,9 +45,18 @@ Filter to **OT only**, then search for a CVE. "This is the analyst's day: 19 row
 Point out the **base image** rows: 46 RHEL hosts share one golden image, including 6 build boxes the CMDB never
 listed. Sutra matched them to the image by their packages.
 
-## 5. Owners (1 minute)
+## 5. Team portal and patch approvals (4 minutes)
 
-"Each team gets its own three tasks with a reason and a due date, so nobody chases owners by email."
+- Open **Team portal**, then **Open as this team** on *C&I - Unit 2* (power) or *Plant Engineering - Press*
+  (manufacturing). "The plant team sees only its own assets, with their Jira project and manager."
+- Click **Draft staged plan** on the HMI image. Show the draft: OEM approval pending, compensating control, shutdown
+  date, rollback. "For OT, nothing runs by itself. A plant engineer executes it at the shutdown."
+- Show the route: manager, VM analyst, plant head. "The route comes from fixed rules, so a drafted job can never lower
+  its own approval level."
+- Switch **Signed in as** to the manager: the **Patch jobs** badge shows one waiting. Approve with a comment, then
+  approve as the VM analyst and the vertical head. Point at the audit trail: "this is your CEA evidence."
+- For IT, sign in as *Network Security team* and build the NetScaler job (power): it is Act, so the vertical head can
+  approve it as an emergency change.
 
 ## 6. Headline check (2 minutes)
 

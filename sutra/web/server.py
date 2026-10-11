@@ -8,6 +8,8 @@ Routes
   DELETE /api/upload          forget uploaded files
   POST /api/analyze           {"org": "..."}: analyse the uploaded files
   POST /api/headline          {"query": "CVE-2023-4966"}: are we exposed?
+  POST /api/jobs              {"rc_id", "team", "mode": "patch" | "manual", "actor", "ticket"}: raise a job
+  POST /api/jobs/<id>/decision {"action": "approve" | "reject" | "sendback", "actor", "comment"}
   GET  /api/board             printable one-page board summary
   GET  /api/download/<file>   receipts.json, root_causes.csv or findings.csv
 """
@@ -24,7 +26,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from .. import ingest, pipeline, report, risk, synth, views
+from .. import ingest, patch, pipeline, report, risk, synth, views
 
 STATIC = Path(__file__).parent / "static"
 MAX_UPLOAD = 300 * 1024 * 1024
@@ -40,6 +42,8 @@ class State:
         self.result = None
         self.payload = None
         self.dataset = {}
+        self.org = None
+        self.jobs = None
         self.intel = risk.load_intel()
 
     def uploaded(self) -> list[dict]:
@@ -53,19 +57,26 @@ class State:
                 files.append({"name": p.name, "format": fmt, "bytes": p.stat().st_size})
         return files
 
-    def analyse(self, files: list[Path], cmdb: Path | None, org: str, dataset: dict) -> None:
+    def analyse(self, files: list[Path], cmdb: Path | None, org: str, dataset: dict,
+                teams: Path | None = None) -> None:
         res = pipeline.run(files, cmdb, org=org)
         report.write_all(res, self.out)
         self.result, self.payload, self.dataset = res, views.payload(res, self.intel), dataset
+        self.org = patch.org_for(res.assets, ingest.load_teams(teams) if teams else None)
+        key = dataset.get("profile") or "upload"
+        jobs_file = self.workspace / "jobs" / f"{key}.json"
+        jobs_file.unlink(missing_ok=True)  # a fresh analysis starts a fresh approval history
+        self.jobs = patch.JobStore(jobs_file)
 
     def load_demo(self, profile: str) -> None:
         if profile not in synth.PROFILES:
             raise ValueError(f"unknown demo profile {profile!r}")
         paths = synth.generate(self.workspace / "demo" / profile, profile=profile)
-        files = [p for k, p in paths.items() if k != "cmdb"]
+        files = [p for k, p in paths.items() if k not in ("cmdb", "teams")]
         self.analyse(files, paths["cmdb"], synth.PROFILES[profile]["org"],
                      {"kind": "demo", "profile": profile,
-                      "files": [{"name": p.name, "format": ingest.detect_format(p)} for p in paths.values()]})
+                      "files": [{"name": p.name, "format": ingest.detect_format(p)} for p in paths.values()]},
+                     teams=paths["teams"])
 
 
 def make_handler(state: State):
@@ -105,7 +116,8 @@ def make_handler(state: State):
                     return self._json({"loaded": state.payload is not None, "dataset": state.dataset,
                                        "uploads": state.uploaded(), "profiles": {
                                            k: v["org"] for k, v in synth.PROFILES.items()},
-                                       "data": state.payload})
+                                       "data": state.payload, "org": state.org,
+                                       "jobs": state.jobs.jobs if state.jobs else []})
             if url.path == "/api/board":
                 if state.result is None:
                     return self._error("nothing analysed yet", HTTPStatus.NOT_FOUND)
@@ -162,11 +174,32 @@ def make_handler(state: State):
                         files = state.uploaded()
                         scans = [state.uploads / f["name"] for f in files if f["format"] in ingest.LOADERS]
                         cmdbs = [state.uploads / f["name"] for f in files if f["format"] == "cmdb"]
+                        teams = [state.uploads / f["name"] for f in files if f["format"] == "teams"]
                         if not scans:
                             return self._error("upload at least one Qualys CSV, Tenable CSV or .nessus file")
                         state.analyse(scans, cmdbs[0] if cmdbs else None, body.get("org", "").strip(),
-                                      {"kind": "upload", "files": files})
+                                      {"kind": "upload", "files": files}, teams=teams[0] if teams else None)
                     return self._json({"ok": True})
+                if url.path == "/api/jobs":
+                    if state.result is None:
+                        return self._error("nothing analysed yet")
+                    res = state.result
+                    rc = next((r for r in res.root_causes if r.rc_id == body.get("rc_id")), None)
+                    if rc is None:
+                        return self._error("unknown root cause")
+                    mode = body.get("mode", "patch")
+                    if mode not in ("patch", "manual"):
+                        return self._error("mode must be patch or manual")
+                    job = state.jobs.create(rc, str(body.get("team", "")), state.org, res.assets,
+                                            {f.finding_id: f for f in res.findings}, res.as_of, mode,
+                                            str(body.get("actor", "")), str(body.get("ticket", ""))[:80])
+                    return self._json(job)
+                m = re.fullmatch(r"/api/jobs/(J-\d+)/decision", url.path)
+                if m:
+                    if state.jobs is None:
+                        return self._error("nothing analysed yet")
+                    return self._json(state.jobs.decide(m[1], str(body.get("action", "")), str(body.get("actor", "")),
+                                                        str(body.get("comment", ""))[:500]))
                 if url.path == "/api/headline":
                     if state.result is None:
                         return self._error("nothing analysed yet")
