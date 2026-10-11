@@ -10,7 +10,7 @@ Python 3.11 or later.
 
 ```
 python3 -m venv .venv && . .venv/bin/activate
-pip install -e ./patchdraft -e ./connectors -e .  # add "./patchdraft[ai]" for Claude drafting
+pip install -e ./patchdraft -e ./connectors -e ./compliance -e .  # add "./patchdraft[ai]" for Claude drafting
 sutra db-upgrade                                   # creates workspace/sutra.db (SQLite)
 sutra create-admin --email you@company.com --name "Your Name"
 sutra serve                                        # http://127.0.0.1:8765
@@ -344,7 +344,7 @@ checking against the gazette text.
 ## Tests
 
 ```
-pip install -e ./patchdraft -e ./connectors -e .[dev]
+pip install -e ./patchdraft -e ./connectors -e ./compliance -e .[dev]
 ruff check .
 pytest
 ```

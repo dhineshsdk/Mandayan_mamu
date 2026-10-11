@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from datetime import UTC, date, datetime
 
-from sqlalchemy import JSON, Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -411,6 +411,124 @@ class ConfigSnapshot(Base):
     # [{"ip", "mac", "interface"}] and [{"mac", "vlan", "port"}] as of last_seen_at (switches only)
     arp: Mapped[list] = mapped_column(JSON, default=list)
     mac_table: Mapped[list] = mapped_column(JSON, default=list)
+
+
+class CmpEntity(Base):
+    """A regulated entity (a plant, a substation, a load-despatch centre) the compliance engine assesses
+    (``sutra.app.compliance``). ``site`` ties it to the site name used in the asset register."""
+
+    __tablename__ = "cmp_entities"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(200), unique=True)
+    entity_type: Mapped[str] = mapped_column(String(40))  # a key of sutra_compliance.rulepack.ENTITY_TYPES
+    capacity_mw: Mapped[float | None] = mapped_column(Float, nullable=True)
+    site: Mapped[str] = mapped_column(String(120), default="")
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class CmpAudit(Base):
+    """A cyber security audit of one entity by an external auditor."""
+
+    __tablename__ = "cmp_audits"
+    __table_args__ = (UniqueConstraint("entity_id", "ref"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_id: Mapped[int] = mapped_column(ForeignKey("cmp_entities.id", ondelete="CASCADE"), index=True)
+    ref: Mapped[str] = mapped_column(String(60))  # the customer's own reference, e.g. "CSA-2027-1"
+    auditor: Mapped[str] = mapped_column(String(200))
+    auditor_status: Mapped[str] = mapped_column(String(24))  # sutra_compliance.model.AUDITOR_STATUSES
+    started_on: Mapped[date] = mapped_column(Date)
+    report_submitted_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # starts the fix clocks
+    closure_report_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class CmpFinding(Base):
+    """A finding from an audit report. When ``job_id`` links it to a patch job, its fix date is the date of the
+    rescan that verified the job, never a date typed in."""
+
+    __tablename__ = "cmp_findings"
+    __table_args__ = (UniqueConstraint("entity_id", "ref"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_id: Mapped[int] = mapped_column(ForeignKey("cmp_entities.id", ondelete="CASCADE"), index=True)
+    audit_id: Mapped[int] = mapped_column(ForeignKey("cmp_audits.id", ondelete="CASCADE"), index=True)
+    ref: Mapped[str] = mapped_column(String(60))  # the auditor's finding number, unique within the entity
+    severity: Mapped[str] = mapped_column(String(12))  # sutra_compliance.model.FINDING_SEVERITIES
+    title: Mapped[str] = mapped_column(Text)
+    asset_ids: Mapped[list] = mapped_column(JSON, default=list)
+    job_id: Mapped[int | None] = mapped_column(ForeignKey("jobs.id", ondelete="SET NULL"), nullable=True, index=True)
+    fixed_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # recorded by hand; only when no job
+    auditor_cleared_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    planned_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # a scheduled fix, e.g. a shutdown
+    planned_reason: Mapped[str] = mapped_column(String(300), default="")
+    planned_reference: Mapped[str] = mapped_column(String(120), default="")
+    carried_from_id: Mapped[int | None] = mapped_column(ForeignKey("cmp_findings.id", ondelete="SET NULL"),
+                                                        nullable=True)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class CmpControl(Base):
+    """A compensating control holding a finding's risk down until it is fixed."""
+
+    __tablename__ = "cmp_controls"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    finding_id: Mapped[int] = mapped_column(ForeignKey("cmp_findings.id", ondelete="CASCADE"), index=True)
+    description: Mapped[str] = mapped_column(Text)
+    implemented_on: Mapped[date] = mapped_column(Date)
+    withdrawn_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    approved_by: Mapped[str] = mapped_column(String(200), default="")
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class CmpActivity(Base):
+    """One performance of a recurring obligation: a policy review, a crisis drill, a self-audit."""
+
+    __tablename__ = "cmp_activities"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_id: Mapped[int] = mapped_column(ForeignKey("cmp_entities.id", ondelete="CASCADE"), index=True)
+    activity: Mapped[str] = mapped_column(String(40))  # an activity of a periodic rule in the rule pack
+    performed_on: Mapped[date] = mapped_column(Date)
+    asset_id: Mapped[str] = mapped_column(String(120), default="")
+    approved_by: Mapped[str] = mapped_column(String(200), default="")
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class CmpEvidence(Base):
+    """A file kept as proof. Stored once under the workspace by its SHA-256; never changed after upload."""
+
+    __tablename__ = "cmp_evidence"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_id: Mapped[int] = mapped_column(ForeignKey("cmp_entities.id", ondelete="CASCADE"), index=True)
+    kind: Mapped[str] = mapped_column(String(40))  # sutra.app.compliance.EVIDENCE_KINDS
+    title: Mapped[str] = mapped_column(String(300))
+    filename: Mapped[str] = mapped_column(String(200))
+    content_type: Mapped[str] = mapped_column(String(100), default="application/octet-stream")
+    size: Mapped[int] = mapped_column(Integer)
+    sha256: Mapped[str] = mapped_column(String(64), index=True)
+    captured_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)  # when it was uploaded
+    captured_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+
+
+class CmpEvidenceLink(Base):
+    """What a piece of evidence proves: an audit's report or closure report, a finding's fix, a compensating
+    control, or a recurring activity."""
+
+    __tablename__ = "cmp_evidence_links"
+    __table_args__ = (UniqueConstraint("evidence_id", "owner_type", "owner_id"),
+                      Index("ix_cmp_evidence_links_owner", "owner_type", "owner_id"))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    evidence_id: Mapped[int] = mapped_column(ForeignKey("cmp_evidence.id", ondelete="CASCADE"), index=True)
+    owner_type: Mapped[str] = mapped_column(String(16))  # audit_report | audit_closure | finding | control | activity
+    owner_id: Mapped[int] = mapped_column(Integer)
+    linked_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    linked_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class AuditEvent(Base):

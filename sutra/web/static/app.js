@@ -75,6 +75,7 @@ const NAV = [
   { view: "scorecards", label: "Scorecards", module: "M-CSO" },
   { view: "changes", label: "What changed", test: () => can("M-RC") || can("M-TP") || can("M-BRD") },
   { view: "headline", label: "Headline check", module: "M-HC" },
+  { view: "compliance", label: "Compliance", module: "M-CMP" },
   { view: "import", label: "Import data", module: "M-DAT" },
   { view: "audit", label: "Audit log", test: () => can("M-AUD") || can("M-ADM", "admin") },
   { view: "admin", label: "Administration", test: () => can("M-ADM", "admin") || can("M-ADM", "act") },
@@ -1101,6 +1102,216 @@ function wireDevices(root, d) {
     setTimeout(async () => { if (seq === renderSeq) render(); }, 3000);
   }
 }
+
+// ---------- compliance (M-CMP) ----------
+const CMP_STATUS = { non_compliant: ["st-rejected", "Not compliant"], attention: ["st-cmp-amber", "Needs attention"],
+  on_track: ["st-approved", "On track"], not_covered: ["st-fixing-manually", "Not covered"] };
+const cmpStatus = (s) => `<span class="status ${(CMP_STATUS[s] || [])[0] || ""}">${esc((CMP_STATUS[s] || [s, s])[1])}</span>`;
+const CLOCK = { not_covered: ["st-fixing-manually", "No deadline in the rule pack"], clock_not_started: ["st-pending", "Clock not started"],
+  open: ["st-pending", "Open, inside the window"], fixed_on_time: ["st-approved", "Fixed on time"], fixed_late: ["st-cmp-amber", "Fixed late"],
+  overdue_compensated: ["st-cmp-amber", "Past deadline, compensating control in place"], overdue_uncompensated: ["st-rejected", "Past deadline, no compensating control"],
+  overdue: ["st-rejected", "Past deadline"] };
+const clockBadge = (s) => `<span class="status ${(CLOCK[s] || [])[0] || ""}">${esc((CLOCK[s] || [s, s])[1])}</span>`;
+const DELIVERABLE = { pending: "Not yet due", done_on_time: "Done on time", done_late: "Done late", overdue: "Overdue" };
+const sev = (s) => `<span class="badge${s === "critical" || s === "high" ? " warn" : ""}">${esc(s.charAt(0).toUpperCase() + s.slice(1))}</span>`;
+const citeList = (list) => (list || []).filter(Boolean).map((c) => `<span title="${esc(c.title || "")}">${esc(c.rule_id)}</span>`).join(", ");
+const kb = (n) => (n < 1024 ? `${num(n)} B` : `${num(Math.max(1, Math.round(n / 1024)))} KB`);
+
+function evidenceList(items, owner, d) {
+  const act = d.can_act;
+  const rows = items.map((x) => `<li><a href="/api/compliance/evidence/${x.id}/download">${esc(x.title)}</a> <span class="muted">${esc(x.kind_label)}, ${esc(x.filename)}, ${kb(x.size)}, uploaded ${esc(fmtTime(x.captured_at))}</span>
+    <span class="mono muted" title="SHA-256">${esc(x.sha256.slice(0, 12))}…</span>${act ? ` <button class="btn small" data-unlink="${x.id}" data-owner="${owner.type}:${owner.id}">Detach</button>` : ""}</li>`).join("");
+  const others = d.evidence.filter((x) => !items.some((y) => y.id === x.id));
+  const upload = act ? `<details><summary>Attach evidence</summary>
+    <form class="form-grid" data-cmp-url="/api/compliance/entities/${d.entity.id}/evidence" data-multipart>
+      <input type="hidden" name="owner_type" value="${owner.type}"><input type="hidden" name="owner_id" value="${owner.id}">
+      <label>What it is <select name="kind">${Object.entries(D.meta.evidence_kinds).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
+      <label>Title <input name="title" maxlength="300" required></label>
+      <label>File <input type="file" name="file" required></label>
+      <div class="toolbar"><button class="btn primary">Upload</button></div></form>
+    ${others.length ? `<form class="form-grid" data-cmp-url="/api/compliance/evidence/{id}/links" data-link>
+      <input type="hidden" name="owner_type" value="${owner.type}"><input type="hidden" name="owner_id" value="${owner.id}">
+      <label>Or attach a file already uploaded <select name="evidence">${others.map((x) => `<option value="${x.id}">${esc(x.title)} (${esc(x.kind_label)})</option>`).join("")}</select></label>
+      <div class="toolbar"><button class="btn">Attach</button></div></form>` : ""}</details>` : "";
+  return `${rows ? `<ul class="evidence-list">${rows}</ul>` : '<p class="muted" style="margin:4px 0">No evidence attached.</p>'}${upload}`;
+}
+
+function findingForm(f, d, audit) {
+  const v = f || { ref: "", severity: "high", title: "", asset_ids: [], job_id: null, recorded_fixed_on: null, auditor_cleared_on: null, planned_on: null, planned_reason: "", planned_reference: "", carried_from_id: null };
+  const earlier = d.audits.filter((a) => a.started_on < audit.started_on).flatMap((a) => a.findings.map((x) => [x.id, `${a.ref} / ${x.ref}: ${x.title}`]));
+  const url = f ? `/api/compliance/findings/${f.id}` : `/api/compliance/audits/${audit.id}/findings`;
+  return `<form class="form-grid" data-cmp-url="${url}" data-cmp-method="${f ? "PUT" : "POST"}">
+    <label>Finding number <input name="ref" maxlength="60" required value="${esc(v.ref)}"></label>
+    <label>Severity <select name="severity">${D.meta.severities.map((s) => `<option${s === v.severity ? " selected" : ""}>${s}</option>`).join("")}</select></label>
+    <label style="grid-column:1/-1">Title <input name="title" maxlength="2000" required value="${esc(v.title)}"></label>
+    <label>Assets (comma separated) <input name="asset_ids" data-list value="${esc(v.asset_ids.join(", "))}"></label>
+    <label>Patch job that fixes it <input name="job_id" data-num list="cmp-jobs" placeholder="Job number" value="${v.job_id ?? ""}"></label>
+    <label>Fixed on (only without a patch job) <input type="date" name="fixed_on" max="${D.meta.today}" value="${v.recorded_fixed_on || ""}"></label>
+    <label>Auditor cleared it on <input type="date" name="auditor_cleared_on" max="${D.meta.today}" value="${v.auditor_cleared_on || ""}"></label>
+    <label>Fix scheduled for <input type="date" name="planned_on" value="${v.planned_on || ""}"></label>
+    <label>Scheduled for what (e.g. Unit 2 annual overhaul) <input name="planned_reason" maxlength="300" value="${esc(v.planned_reason)}"></label>
+    <label>Shutdown or change reference <input name="planned_reference" maxlength="120" value="${esc(v.planned_reference)}"></label>
+    ${earlier.length ? `<label>Carried from an earlier finding <select name="carried_from_id" data-num><option value="">No</option>${earlier.map(([id, l]) => `<option value="${id}"${id === v.carried_from_id ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>` : ""}
+    <div class="toolbar" style="grid-column:1/-1"><button class="btn primary">${f ? "Save finding" : "Add finding"}</button></div></form>`;
+}
+
+function findingHtml(f, d, audit) {
+  const c = f.clock || {};
+  const job = f.job;
+  let proof = "";
+  if (job) {
+    const pc = job.checks.find((x) => x.id === job.proof_check);
+    const link = can("M-PJ") ? `<a href="#/job/${job.id}">J-${String(job.id).padStart(3, "0")}</a>` : `J-${String(job.id).padStart(3, "0")}`;
+    proof = `<p>Fixed through patch job ${link}: ${esc(job.title)} (${esc(job.team)}). ${pc ? `<b>Proved by the rescan of ${esc(fmtDate(pc.as_of))}</b>: ${num(pc.fixed)} of the job's findings gone, ${num(pc.still_open)} still reported.` : `Status: ${esc(STATUS_LABEL[job.status] || job.status)}. The finding closes when a rescan proves the job fixed.`}</p>
+      ${job.checks.length ? `<div class="table-wrap"><table><thead><tr><th>Scans as of</th><th>Result</th><th class="n">Fixed</th><th class="n">Still reported</th><th class="n">Not rescanned</th></tr></thead><tbody>${job.checks.map((x) => `<tr><td>${esc(fmtDate(x.as_of))}${x.id === job.proof_check ? ' <span class="badge">proof</span>' : ""}</td><td>${esc(OUTCOME[x.outcome] || x.outcome)}</td><td class="n">${x.fixed}</td><td class="n">${x.still_open}</td><td class="n">${x.not_rescanned}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
+  } else if (f.fixed_source === "recorded") {
+    proof = `<p>Fix recorded by hand for ${esc(fmtDate(f.fixed_on))}. ${f.evidence.length ? "" : '<span class="warn-ink">No fix evidence attached.</span>'}</p>`;
+  }
+  const controls = f.controls.map((x) => `<li><b>${esc(x.ref)}</b> ${esc(x.description)} <span class="muted">in place ${esc(fmtDate(x.implemented_on))}${x.withdrawn_on ? `, withdrawn ${esc(fmtDate(x.withdrawn_on))}` : ""}${x.approved_by ? `, approved by ${esc(x.approved_by)}` : ""}</span>
+    ${d.can_act && !x.withdrawn_on ? `<form class="inline-form" data-cmp-url="/api/compliance/controls/${x.id}" data-cmp-method="PUT"><input type="hidden" name="description" value="${esc(x.description)}"><input type="hidden" name="implemented_on" value="${x.implemented_on}"><input type="hidden" name="approved_by" value="${esc(x.approved_by)}">
+      <input type="date" name="withdrawn_on" max="${D.meta.today}" required aria-label="Withdrawn on"> <button class="btn small">Record withdrawal</button></form>` : ""}
+    ${evidenceList(x.evidence, { type: "control", id: x.id }, d)}</li>`).join("");
+  return `<tr id="cf-${f.id}"><td class="mono">${esc(f.ref)}</td><td>${sev(f.severity)}</td><td>${esc(f.title)}${f.asset_ids.length ? `<div class="fix">Assets: ${f.asset_ids.map(esc).join(", ")}</div>` : ""}${f.carried_from ? `<div class="fix">Carried from ${esc(f.carried_from)}</div>` : ""}</td>
+    <td>${clockBadge(c.state)}${c.fix_needs_pre_deployment_audit ? '<div class="fix" title="Second Schedule: fixes for previously found critical vulnerabilities">Fix needs a pre-deployment audit</div>' : ""}</td>
+    <td>${c.due_on ? esc(fmtDate(c.due_on)) : '<span class="muted">–</span>'}${c.days_remaining != null ? `<div class="fix">${c.days_remaining} days left</div>` : ""}${c.days_overdue != null ? `<div class="fix warn-ink">${c.days_overdue} days over</div>` : ""}</td>
+    <td>${c.closed_on ? esc(fmtDate(c.closed_on)) : '<span class="muted">Open</span>'}${f.fixed_source === "rescan" ? '<div class="fix">by rescan</div>' : ""}</td></tr>
+    <tr class="detail-row"><td></td><td colspan="5"><details${location.hash.includes(`f=${f.id}`) ? " open" : ""}><summary>Clock, proof and controls</summary>
+      <p style="margin-top:6px">${esc(c.explanation || "")} <span class="muted">Rules: ${citeList(c.citations)}.</span></p>
+      ${f.planned_on ? `<p>Fix scheduled for <b>${esc(fmtDate(f.planned_on))}</b>: ${esc(f.planned_reason)}${f.planned_reference ? ` (${esc(f.planned_reference)})` : ""}.${c.scheduled_fix_after_due ? ' <span class="warn-ink">This is after the deadline; the clock keeps running.</span>' : ""}</p>` : ""}
+      ${proof}
+      <h3>Compensating controls${c.compensating_control_required ? ' <span class="badge warn">required now</span>' : ""}</h3>
+      ${controls ? `<ul class="plain">${controls}</ul>` : '<p class="muted" style="margin:4px 0">None recorded.</p>'}
+      ${d.can_act ? `<details><summary>Add a compensating control</summary><form class="form-grid" data-cmp-url="/api/compliance/findings/${f.id}/controls">
+        <label style="grid-column:1/-1">Control <textarea name="description" maxlength="2000" required placeholder="For example: SMB blocked from the corporate VLAN at the plant firewall"></textarea></label>
+        <label>In place since <input type="date" name="implemented_on" max="${D.meta.today}" required></label><label>Approved by <input name="approved_by" maxlength="200"></label>
+        <div class="toolbar"><button class="btn primary">Add control</button></div></form></details>` : ""}
+      <h3>Fix evidence</h3>${evidenceList(f.evidence, { type: "finding", id: f.id }, d)}
+      ${d.can_act ? `<details><summary>Edit this finding</summary>${findingForm(f, d, audit)}<div class="toolbar"><button class="btn small" data-delfinding="${f.id}">Remove finding</button></div></details>` : ""}
+    </details></td></tr>`;
+}
+
+function auditForm(a, d) {
+  const v = a || { ref: "", auditor: "", auditor_status: "cert_in_empanelled", started_on: "", report_submitted_on: null, closure_report_on: null };
+  return `<form class="form-grid" data-cmp-url="${a ? `/api/compliance/audits/${a.id}` : `/api/compliance/entities/${d.entity.id}/audits`}" data-cmp-method="${a ? "PUT" : "POST"}">
+    <label>Audit reference <input name="ref" maxlength="60" required value="${esc(v.ref)}"></label>
+    <label>Auditor <input name="auditor" maxlength="200" required value="${esc(v.auditor)}"></label>
+    <label>Auditor is <select name="auditor_status">${Object.entries(D.meta.auditor_statuses).map(([k, l]) => `<option value="${k}"${k === v.auditor_status ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>
+    <label>Audit started <input type="date" name="started_on" max="${D.meta.today}" required value="${v.started_on}"></label>
+    <label>Audit report submitted (starts the fix clocks) <input type="date" name="report_submitted_on" max="${D.meta.today}" value="${v.report_submitted_on || ""}"></label>
+    <label>Closure report <input type="date" name="closure_report_on" max="${D.meta.today}" value="${v.closure_report_on || ""}"></label>
+    <div class="toolbar" style="grid-column:1/-1"><button class="btn primary">${a ? "Save audit" : "Add audit"}</button></div></form>`;
+}
+
+function auditHtml(a, d) {
+  const deliv = a.deliverables.map((x) => `<tr><td>${esc(x.deliverable === "audit_report" ? "Audit report" : "Closure report")}</td><td>${esc(fmtDate(x.due_on))}</td><td>${x.done_on ? esc(fmtDate(x.done_on)) : '<span class="muted">–</span>'}</td>
+    <td><span class="status ${x.state === "overdue" ? "st-rejected" : x.state === "done_late" ? "st-cmp-amber" : x.state === "done_on_time" ? "st-approved" : "st-pending"}">${esc(DELIVERABLE[x.state] || x.state)}</span>${x.missing_evidence_kinds.length ? `<div class="fix warn-ink">Missing: ${x.missing_evidence_kinds.map((k) => esc(D.meta.evidence_kinds[k] || k)).join(", ")}</div>` : ""}</td><td class="muted">${esc(x.citation.rule_id)}</td></tr>`).join("");
+  const elig = a.auditor_eligible === true ? "eligible" : a.auditor_eligible === false ? '<span class="warn-ink">not eligible</span>' : '<span class="warn-ink">eligibility not recorded</span>';
+  return `<div class="card mt" id="ca-${a.id}"><h2>Audit ${esc(a.ref)}</h2>
+    <p class="muted" style="margin-top:0">${esc(a.auditor)} (${esc(a.auditor_status_label)}, ${elig}). Started ${esc(fmtDate(a.started_on))}; report ${a.report_submitted_on ? `submitted ${esc(fmtDate(a.report_submitted_on))}` : "not submitted yet, so no fix clock has started"}.</p>
+    <div class="table-wrap"><table><thead><tr><th>Deliverable</th><th>Due</th><th>Done</th><th>State</th><th>Rule</th></tr></thead><tbody>${deliv}</tbody></table></div>
+    <div class="grid two" style="margin-top:8px"><div><h3>Audit report</h3>${evidenceList(a.report_evidence, { type: "audit_report", id: a.id }, d)}</div>
+      <div><h3>Closure report and report to the head</h3>${evidenceList(a.closure_evidence, { type: "audit_closure", id: a.id }, d)}</div></div>
+    <h3>Findings</h3>
+    ${a.findings.length ? `<div class="table-wrap"><table><thead><tr><th>No.</th><th>Severity</th><th>Finding</th><th>Fix clock</th><th>Due</th><th>Closed</th></tr></thead><tbody>${a.findings.map((f) => findingHtml(f, d, a)).join("")}</tbody></table></div>` : '<p class="muted">No findings recorded.</p>'}
+    ${d.can_act ? `<details><summary>Add a finding</summary>${findingForm(null, d, a)}</details>
+      <details><summary>Edit this audit</summary>${auditForm(a, d)}${a.findings.length ? "" : `<div class="toolbar"><button class="btn small" data-delaudit="${a.id}">Remove audit</button></div>`}</details>` : ""}</div>`;
+}
+
+const ENTITY_FIELDS = (v, types) => `<label>Name <input name="name" maxlength="200" required value="${esc(v.name)}"></label>
+  <label>Type <select name="entity_type">${Object.entries(types).map(([k, l]) => `<option value="${k}"${k === v.entity_type ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>
+  <label>Capacity (MW, generators and storage) <input name="capacity_mw" data-num type="number" min="0" step="any" value="${v.capacity_mw ?? ""}"></label>
+  <label>Site in the asset register <input name="site" maxlength="120" value="${esc(v.site)}"></label>`;
+
+VIEWS.compliance = {
+  async load(arg) {
+    const meta = await api("/api/compliance/meta");
+    if (!arg) return { meta, list: await api("/api/compliance/entities") };
+    const [id] = arg.split("?");
+    const d = await api(`/api/compliance/entities/${encodeURIComponent(id)}`);
+    if (d.can_act) { try { d.jobs = (await api("/api/compliance/jobs")).jobs; } catch (e) { d.jobs = []; } }
+    return { meta, ...d };
+  },
+  html(d) {
+    const pack = d.meta.pack;
+    const packNote = `<div class="notice" style="color:var(--warn-ink)">Rule pack ${esc(pack.title)}, version ${esc(pack.version)}, in force from ${esc(fmtDate(pack.in_force_from))}. ${pack.verification === "verified_against_gazette" ? "" : "Its rules have not yet been checked against the gazette text; they come from secondary summaries."}</div>`;
+    if (d.list) {
+      const rows = d.list.entities.map((e) => `<tr class="click" data-href="#/compliance/${e.id}"><td><b>${esc(e.name)}</b><div class="fix">${esc(e.entity_type_label)}${e.capacity_mw != null ? `, ${num(e.capacity_mw)} MW` : ""}${e.site ? ` · ${esc(e.site)}` : ""}</div></td>
+        <td>${cmpStatus(e.status)}${e.status !== e.status_if_in_force ? `<div class="fix">Once in force: ${esc((CMP_STATUS[e.status_if_in_force] || [0, e.status_if_in_force])[1])}</div>` : ""}</td>
+        <td class="n">${e.audits}</td><td class="n">${e.findings}</td><td class="n">${e.breaches}</td>
+        <td>${e.next_deadline ? `${esc(fmtDate(e.next_deadline.due.slice(0, 10)))} <span class="muted">${esc(e.next_deadline.subject.replace("_", " "))} ${esc(e.next_deadline.ref)}</span>` : '<span class="muted">–</span>'}</td></tr>`).join("");
+      return `<h1>Compliance</h1><p class="sub">CEA cyber security obligations for each regulated entity: audits, the fix clock on every finding, and the proof behind each closure.</p>
+        ${packNote}
+        <div class="card">${rows ? `<div class="table-wrap"><table><thead><tr><th>Entity</th><th>Status</th><th class="n">Audits</th><th class="n">Findings</th><th class="n">Breaches</th><th>Next deadline</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No regulated entities recorded yet.</p>'}
+        ${d.list.can_act ? `<details style="margin-top:10px"><summary>Add an entity</summary><form class="form-grid" data-cmp-url="/api/compliance/entities">${ENTITY_FIELDS({ name: "", entity_type: "generator", capacity_mw: null, site: "" }, d.meta.entity_types)}<div class="toolbar"><button class="btn primary">Add entity</button></div></form></details>` : ""}
+        <div id="cmp-msg"></div></div>`;
+    }
+    const a = d.assessment, e = d.entity;
+    const issues = a.issues.map((i) => `<tr><td><span class="status ${i.severity === "breach" ? "st-rejected" : "st-cmp-amber"}">${i.severity === "breach" ? "Breach" : "Attention"}</span>${i.in_force ? "" : '<div class="fix">not yet in force</div>'}</td><td>${esc(i.subject.replace("_", " "))} <span class="mono">${esc(i.ref)}</span></td><td>${esc(i.message)}</td><td class="muted">${esc(i.rule_id || "")}</td></tr>`).join("");
+    const deadlines = a.upcoming_deadlines.slice(0, 12).map((x) => `<tr><td>${esc(fmtDate(x.due.slice(0, 10)))}</td><td class="n">${x.days_left}</td><td>${esc(x.subject.replace("_", " "))} <span class="mono">${esc(x.ref)}</span></td><td class="muted">${esc(x.rule_id || "")}</td></tr>`).join("");
+    const periodic = a.periodic.map((p) => `<tr><td>${esc((d.meta.activities[p.activity]) || p.activity.replace(/_/g, " "))}${p.asset_id ? ` <span class="mono">${esc(p.asset_id)}</span>` : ""}</td><td>${p.last_performed_on ? esc(fmtDate(p.last_performed_on)) : '<span class="muted">No record</span>'}</td><td>${p.due_on ? esc(fmtDate(p.due_on)) : "–"}</td><td><span class="status ${p.state === "overdue" ? "st-rejected" : p.state === "current" ? "st-approved" : "st-cmp-amber"}">${esc(p.state.replace(/_/g, " "))}</span></td><td class="muted">${esc(p.rule_id)}</td></tr>`).join("");
+    const acts = d.activities.map((x) => `<li>${esc(x.title)} on <b>${esc(fmtDate(x.performed_on))}</b>${x.approved_by ? ` <span class="muted">approved by ${esc(x.approved_by)}</span>` : ""}${d.can_act ? ` <button class="btn small" data-delact="${x.id}">Remove</button>` : ""}${evidenceList(x.evidence, { type: "activity", id: x.id }, d)}</li>`).join("");
+    const register = d.evidence.map((x) => `<tr><td><a href="/api/compliance/evidence/${x.id}/download">${esc(x.title)}</a><div class="fix">${esc(x.filename)}, ${kb(x.size)}</div></td><td>${esc(x.kind_label)}</td><td class="mono">${esc(fmtTime(x.captured_at))}</td><td class="mono" title="${esc(x.sha256)}">${esc(x.sha256.slice(0, 16))}…</td><td class="n">${x.links.length}</td></tr>`).join("");
+    return `<div class="crumb"><a href="#/compliance">← Compliance</a></div>
+      <h1>${esc(e.name)} ${cmpStatus(a.status)}</h1>
+      <p class="sub">${esc(e.entity_type_label)}${e.capacity_mw != null ? `, ${num(e.capacity_mw)} MW` : ""}${e.site ? `, ${esc(e.site)}` : ""}. ${esc(a.applicability.reason)} Assessed ${esc(fmtDate(a.as_of_date))} (Indian date).${a.regulation_in_force ? "" : ` Before the regulation is in force, the status counts nothing; once in force this would be <b>${esc((CMP_STATUS[a.status_if_in_force] || [0, a.status_if_in_force])[1])}</b>.`}</p>
+      ${packNote}
+      <div class="grid two"><div class="card"><h2>Breaches and attention</h2>${issues ? `<div class="table-wrap"><table><thead><tr><th></th><th>About</th><th>What</th><th>Rule</th></tr></thead><tbody>${issues}</tbody></table></div>` : '<p class="muted">Nothing needs attention.</p>'}</div>
+        <div class="card"><h2>Upcoming deadlines</h2>${deadlines ? `<div class="table-wrap"><table><thead><tr><th>Due</th><th class="n">Days</th><th>What</th><th>Rule</th></tr></thead><tbody>${deadlines}</tbody></table></div>` : '<p class="muted">None.</p>'}</div></div>
+      ${d.audits.map((x) => auditHtml(x, d)).join("")}
+      ${d.can_act ? `<div class="card mt"><details><summary>Add an audit</summary>${auditForm(null, d)}</details></div>` : ""}
+      <div class="card mt"><h2>Recurring obligations</h2><div class="table-wrap"><table><thead><tr><th>Activity</th><th>Last done</th><th>Next due</th><th>State</th><th>Rule</th></tr></thead><tbody>${periodic}</tbody></table></div>
+        ${acts ? `<h3>Records</h3><ul class="plain">${acts}</ul>` : ""}
+        ${d.can_act ? `<details><summary>Record an activity</summary><form class="form-grid" data-cmp-url="/api/compliance/entities/${e.id}/activities">
+          <label>Activity <select name="activity">${Object.entries(d.meta.activities).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
+          <label>Done on <input type="date" name="performed_on" max="${d.meta.today}" required></label><label>Approved by <input name="approved_by" maxlength="200"></label>
+          <div class="toolbar"><button class="btn primary">Record</button></div></form></details>` : ""}</div>
+      <div class="card mt"><h2>Evidence register</h2><p class="muted" style="margin-top:0">Every file is stored once under its SHA-256 and never changed. Downloads are logged.</p>
+        ${register ? `<div class="table-wrap"><table><thead><tr><th>File</th><th>Kind</th><th>Uploaded (UTC)</th><th>SHA-256</th><th class="n">Attached to</th></tr></thead><tbody>${register}</tbody></table></div>` : '<p class="muted">No evidence uploaded.</p>'}</div>
+      <div class="card mt"><h2>Not checked</h2><ul>${[...d.notes, ...a.unchecked].map((n) => `<li>${esc(n)}</li>`).join("")}</ul></div>
+      ${d.can_act ? `<div class="card mt"><details><summary>Edit this entity</summary><form class="form-grid" data-cmp-url="/api/compliance/entities/${e.id}" data-cmp-method="PUT">${ENTITY_FIELDS(e, d.meta.entity_types)}<div class="toolbar"><button class="btn primary">Save entity</button></div></form></details></div>` : ""}
+      <datalist id="cmp-jobs">${(d.jobs || []).map((j) => `<option value="${j.id}">${esc(`J-${String(j.id).padStart(3, "0")} ${j.title} (${j.team}, ${STATUS_LABEL[j.status] || j.status})`)}</option>`).join("")}</datalist>
+      <div id="cmp-msg"></div>`;
+  },
+  wire(root, d) {
+    root.querySelectorAll("tr[data-href]").forEach((tr) => tr.addEventListener("click", () => { location.hash = tr.dataset.href; }));
+    const fail = (err) => alert(err.message);
+    root.querySelectorAll("form[data-cmp-url]").forEach((f) => f.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const btn = f.querySelector("button"); btn.disabled = true;
+      try {
+        if (f.hasAttribute("data-multipart")) {
+          await api(f.dataset.cmpUrl, { method: "POST", body: new FormData(f) });
+        } else if (f.hasAttribute("data-link")) {
+          await post(f.dataset.cmpUrl.replace("{id}", f.evidence.value), { owner_type: f.owner_type.value, owner_id: Number(f.owner_id.value) });
+        } else {
+          const body = {};
+          for (const el of f.elements) {
+            if (!el.name) continue;
+            let v = el.value.trim();
+            if (el.hasAttribute("data-list")) v = v ? v.split(",").map((s) => s.trim()).filter(Boolean) : [];
+            else if (el.hasAttribute("data-num")) v = v === "" ? null : Number(v);
+            else if (el.type === "date") v = v || null;
+            body[el.name] = v;
+          }
+          const res = await api(f.dataset.cmpUrl, { method: f.dataset.cmpMethod || "POST", json: body });
+          if (!d.entity && res.id) { location.hash = `#/compliance/${res.id}`; return; }
+        }
+        render();
+      } catch (err) { fail(err); btn.disabled = false; }
+    }));
+    const del = (sel, url, question) => root.querySelectorAll(`[${sel}]`).forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm(question)) return;
+      try { await api(url(b.getAttribute(sel)), { method: "DELETE" }); render(); } catch (err) { fail(err); }
+    }));
+    del("data-delfinding", (id) => `/api/compliance/findings/${id}`, "Remove this finding, its compensating controls and its evidence links? Uploaded files are kept.");
+    del("data-delaudit", (id) => `/api/compliance/audits/${id}`, "Remove this audit?");
+    del("data-delact", (id) => `/api/compliance/activities/${id}`, "Remove this activity record?");
+    root.querySelectorAll("[data-unlink]").forEach((b) => b.addEventListener("click", async () => {
+      const [type, id] = b.dataset.owner.split(":");
+      try { await api(`/api/compliance/evidence/${b.dataset.unlink}/links?owner_type=${type}&owner_id=${id}`, { method: "DELETE" }); render(); } catch (err) { fail(err); }
+    }));
+  },
+};
 
 VIEWS.audit = {
   load: () => api("/api/audit?limit=200"),

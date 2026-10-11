@@ -21,6 +21,7 @@ dependencies = [
     "cryptography>=42",
     "sutra-patchdraft",  # ./patchdraft in this repository; install it first (see README)
     "sutra-connectors",  # ./connectors in this repository; install it first (see README)
+    "sutra-compliance",  # ./compliance in this repository; install it first (see README)
 ]
 
 [project.optional-dependencies]
