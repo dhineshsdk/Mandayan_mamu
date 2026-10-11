@@ -1,0 +1,359 @@
+{
+ "value": [
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/fabcdef2-5678-1234-8382-21234567890d",
+   "name": "fabcdef2-5678-1234-8382-21234567890d",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test",
+     "ResourceName": "vm-for-defender-cloud-test",
+     "ResourceType": "virtualMachines",
+     "ResourceProvider": "Microsoft.Compute",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test"
+    },
+    "displayName": "Machines should have a vulnerability assessment solution",
+    "status": {
+     "code": "Healthy",
+     "cause": "mdeTvm",
+     "description": "The machine is onboarded to Microsoft defender vulnerability management"
+    },
+    "additionalData": {
+     "Can onboard to BYOL": "true"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev/securityentitydata/namespace-kube-system-pod-konnectivity-agent-*-*-container-konnectivity-agent/providers/Microsoft.Security/assessments/5abcdef2-6664-abcd-1234-c1234567890f",
+   "name": "5abcdef2-6664-abcd-1234-c1234567890f",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev/securityentitydata/namespace-kube-system-pod-konnectivity-agent-*-*-container-konnectivity-agent",
+     "ResourceName": "konnectivity-agent",
+     "ResourceType": "ContainerImage",
+     "ResourceProvider": "Microsoft.ContainerService",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev/securityentitydata/namespace-kube-system-pod-konnectivity-agent-*-*-container-konnectivity-agent"
+    },
+    "displayName": "[Preview] Vulnerable Azure Kubernetes Service should be updated to resolve vulnerability findings",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "K8sClusterId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev",
+     "K8sClusterName": "example-dev",
+     "ControllerName": "konnectivity-agent-*",
+     "ControllerType": "replicaset",
+     "PodName": "konnectivity-agent-*-*",
+     "Namespace": "kube-system",
+     "ImageUri": "mcr.microsoft.com/oss/kubernetes/apiserver-network-proxy/agent@sha256:d58bcadc0a5c54a5be409f3473be0dd5639b111c8a9a7dd1827c8f77d76945e4",
+     "Repo": "oss/kubernetes/apiserver-network-proxy/agent",
+     "Digest": "sha256:d58bcadc0a5c54a5be409f3473be0dd5639b111c8a9a7dd1827c8f77d76945e4",
+     "OsType": "Linux",
+     "OsDistribution": "Debian 11",
+     "Tags": "[\"v0.30.3-hotfix.20240819\"]",
+     "InventorySource": "Agentless",
+     "CvesCount": "2",
+     "HighestSeverity": "Medium",
+     "CVEs": "[{\"CVE\":\"CVE-2025-22872\",\"Severity\":\"Medium\",\"BaseScore\":6.5},{\"CVE\":\"CVE-2025-22870\",\"Severity\":\"Medium\",\"BaseScore\":5.3}]"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev/securityentitydata/namespace-kube-system-pod-ama-metrics-*-*-container-addon-token-adapter/providers/Microsoft.Security/assessments/5abcdef2-6664-abcd-1234-c1234567890f",
+   "name": "5abcdef2-6664-abcd-1234-c1234567890f",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev/securityentitydata/namespace-kube-system-pod-ama-metrics-*-*-container-addon-token-adapter",
+     "ResourceName": "addon-token-adapter",
+     "ResourceType": "ContainerImage",
+     "ResourceProvider": "Microsoft.ContainerService",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev/securityentitydata/namespace-kube-system-pod-ama-metrics-*-*-container-addon-token-adapter"
+    },
+    "displayName": "[Preview] Vulnerable Azure Kubernetes Service should be updated to resolve vulnerability findings",
+    "status": {
+     "code": "Healthy"
+    },
+    "additionalData": {
+     "K8sClusterId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-dev_group/providers/microsoft.containerservice/managedclusters/example-dev",
+     "K8sClusterName": "example-dev",
+     "ControllerName": "ama-metrics-*",
+     "ControllerType": "replicaset",
+     "PodName": "ama-metrics-*-*",
+     "Namespace": "kube-system",
+     "ImageUri": "mcr.microsoft.com/aks/msi/addon-token-adapter@sha256:a9560e48285975ee2e9f8d1ced439c928ecab5946fa8781c61ecfc513f2107b2",
+     "Repo": "aks/msi/addon-token-adapter",
+     "Digest": "sha256:a9560e48285975ee2e9f8d1ced439c928ecab5946fa8781c61ecfc513f2107b2",
+     "OsType": "Linux",
+     "OsDistribution": "Debian 12",
+     "Tags": "[\"master.250604.1\"]",
+     "InventorySource": "Agentless",
+     "CvesCount": "0",
+     "HighestSeverity": "Unknown",
+     "CVEs": "[]"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/b0123458-ef12-1234-aaaa-5abcdef1234e",
+   "name": "b0123458-ef12-1234-aaaa-5abcdef1234e",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test",
+     "ResourceName": "vm-for-defender-cloud-test",
+     "ResourceType": "virtualMachines",
+     "ResourceProvider": "Microsoft.Compute",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test"
+    },
+    "displayName": "Management ports should be closed on your virtual machines",
+    "status": {
+     "code": "Unhealthy",
+     "cause": "ManagementPortsAreOpenToAllSources",
+     "description": "Management ports on your network security group are open to all sources."
+    },
+    "additionalData": {
+     "NSG open ports": "22"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/EXAMPLE-TEST_GROUP-WESTUS/providers/Microsoft.Compute/virtualMachineScaleSets/aks-userpool-12341234-vmss/providers/Microsoft.Security/assessments/2123123d-5678-cdef-1234-1abcdef12341",
+   "name": "2123123d-5678-cdef-1234-1abcdef12341",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/EXAMPLE-TEST_GROUP-WESTUS/providers/Microsoft.Compute/virtualMachineScaleSets/aks-userpool-12341234-vmss",
+     "ResourceName": "aks-userpool-12341234-vmss",
+     "ResourceType": "virtualMachineScaleSets",
+     "ResourceProvider": "Microsoft.Compute",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/EXAMPLE-TEST_GROUP-WESTUS/providers/Microsoft.Compute/virtualMachineScaleSets/aks-userpool-12341234-vmss"
+    },
+    "displayName": "AKS nodes should have vulnerability findings resolved",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/EXAMPLE-TEST_GROUP-WESTUS/providers/Microsoft.Compute/virtualMachineScaleSets/aks-userpool-12341234-vmss/providers/Microsoft.Security/assessments/2123123d-5678-cdef-1234-1abcdef12341/subAssessments",
+     "maxCvss30Score": "9.1"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/providers/Microsoft.Security/assessments/05abcdef-3dda-1234-abcd-81234567890f",
+   "name": "05abcdef-3dda-1234-abcd-81234567890f",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1"
+    },
+    "displayName": "Disabled accounts with owner permissions on Azure resources should be removed",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/providers/Microsoft.Security/assessments/05abcdef-3dda-1234-abcd-81234567890f/subAssessments"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/dcabcdef-1234-abab-aaaa-07284abcdefe",
+   "name": "dcabcdef-1234-abab-aaaa-07284abcdefe",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test",
+     "ResourceName": "vm-for-defender-cloud-test",
+     "ResourceType": "virtualMachines",
+     "ResourceProvider": "Microsoft.Compute",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test"
+    },
+    "displayName": "EDR configuration issues should be resolved on virtual machines",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/dcabcdef-1234-abab-aaaa-07284abcdefe/subAssessments"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-metrics-server-*-*-container-metrics-server/providers/Microsoft.Security/assessments/c2345673-abcd-0012-abcd-81234554321d",
+   "name": "c2345673-abcd-0012-abcd-81234554321d",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-metrics-server-*-*-container-metrics-server",
+     "ResourceName": "metrics-server",
+     "ResourceType": "Container",
+     "ResourceProvider": "Microsoft.ContainerService",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-metrics-server-*-*-container-metrics-server"
+    },
+    "displayName": "[Preview] Containers running in Azure should have vulnerability findings resolved",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-metrics-server-*-*-container-metrics-server/providers/Microsoft.Security/assessments/c2345673-abcd-0012-abcd-81234554321d/subAssessments",
+     "maxCvss30Score": "7.6"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-coredns-autoscaler-*-*-container-autoscaler/providers/Microsoft.Security/assessments/c2345673-abcd-0012-abcd-81234554321d",
+   "name": "c2345673-abcd-0012-abcd-81234554321d",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-coredns-autoscaler-*-*-container-autoscaler",
+     "ResourceName": "autoscaler",
+     "ResourceType": "Container",
+     "ResourceProvider": "Microsoft.ContainerService",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-coredns-autoscaler-*-*-container-autoscaler"
+    },
+    "displayName": "[Preview] Containers running in Azure should have vulnerability findings resolved",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-coredns-autoscaler-*-*-container-autoscaler/providers/Microsoft.Security/assessments/c2345673-abcd-0012-abcd-81234554321d/subAssessments",
+     "maxCvss30Score": "7.5"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-retina-agent-*-container-retina/providers/Microsoft.Security/assessments/5abcdef2-6664-abcd-1234-c1234567890f",
+   "name": "5abcdef2-6664-abcd-1234-c1234567890f",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-retina-agent-*-container-retina",
+     "ResourceName": "retina",
+     "ResourceType": "ContainerImage",
+     "ResourceProvider": "Microsoft.ContainerService",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test/securityentitydata/namespace-kube-system-pod-retina-agent-*-container-retina"
+    },
+    "displayName": "[Preview] Vulnerable Azure Kubernetes Service should be updated to resolve vulnerability findings",
+    "status": {
+     "code": "Healthy"
+    },
+    "additionalData": {
+     "K8sClusterId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourcegroups/example-test_group/providers/microsoft.containerservice/managedclusters/example-test",
+     "K8sClusterName": "example-test",
+     "ControllerName": "retina-agent",
+     "ControllerType": "daemonset",
+     "PodName": "retina-agent-*",
+     "Namespace": "kube-system",
+     "ImageUri": "mcr.microsoft.com/containernetworking/retina-agent@sha256:95b92b64b81a8036efcdb5b2a6749663c515bf610b06ef729310d447a11752ea",
+     "Repo": "containernetworking/retina-agent",
+     "Digest": "sha256:95b92b64b81a8036efcdb5b2a6749663c515bf610b06ef729310d447a11752ea",
+     "OsType": "Linux",
+     "OsDistribution": "Azure linux 3",
+     "Tags": "[\"v1.0.0-rc2\"]",
+     "InventorySource": "Agentless",
+     "CvesCount": "0",
+     "HighestSeverity": "Unknown",
+     "CVEs": "[]"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/providers/Microsoft.Security/assessments/eabcdefb-abcd-1234-ae0d-5abcdabcd127",
+   "name": "eabcdefb-abcd-1234-ae0d-5abcdabcd127",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1"
+    },
+    "displayName": "Microsoft Defender CSPM should be enabled",
+    "status": {
+     "code": "Healthy"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/1aabbccf-cdef-abcd-1234-11234567890f",
+   "name": "1aabbccf-cdef-abcd-1234-11234567890f",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test",
+     "ResourceName": "vm-for-defender-cloud-test",
+     "ResourceType": "virtualMachines",
+     "ResourceProvider": "Microsoft.Compute",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test"
+    },
+    "displayName": "Machines should have vulnerability findings resolved",
+    "status": {
+     "code": "Unhealthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/1aabbccf-cdef-abcd-1234-11234567890f/subAssessments",
+     "maxCvss30Score": "9.1"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/example-test_group/providers/Microsoft.ContainerService/managedClusters/example-test/providers/Microsoft.Security/assessments/c6852852-abab-1234-5678-9abcdabcdef5",
+   "name": "c6852852-abab-1234-5678-9abcdabcdef5",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/example-test_group/providers/Microsoft.ContainerService/managedClusters/example-test",
+     "ResourceName": "example-test",
+     "ResourceType": "managedClusters",
+     "ResourceProvider": "Microsoft.ContainerService",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/example-test_group/providers/Microsoft.ContainerService/managedClusters/example-test"
+    },
+    "displayName": "Azure running container images should have vulnerabilities resolved",
+    "status": {
+     "code": "NotApplicable",
+     "cause": "Unscanned",
+     "description": "Image is not located in any of the supported container registries"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/example-test_group/providers/Microsoft.ContainerService/managedClusters/example-test/providers/Microsoft.Security/assessments/c6852852-abab-1234-5678-9abcdabcdef5/subAssessments"
+    }
+   }
+  },
+  {
+   "type": "Microsoft.Security/assessments",
+   "id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/PLANT/providers/Microsoft.Compute/virtualMachines/plant-historian-01/providers/Microsoft.Security/assessments/1aabbccf-cdef-abcd-1234-11234567890f",
+   "name": "1aabbccf-cdef-abcd-1234-11234567890f",
+   "properties": {
+    "resourceDetails": {
+     "Source": "Azure",
+     "Id": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/PLANT/providers/Microsoft.Compute/virtualMachines/plant-historian-01",
+     "ResourceName": "plant-historian-01",
+     "ResourceType": "virtualMachines",
+     "ResourceProvider": "Microsoft.Compute",
+     "NativeResourceId": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/PLANT/providers/Microsoft.Compute/virtualMachines/plant-historian-01"
+    },
+    "displayName": "Machines should have vulnerability findings resolved",
+    "status": {
+     "code": "Healthy"
+    },
+    "additionalData": {
+     "subAssessmentsLink": "/subscriptions/5abcdef6-1234-5678-8912-e1234abcdef1/resourceGroups/DEFENDER_CLOUD_GROUP/providers/Microsoft.Compute/virtualMachines/vm-for-defender-cloud-test/providers/Microsoft.Security/assessments/1aabbccf-cdef-abcd-1234-11234567890f/subAssessments",
+     "maxCvss30Score": "9.1"
+    }
+   }
+  }
+ ]
+}

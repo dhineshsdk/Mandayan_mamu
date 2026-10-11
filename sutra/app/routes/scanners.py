@@ -25,13 +25,34 @@ router = APIRouter(prefix="/api/data")
 
 
 class ConnectionIn(BaseModel):
-    kind: Literal["qualys", "tenable_vm", "tenable_sc", "crowdstrike", "aws_inspector"]
+    kind: Literal["qualys", "tenable_vm", "tenable_sc", "crowdstrike", "aws_inspector", "azure_defender"]
     name: str = Field(min_length=1, max_length=80)
     base_url: str = Field(default="", max_length=300)
     username: str = Field(min_length=1, max_length=200)
     secret: str = Field(default="", max_length=500)  # empty on an update keeps the stored one
     ca_bundle: str = Field(default="", max_length=500)
     enabled: bool = True
+    options: dict[str, str] = Field(default_factory=dict, max_length=10)
+
+
+def _check_options(kind: str, given: dict[str, str]) -> dict[str, str]:
+    """The kind's own settings (``KINDS[kind]["options"]``): every one is required and nothing else is kept."""
+    out = {}
+    for o in scanpull.KINDS[kind].get("options", []):
+        value = (given.get(o["key"]) or "").strip()
+        if not value or len(value) > 2000:
+            raise ValueError(f"Enter the {o['label'][0].lower() + o['label'][1:]}.")
+        out[o["key"]] = value
+    if kind == "azure_defender":
+        from sutra_connectors.azure_defender import AzureDefenderConnector
+        from sutra_connectors.errors import ConfigurationError
+
+        try:  # checks the tenant and every scope without contacting Azure
+            AzureDefenderConnector(out["tenant_id"], "check", "check", out["scopes"].split(",")).close()
+        except ConfigurationError as exc:
+            text = str(exc).removeprefix("Defender for Cloud: ")
+            raise ValueError(text[:1].upper() + text[1:] + ".") from exc
+    return out
 
 
 class ScheduleIn(BaseModel):
@@ -74,11 +95,12 @@ def add_connection(body: ConnectionIn, request: Request, p: Principal = Depends(
     key = request.app.state.settings.secret_key
     c = ScannerConnection(kind=body.kind, name=body.name.strip(), base_url=_check_url(body.kind, body.base_url),
                           username=body.username.strip(), secret=vault.seal(key, body.secret),
-                          ca_bundle=body.ca_bundle.strip(), enabled=body.enabled, created_by=p.user.id)
+                          ca_bundle=body.ca_bundle.strip(), enabled=body.enabled, created_by=p.user.id,
+                          options=_check_options(body.kind, body.options))
     db.add(c)
     db.flush()
     audit(db, "data.connection_add", p.user, "scanner_connection", c.id, client_ip(request), kind=c.kind,
-          name=c.name, base_url=c.base_url)
+          name=c.name, base_url=c.base_url, options=c.options)
     db.commit()
     return scanpull.connection_json(c)
 
@@ -93,10 +115,11 @@ def update_connection(cid: int, body: ConnectionIn, request: Request,
         raise ValueError("The scanner type of a connection cannot change. Add a new connection instead.")
     c.name, c.base_url, c.username = body.name.strip(), _check_url(c.kind, body.base_url), body.username.strip()
     c.ca_bundle, c.enabled, c.updated_at = body.ca_bundle.strip(), body.enabled, utcnow()
+    c.options = _check_options(c.kind, body.options)
     if body.secret:
         c.secret = vault.seal(request.app.state.settings.secret_key, body.secret)
     audit(db, "data.connection_change", p.user, "scanner_connection", c.id, client_ip(request), name=c.name,
-          base_url=c.base_url, enabled=c.enabled, secret_changed=bool(body.secret))
+          base_url=c.base_url, enabled=c.enabled, options=c.options, secret_changed=bool(body.secret))
     db.commit()
     return scanpull.connection_json(c)
 

@@ -42,6 +42,12 @@ KINDS = {
                    "default_url": "", "url_hint": "https://sc.plant.example.in"},
     "crowdstrike": {"label": "CrowdStrike Falcon Spotlight", "user": "API client ID", "secret": "API client secret",
                     "default_url": "https://api.crowdstrike.com", "url_hint": "https://api.eu-1.crowdstrike.com"},
+    "azure_defender": {"label": "Microsoft Defender for Cloud", "user": "Application (client) ID",
+                       "secret": "Client secret", "default_url": "https://management.azure.com",
+                       "url_hint": "https://management.azure.com",
+                       "options": [{"key": "tenant_id", "label": "Directory (tenant) ID"},
+                                   {"key": "scopes", "label": "Subscription IDs or management groups",
+                                    "hint": "Comma separated"}]},
     "aws_inspector": {"label": "Amazon Inspector", "user": "Access key ID", "secret": "Secret access key",
                       "default_url": "https://inspector2.ap-south-1.amazonaws.com",
                       "url_hint": "https://inspector2.ap-south-1.amazonaws.com"},
@@ -54,6 +60,7 @@ def build(conn: ScannerConnection, secret: str, transport=None):
     """A connector for ``conn``. ``transport`` is for tests."""
     from sutra_connectors import (
         AwsInspectorConnector,
+        AzureDefenderConnector,
         CrowdStrikeConnector,
         QualysConnector,
         TenableSCConnector,
@@ -70,6 +77,11 @@ def build(conn: ScannerConnection, secret: str, transport=None):
         return TenableSCConnector(conn.base_url, conn.username, secret, verify=verify, **extra)
     if conn.kind == "crowdstrike":
         return CrowdStrikeConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
+    if conn.kind == "azure_defender":
+        opts = conn.options or {}
+        return AzureDefenderConnector(opts.get("tenant_id", ""), conn.username, secret,
+                                      [x for x in opts.get("scopes", "").split(",") if x.strip()],
+                                      base_url=conn.base_url, verify=verify, **extra)
     if conn.kind == "aws_inspector":
         return AwsInspectorConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
     raise ValueError(f"Unknown scanner kind {conn.kind!r}.")
@@ -83,6 +95,7 @@ def schedule(db: Session) -> dict:
 def connection_json(c: ScannerConnection) -> dict:
     return {"id": c.id, "kind": c.kind, "kind_label": KINDS[c.kind]["label"], "name": c.name, "base_url": c.base_url,
             "username": c.username, "has_secret": bool(c.secret), "ca_bundle": c.ca_bundle, "enabled": c.enabled,
+            "options": dict(c.options or {}),
             "updated": c.updated_at.isoformat(timespec="seconds")}
 
 
