@@ -5,11 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sutra-connectors"
 version = "0.1.0"
-description = "Read-only API connectors for Qualys VMDR, Tenable Vulnerability Management, Tenable Security Center, CrowdStrike Falcon Spotlight, Amazon Inspector, Microsoft Defender for Cloud and Nozomi Networks"
+description = "Read-only API connectors for Qualys VMDR, Tenable Vulnerability Management, Tenable Security Center, CrowdStrike Falcon Spotlight, Amazon Inspector, Microsoft Defender for Cloud and Nozomi Networks, and read-only configuration collection from FortiGate, PAN-OS and Cisco IOS devices"
 requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.27,<1",
     "defusedxml>=0.7.1",
+    "paramiko>=3.4",  # SSH to network devices (sutra_connectors.ssh)
 ]
 
 [project.optional-dependencies]
