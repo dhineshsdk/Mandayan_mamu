@@ -1,0 +1,477 @@
+# CEA (Cyber Security in Power Sector) Regulations, 2026 -- obligations as data.
+#
+# HOW TO CORRECT THIS FILE
+# 1. Change the value (a duration, a severity list, a trigger) on the rule concerned.
+# 2. When a rule has been checked against the gazette text, set verification = "verified_against_gazette"
+#    and fill gazette_clause (for example "Reg 8(3)"). The loader refuses a verified rule with no clause.
+# 3. Bump [pack].version. Every assessment, deadline and audit pack records the version it was computed with.
+#
+# Every rule cites at least one entry from [[sources]]. Nothing here comes from the gazette itself yet:
+# the official PDF could not be read when this pack was written (see the research note), so every rule is
+# "unverified_against_gazette" until someone checks it.
+#
+# Durations are written as tables of months, weeks, days and hours. Months are calendar months; a date that
+# does not exist in the target month moves to that month's last day (31 Jan + 1 month = 28 or 29 Feb).
+
+[pack]
+id = "cea-cs-2026"
+title = "Central Electricity Authority (Cyber Security in Power Sector) Regulations, 2026"
+version = "2026.10.11.1"
+jurisdiction = "IN"
+notification = "Gazette of India Extraordinary, Part III, Section 4, No. 484, dated 31 July 2026"
+enabling_provision = "Section 177 of the Electricity Act, 2003"
+in_force_from = 2027-04-01
+# India Standard Time. Dates in this pack (deadlines, financial years) are Indian calendar dates.
+utc_offset_minutes = 330
+financial_year_start_month = 4
+verification = "unverified_against_gazette"
+verification_note = """
+Compiled from secondary summaries (consultants, vendors, trade press) cross-checked against each other. The
+gazette PDF served a login page to the research session, so no rule has been read against the official text.
+Regulation clause numbers are left blank because sources number the same duty differently."""
+metadata_sources = ["ccc", "beacon", "powerline"]
+
+[[sources]]
+id = "cea-gazette"
+title = "Central Electricity Authority: notification PDF (official text)"
+url = "https://cea.nic.in/wp-content/uploads/notification/2026/08/Cyber_Regulations_Notification.pdf"
+kind = "official"
+read = false
+
+[[sources]]
+id = "research-note"
+title = "Sutra research note: CEA cyber security rules for the power sector (11 October 2026)"
+url = "compliance/docs/cea-cyber-regulations-2026.md"
+kind = "internal_research"
+read = true
+
+[[sources]]
+id = "beacon"
+title = "Beacon Security: what each chapter requires"
+url = "https://beaconsecurity.io/resources/blog/cea-cyber-security-power-sector-regulations-2026"
+kind = "secondary"
+read = true
+
+[[sources]]
+id = "shieldworkz-playbook"
+title = "Shieldworkz: regulatory playbook"
+url = "https://shieldworkz.com/regulatory-playbooks/the-cea-cyber-security-in-power-sector-regulations-2026"
+kind = "secondary"
+read = true
+
+[[sources]]
+id = "shieldworkz-guide"
+title = "Shieldworkz: practical compliance guide"
+url = "https://shieldworkz.com/blogs/cea-(cyber-security-in-power-sector)-regulations-2026-practical-compliance-and-implementation-guide"
+kind = "secondary"
+read = true
+
+[[sources]]
+id = "qrc"
+title = "QRC Solutionz: compliance guide"
+url = "https://www.qrcsolutionz.com/blog/cea-cyber-security-regulations-2026-compliance-guide"
+kind = "secondary"
+read = true
+
+[[sources]]
+id = "ccc"
+title = "Consultants Consortium of Chennai: summary"
+url = "https://ccc-consultants.org/cea-cyber-security-regulations-2026/"
+kind = "secondary"
+read = true
+
+[[sources]]
+id = "powerline"
+title = "Power Line: CEA notifies the regulations"
+url = "https://powerline.net.in/2026/08/14/cea-notifies-cea-cyber-security-in-power-sector-regulations-2026/"
+kind = "secondary"
+read = true
+
+# ---------------------------------------------------------------------------------------------------------
+# Who is covered
+# ---------------------------------------------------------------------------------------------------------
+
+[[applicability]]
+id = "APPL-GEN-50MW"
+entity_types = ["generator", "captive_plant", "energy_storage"]
+min_capacity_mw = 50
+excluded_topics = []
+sources = ["shieldworkz-playbook", "ccc"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Below 50 MW, adoption of CERT-In's baseline controls for MSMEs is encouraged, not required (CCC)."
+
+[[applicability]]
+id = "APPL-GRID"
+entity_types = ["transmission_licensee", "distribution_licensee", "nldc", "rldc", "sldc"]
+excluded_topics = []
+sources = ["shieldworkz-playbook", "ccc"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Covered with no capacity threshold."
+
+[[applicability]]
+id = "APPL-MARKETS"
+entity_types = ["power_exchange", "otc_platform"]
+excluded_topics = ["ot", "vendor"]
+sources = ["shieldworkz-playbook", "ccc"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Covered, excluding the OT and vendor chapters."
+
+[[applicability]]
+id = "APPL-VENDOR"
+entity_types = ["vendor"]
+excluded_topics = []
+chapters_determined = false
+sources = ["shieldworkz-playbook", "ccc"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Vendors of control-system hardware, firmware and software are covered directly. Sources do not say which
+chapters beyond the vendor duties apply to them, so results for a vendor are flagged as undetermined."""
+
+# ---------------------------------------------------------------------------------------------------------
+# Obligations not yet in effect (deferred to later CEA orders). Recorded so the engine never enforces them.
+# ---------------------------------------------------------------------------------------------------------
+
+[[deferred]]
+clauses = ["5(9)", "5(24)", "5(33)", "5(39)", "6(2)", "6(7)"]
+topics = [
+  "24x7 security division",
+  "ISO 27001 or equivalent certificate",
+  "mandatory training",
+  "trusted-source procurement for IT and OT",
+  "hardware OT perimeter devices such as data diodes",
+]
+sources = ["qrc", "ccc", "shieldworkz-guide"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+notes = "Clause numbers agree across QRC and CCC; the clause-to-topic mapping comes from one source (Shieldworkz guide)."
+
+# ---------------------------------------------------------------------------------------------------------
+# Audit cycle and the clocks on audit findings
+# ---------------------------------------------------------------------------------------------------------
+
+[[rules]]
+id = "CEA-AUDIT-INTERVAL"
+kind = "audit_interval"
+topic = "audit"
+title = "Comprehensive audit of all critical systems"
+summary = "A comprehensive cyber security audit of all critical systems every financial year, 9 to 15 months apart."
+every_financial_year = true
+min_gap = { months = 9 }
+max_gap = { months = 15 }
+sources = ["research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Sources agree on both phrasings; one notes that "every financial year" and "9 to 15 months apart" may conflict
+(research note, open question 3). The engine checks both and reports each separately."""
+
+[[rules]]
+id = "CEA-AUDITOR-ELIGIBILITY"
+kind = "auditor_eligibility"
+topic = "audit"
+title = "Who may audit"
+summary = "The auditor must be CERT-In empanelled or designated by the Ministry of Power."
+allowed = ["cert_in_empanelled", "mop_designated"]
+sources = ["research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = ""
+
+[[rules]]
+id = "CEA-AUDIT-REPORT"
+kind = "audit_deliverable"
+topic = "audit"
+title = "Auditor's report"
+summary = "The auditor's report is due within 6 weeks of the audit starting."
+deliverable = "audit_report"
+anchor = "audit_started"
+duration = { weeks = 6 }
+sources = ["research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = ""
+
+[[rules]]
+id = "CEA-FIX-CRITICAL-HIGH"
+kind = "finding_fix_deadline"
+topic = "audit"
+title = "Fix critical and high findings"
+summary = "Critical and high audit findings must be fixed within 1 month of the audit report."
+severities = ["critical", "high"]
+anchor = "audit_report_submitted"
+duration = { months = 1 }
+sources = ["research-note", "beacon", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Four sources agree on the 1-month window (research note). That the clock runs from submission of the audit
+report comes from Beacon only (research note, open question 2)."""
+
+[[rules]]
+id = "CEA-FIX-MEDIUM-LOW"
+kind = "finding_fix_deadline"
+topic = "audit"
+title = "Fix medium and low findings"
+summary = "Medium and low audit findings must be fixed within 3 months of the audit report."
+severities = ["medium", "low"]
+anchor = "audit_report_submitted"
+duration = { months = 3 }
+sources = ["research-note", "beacon", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Four sources agree on the 3-month window (research note). That the clock runs from submission of the audit
+report comes from Beacon only (research note, open question 2)."""
+
+[[rules]]
+id = "CEA-COMPENSATING-CONTROLS"
+kind = "compensating_control"
+topic = "audit"
+title = "Compensating controls on open critical and high findings"
+summary = "A critical or high finding still open must have compensating controls until the auditor clears it."
+severities = ["critical", "high"]
+# "after_fix_deadline": required once the fix window has passed and the finding is still open.
+# "while_open": required for as long as the finding is open, from the moment the clock starts.
+trigger = "after_fix_deadline"
+sources = ["beacon", "research-note", "cea-gazette"]
+confidence = "single_source"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Reported by Beacon only (research note, open question 4). Sources say "still open"; this pack reads that as
+open after the fix window. If the gazette requires controls for every open critical or high finding, change
+trigger to "while_open"."""
+
+[[rules]]
+id = "CEA-CLOSURE-REPORT"
+kind = "audit_deliverable"
+topic = "audit"
+title = "Auditor's closure report"
+summary = "The auditor's closure report is due within 6 months of the audit starting; major findings go to the head or board."
+deliverable = "closure_report"
+anchor = "audit_started"
+duration = { months = 6 }
+expects_evidence = ["board_report"]
+sources = ["research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Sources do not define \"major\" findings, so the engine only checks that a head or board report is on file."
+
+[[rules]]
+id = "CEA-PRIOR-FINDINGS"
+kind = "prior_findings_check"
+topic = "audit"
+title = "Next audit checks earlier findings"
+summary = "Each audit must check that findings from earlier audits were closed."
+sources = ["research-note", "cea-gazette"]
+confidence = "single_source"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Single source (research note, audit table)."
+
+[[rules]]
+id = "CEA-AUDITOR-ROTATION"
+kind = "auditor_rotation"
+topic = "audit"
+title = "Auditor rotation"
+summary = "Limits on the same agency auditing in consecutive cycles."
+# Disabled: the sources conflict. Set enabled = true and max_consecutive once the gazette is checked.
+enabled = false
+max_consecutive = 0
+variants = [
+  "No agency may audit more than two years in a row (startup plan, citing Global Sources).",
+  "No three consecutive audits by the same agency or personnel (Beacon).",
+  "Rotation after three consecutive engagements (Shieldworkz).",
+]
+sources = ["beacon", "shieldworkz-playbook", "research-note"]
+confidence = "conflicting"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Research note, open question 1."
+
+# ---------------------------------------------------------------------------------------------------------
+# Incident reporting
+# ---------------------------------------------------------------------------------------------------------
+
+[[rules]]
+id = "CEA-INCIDENT-6H"
+kind = "incident_report"
+topic = "incident"
+title = "Report a cyber incident"
+summary = "Report cyber incidents to CSIRT-Power and CERT-In within 6 hours."
+trigger = "incident_detected"
+duration = { hours = 6 }
+recipients = ["csirt_power", "cert_in"]
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Sources give the 6-hour window but not the event it runs from. This pack starts it when the entity detects
+the incident; confirm against the gazette. No source gives the required report fields."""
+
+[[rules]]
+id = "CEA-SABOTAGE-24H"
+kind = "incident_report"
+topic = "incident"
+title = "Report concluded cyber sabotage of a critical system"
+summary = "Where an incident is concluded to be cyber sabotage of a critical system, report within 24 hours of that conclusion."
+trigger = "sabotage_concluded"
+duration = { hours = 24 }
+recipients = []
+expects_evidence = ["root_cause_analysis", "forensic_summary"]
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "shieldworkz-guide", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = """
+Sources do not name the recipients of the 24-hour report, so it is tracked as one report. The expectation of a
+root-cause analysis and forensic summary comes from one vendor guide (Shieldworkz guide)."""
+
+# ---------------------------------------------------------------------------------------------------------
+# Recurring obligations
+# ---------------------------------------------------------------------------------------------------------
+
+[[rules]]
+id = "CEA-SELF-AUDIT"
+kind = "periodic"
+topic = "audit"
+title = "Self-audit against all the regulations"
+summary = "A self-audit against all the regulations every year; gaps closed before the next year's self-audit."
+activity = "self_audit"
+scope = "entity"
+interval = { months = 12 }
+sources = ["research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "\"Yearly\" is read as within 12 months of the previous one."
+
+[[rules]]
+id = "CEA-POLICY-REVIEW"
+kind = "periodic"
+topic = "governance"
+title = "Cyber security policy review"
+summary = "The cyber security policy (33 set topics) is approved and reviewed every year by the head or board."
+activity = "policy_review"
+scope = "entity"
+interval = { months = 12 }
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "\"Every year\" is read as within 12 months of the previous review."
+
+[[rules]]
+id = "CEA-CCMP-DRILL"
+kind = "periodic"
+topic = "governance"
+title = "Cyber Crisis Management Plan drill"
+summary = "The Cyber Crisis Management Plan is tested at least yearly; drill scenarios cannot repeat until the whole list has been used."
+activity = "ccmp_drill"
+scope = "entity"
+interval = { months = 12 }
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Scenario rotation is not checked by the engine yet."
+
+[[rules]]
+id = "CEA-IR-PLAN-REVIEW"
+kind = "periodic"
+topic = "governance"
+title = "Incident response and recovery plan review"
+summary = "The incident response and recovery plan is reviewed at least every six months."
+activity = "ir_plan_review"
+scope = "entity"
+interval = { months = 6 }
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = ""
+
+[[rules]]
+id = "CEA-ASSET-REGISTER-REVIEW"
+kind = "periodic"
+topic = "assets"
+title = "Cyber asset register review"
+summary = "The IT and OT cyber asset register is reviewed yearly or whenever an asset is commissioned or replaced."
+activity = "asset_register_review"
+scope = "entity"
+interval = { months = 12 }
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Only the yearly review is checked; the review owed on commissioning or replacement is not tracked yet."
+
+[[rules]]
+id = "CEA-ASSET-RISK-ASSESSMENT"
+kind = "periodic"
+topic = "assets"
+title = "Risk assessment per asset"
+summary = "Every asset has a risk assessment and mitigation plan updated at least every six months."
+activity = "asset_risk_assessment"
+scope = "asset"
+interval = { months = 6 }
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = ""
+
+[[rules]]
+id = "CEA-BACKUP-AGE"
+kind = "periodic"
+topic = "data"
+title = "Backups of critical systems"
+summary = "Online and offline backups of critical systems, no older than one month, with restoration tested."
+activity = "backup"
+scope = "critical_asset"
+interval = { months = 1 }
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Only backup age is checked. Sources give no frequency for restoration tests."
+
+# ---------------------------------------------------------------------------------------------------------
+# Changes that need a cyber security audit before deployment (Second Schedule)
+# ---------------------------------------------------------------------------------------------------------
+
+[[rules]]
+id = "CEA-SECOND-SCHEDULE"
+kind = "change_pre_audit"
+topic = "change"
+title = "Second Schedule changes need a pre-deployment audit"
+summary = "Changes listed in the Second Schedule need a cyber security audit before deployment."
+categories = [
+  { id = "core_process", label = "Changes to core processes" },
+  { id = "authentication_privilege", label = "Authentication and privilege changes" },
+  { id = "third_party_integration", label = "Third-party integrations" },
+  { id = "encryption_protocol", label = "Encryption and protocol changes" },
+  { id = "new_interface", label = "New interfaces" },
+  { id = "critical_vulnerability_fix", label = "Fixes for previously found critical vulnerabilities" },
+  { id = "monitoring_response_tools", label = "Changes to monitoring and response tools" },
+]
+sources = ["beacon", "shieldworkz-playbook", "qrc", "powerline", "research-note", "cea-gazette"]
+confidence = "corroborated"
+verification = "unverified_against_gazette"
+gazette_clause = ""
+notes = "Category list as summarised by secondary sources; confirm the exact Second Schedule wording."
