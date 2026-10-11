@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import ai, directory, drafting, intel, licence, migrate, netconfig, notify, scanpull, sweeper
+from . import ai, directory, drafting, egress, intel, licence, migrate, netconfig, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -39,6 +39,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
+        egress.install(app.state.egress)
         migrate.upgrade(settings.database_url)
         with app.state.sessionmaker() as db:
             sync_catalog(db)
@@ -58,6 +59,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
                 app.state.intel_updater.start()
             app.state.directory.start()
         yield
+        egress.uninstall(app.state.egress)
         app.state.directory.stop()
         app.state.intel_updater.stop()
         app.state.collector.stop()
@@ -73,7 +75,8 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.sessionmaker = make_sessionmaker(app.state.engine)
     app.state.analysis = AnalysisStore()
     app.state.licences = licence.LicenceService(settings.require_licence)
-    app.state.ai = ai.AiService(explainer=explainer)
+    app.state.egress = egress.EgressGuard(settings.egress_policy, egress.parse_allow(settings.egress_allow))
+    app.state.ai = ai.AiService(explainer=explainer, guard=app.state.egress)
     app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter or ai.drafter(app.state.ai.config))
     app.state.sweeper = sweeper.Sweeper(app.state.sessionmaker)
     app.state.senders = Senders(settings)
@@ -94,6 +97,8 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
         response = await call_next(request)
         response.headers.setdefault("Content-Security-Policy", CSP)
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        if settings.cookie_secure:
+            response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
         response.headers.setdefault("X-Frame-Options", "DENY")
         response.headers.setdefault("Referrer-Policy", "same-origin")
         if request.url.path.startswith("/api/"):

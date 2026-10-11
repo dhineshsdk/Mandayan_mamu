@@ -1,0 +1,39 @@
+[Unit]
+Description=Sutra
+After=network.target
+
+[Service]
+Type=simple
+User=@USER@
+Group=@USER@
+EnvironmentFile=@ETC@/sutra.env
+WorkingDirectory=@DATA@
+ExecStart=@PREFIX@/venv/bin/python -m sutra serve --host 127.0.0.1 --port 8765
+Restart=on-failure
+RestartSec=5
+
+# Confinement: the service can write only to its data folder and cannot gain privileges.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=@DATA@
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

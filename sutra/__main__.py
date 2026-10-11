@@ -92,6 +92,10 @@ def main(argv: list[str] | None = None) -> None:
             x.add_argument("--force", action="store_true",
                            help="move an existing installation aside (pre-restore-<time>/) and restore over it")
 
+    dr = sub.add_parser("doctor", help="check this installation for unsafe or unfinished settings (read-only)")
+    dr.add_argument("--workspace", type=Path)
+    dr.add_argument("--json", action="store_true")
+
     up = sub.add_parser("upgrade", help="back up, then migrate the database to this release")
     up.add_argument("--workspace", type=Path)
     up.add_argument("--check", action="store_true", help="only say whether a migration is pending")
@@ -100,10 +104,10 @@ def main(argv: list[str] | None = None) -> None:
     up.add_argument("--passphrase-file", type=Path)
 
     args = ap.parse_args(argv)
-    if args.cmd in ("backup", "upgrade"):
+    if args.cmd in ("backup", "upgrade", "doctor"):
         from .app import cli
 
-        cli.backup_command(args) if args.cmd == "backup" else cli.upgrade_command(args)
+        {"backup": cli.backup_command, "upgrade": cli.upgrade_command, "doctor": cli.doctor_command}[args.cmd](args)
         return
     if args.cmd == "licence":
         from .app import cli

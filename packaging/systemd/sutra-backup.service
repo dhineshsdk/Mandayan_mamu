@@ -1,0 +1,17 @@
+[Unit]
+Description=Sutra nightly backup
+
+[Service]
+Type=oneshot
+User=@USER@
+Group=@USER@
+EnvironmentFile=@ETC@/sutra.env
+WorkingDirectory=@DATA@
+ExecStart=@PREFIX@/venv/bin/python -m sutra backup create --out @BACKUPS@ --keep 14 --passphrase-file @ETC@/backup.pass
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=@DATA@ @BACKUPS@
+PrivateTmp=yes
+PrivateDevices=yes
+UMask=0077
