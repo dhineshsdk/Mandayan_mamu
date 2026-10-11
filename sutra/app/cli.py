@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import getpass
+import os
 import re
 import secrets
 import sys
 from datetime import timedelta
+from pathlib import Path
 
 from sqlalchemy import func, select
 
@@ -187,3 +189,81 @@ def licence_command(args) -> None:
     except licence.LicenceError as e:
         sys.exit(f"Licence error: {e}")
 
+
+def _paths(workspace_arg) -> tuple[Path, str]:
+    """Workspace folder and database URL, read the way Settings does but without creating anything."""
+    ws = Path(workspace_arg or os.environ.get("SUTRA_WORKSPACE", "workspace"))
+    return ws, os.environ.get("SUTRA_DATABASE_URL") or f"sqlite:///{ws / 'sutra.db'}"
+
+
+def _passphrase(args) -> str | None:
+    if getattr(args, "passphrase_file", None):
+        text = args.passphrase_file.read_text(encoding="utf-8").strip()
+        if not text:
+            sys.exit(f"{args.passphrase_file} is empty.")
+        return text
+    return os.environ.get("SUTRA_BACKUP_PASSPHRASE") or None
+
+
+def backup_command(args) -> None:
+    from . import backup
+
+    ws, url = _paths(args.workspace)
+    try:
+        if args.bcmd == "create":
+            pw = _passphrase(args)
+            out = backup.create(ws, url, args.out or ws / "backups", pw, args.files_only, args.keep)
+            print(f"Wrote {out} ({out.stat().st_size:,} bytes, {'encrypted' if pw else 'NOT encrypted'}).")
+            if not pw:
+                print("This file holds the database, evidence and the server's secret key. Protect it, or set a "
+                      "passphrase (--passphrase-file / SUTRA_BACKUP_PASSPHRASE).")
+        elif args.bcmd == "verify":
+            m = backup.verify(args.archive, _passphrase(args))
+            print(f"OK: {len(m['files'])} files match their checksums. Made {m['created']} by Sutra "
+                  f"{m['sutra_version']}, schema {m['schema_revision'] or 'n/a'}.")
+        elif args.bcmd == "list":
+            found = backup.list_backups(args.out or ws / "backups")
+            for p in found:
+                print(f"{p.name}  {p.stat().st_size:>14,}")
+            if not found:
+                print("No backups there.")
+        else:
+            m = backup.restore(args.archive, ws, url, _passphrase(args), args.force)
+            print(f"Restored the backup made {m['created']} into {ws}; the database is at the current schema.")
+            if m["moved_aside"]:
+                print(f"What was there before is in {m['moved_aside']}.")
+    except backup.BackupError as e:
+        sys.exit(f"Backup error: {e}")
+
+
+def upgrade_command(args) -> None:
+    from . import backup, migrate
+
+    ws, url = _paths(args.workspace)
+    current, head = backup.pending(url)
+    if current == head:
+        print(f"Already up to date (schema {head}).")
+        return
+    print(f"Schema {current or 'none (new install)'} -> {head}.")
+    if args.check:
+        sys.exit(1)  # non-zero: a migration is pending, useful in scripts
+    made = None
+    if current and not args.no_backup:
+        sqlite = backup.sqlite_path(url) is not None
+        if not sqlite and not args.db_backed_up:
+            sys.exit("PostgreSQL: take a pg_dump first, then run again with --db-backed-up.")
+        try:
+            made = backup.create(ws, url, ws / "backups", _passphrase(args), files_only=not sqlite)
+        except backup.BackupError as e:
+            sys.exit(f"Could not take the pre-upgrade backup, so nothing was changed: {e}")
+        print(f"Backup before upgrading: {made}")
+    try:
+        migrate.upgrade(url)
+        after, _ = backup.pending(url)
+        if after != head:
+            raise RuntimeError(f"the database is at {after or 'no revision'} after migrating, expected {head}")
+    except Exception as e:  # noqa: BLE001 - whatever failed, the operator needs the way back
+        hint = (f"Restore with: python -m sutra backup restore {made} --force" if made else
+                "No automatic backup was taken; restore from your own backup.")
+        sys.exit(f"Upgrade failed: {e}\n{hint}")
+    print("Upgraded. Start the service again.")

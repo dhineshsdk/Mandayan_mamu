@@ -428,3 +428,8 @@ result published in [`docs/range/SCORE.md`](docs/range/SCORE.md). See [`range/RE
 ## Licence keys
 
 Modules are switched on per customer by an offline-checked signed key. See [`docs/licensing.md`](docs/licensing.md).
+
+## Backups and upgrades
+
+`python -m sutra backup create | verify | list | restore` and `python -m sutra upgrade` (backs up first, then migrates).
+See [`docs/operations.md`](docs/operations.md).
