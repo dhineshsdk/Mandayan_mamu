@@ -199,7 +199,9 @@ class Job(Base):
     team: Mapped[str] = mapped_column(String(120), index=True)
     vertical: Mapped[str] = mapped_column(String(120), default="")
     mode: Mapped[str] = mapped_column(String(16))  # patch | manual
-    status: Mapped[str] = mapped_column(String(20))  # pending | approved | rejected | sent-back | fixing-manually
+    # drafting | pending | approved | fixing-manually | reopened (open); rejected | sent-back | draft-failed |
+    # verified-fixed (closed). Only a rescan sets verified-fixed or reopened (sutra.app.closure).
+    status: Mapped[str] = mapped_column(String(20))
     ssvc: Mapped[str] = mapped_column(String(8))
     is_ot: Mapped[bool] = mapped_column(Boolean, default=False)
     jira_key: Mapped[str] = mapped_column(String(40), default="")
@@ -208,8 +210,12 @@ class Job(Base):
     findings: Mapped[list] = mapped_column(JSON)
     route: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     draft: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    # The (asset_id, fingerprint) pairs the job must make disappear; what rescans are checked against.
+    targets: Mapped[list] = mapped_column(JSON, default=list)
     raised_by: Mapped[int] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    fixed_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # scan date of the rescan that proved it
+    closed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # when Sutra saw that rescan
     steps: Mapped[list[JobStep]] = relationship(cascade="all, delete-orphan", lazy="selectin",
                                                 order_by="JobStep.position")
 
@@ -226,6 +232,23 @@ class JobStep(Base):
     decided_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     decided_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     comment: Mapped[str] = mapped_column(Text, default="")
+
+
+class JobCheck(Base):
+    """What one import showed for one job's targets."""
+
+    __tablename__ = "job_checks"
+    __table_args__ = (UniqueConstraint("job_id", "dataset_id"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
+    dataset_id: Mapped[int] = mapped_column(ForeignKey("datasets.id", ondelete="CASCADE"), index=True)
+    as_of: Mapped[date | None] = mapped_column(Date, nullable=True)
+    checked_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    fixed: Mapped[int] = mapped_column(Integer, default=0)
+    still_open: Mapped[int] = mapped_column(Integer, default=0)
+    not_rescanned: Mapped[int] = mapped_column(Integer, default=0)
+    outcome: Mapped[str] = mapped_column(String(16))  # fixed | partly-fixed | not-fixed | not-rescanned | reopened
+    still_open_items: Mapped[list] = mapped_column(JSON, default=list)  # [[asset_id, fingerprint]], capped
 
 
 class AuditEvent(Base):

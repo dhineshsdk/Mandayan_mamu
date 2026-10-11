@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from .. import ingest, pipeline, risk, views
 from ..pipeline import Result
-from . import history
+from . import closure, history
 from .models import Dataset, OwnershipTeam
 
 
@@ -54,6 +54,7 @@ class AnalysisStore:
         db.add(ds)
         db.flush()
         history.record(db, ds, res)
+        closure.verify(db, ds)
         db.commit()
         with self.lock:
             self.dataset_id, self.result, self._scoped = ds.id, res, {}

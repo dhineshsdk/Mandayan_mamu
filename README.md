@@ -104,6 +104,15 @@ and compensating controls. Every step cites the root cause, hosts, changes and f
   administrator names for the site; without one, the plan says the slot is not set rather than guessing.
 - Who approves is decided by the routing rules, never by the draft.
 
+### Verified closure
+
+Nobody marks a job fixed. Each job records the findings it covers (host plus finding fingerprint). After every
+import, Sutra checks each open job against it: a finding still reported keeps the job open; a finding gone from a
+host that was scanned again counts as fixed; a finding gone from a host that was not scanned proves nothing. When
+all of a job's findings are fixed, the job becomes **Fixed (proved by rescan)** with the scan date that proved it.
+If a later import reports them again, the job reopens. An import whose scans are older than a job's last check is
+ignored for that job. Every check is kept and shown on the job page, and recorded in the audit log.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's

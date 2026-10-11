@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from .. import closure
 from .. import jobs as J
 from ..access import Principal
 from ..deps import client_ip, get_db, require
@@ -65,6 +66,7 @@ def get_job(pk: int, request: Request, p: Principal = Depends(require("M-PJ", "v
             db: Session = Depends(get_db)):
     job = _get(request, db, p, pk)
     out = J.job_json(db, job, p, request.app.state.analysis.result)
+    out["checks"] = closure.checks_json(db, job)
     events = db.scalars(select(AuditEvent).where(AuditEvent.target_type == "job", AuditEvent.target_id == str(job.id))
                         .order_by(AuditEvent.id))
     out["audit"] = [{"at": e.at.isoformat(timespec="seconds"), "actor": e.actor_email, "action": e.action,
