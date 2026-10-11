@@ -520,6 +520,29 @@ class CmpActivity(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
+class CmpIncident(Base):
+    """A cyber incident at a regulated entity, with the times each report went out. Times are naive UTC."""
+
+    __tablename__ = "cmp_incidents"
+    __table_args__ = (UniqueConstraint("entity_id", "ref"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_id: Mapped[int] = mapped_column(ForeignKey("cmp_entities.id", ondelete="CASCADE"), index=True)
+    ref: Mapped[str] = mapped_column(String(60))
+    title: Mapped[str] = mapped_column(String(300))
+    description: Mapped[str] = mapped_column(Text, default="")
+    detected_at: Mapped[datetime] = mapped_column(DateTime)  # starts the 6-hour clock
+    asset_ids: Mapped[list] = mapped_column(JSON, default=list)
+    affects_critical_system: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    actions_taken: Mapped[str] = mapped_column(Text, default="")
+    reported_csirt_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    reported_certin_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    sabotage_concluded_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    sabotage_reported_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class CmpEvidence(Base):
     """A file kept as proof. Stored once under the workspace by its SHA-256; never changed after upload."""
 
@@ -545,7 +568,8 @@ class CmpEvidenceLink(Base):
                       Index("ix_cmp_evidence_links_owner", "owner_type", "owner_id"))
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     evidence_id: Mapped[int] = mapped_column(ForeignKey("cmp_evidence.id", ondelete="CASCADE"), index=True)
-    owner_type: Mapped[str] = mapped_column(String(16))  # audit_report | audit_closure | finding | control | activity
+    # audit_report | audit_closure | finding | control | activity | incident | sabotage
+    owner_type: Mapped[str] = mapped_column(String(16))
     owner_id: Mapped[int] = mapped_column(Integer)
     linked_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     linked_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

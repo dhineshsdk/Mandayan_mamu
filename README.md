@@ -251,8 +251,13 @@ comes from the CEA rule pack in `./compliance` (`sutra_compliance`); Sutra compu
   Sutra adds "fix for a previously found critical vulnerability" itself when the job is linked to a critical CEA
   finding. Once the regulation is in force (1 April 2027) the final approval waits until the pre-deployment audit is
   recorded on the job; before then it is a warning.
-- The bundled rule pack has not been checked against the gazette text; every screen says so. Incident reporting
-  clocks are not recorded yet, and the entity page lists what is not checked.
+- Incidents: record when an incident was detected and when each report went to CSIRT-Power and CERT-In. The rule
+  pack's 6-hour clock (and the 24-hour clock for concluded sabotage of a critical system) shows each report as due,
+  sent on time, sent late or overdue. Sutra writes a draft of the report from the recorded facts and lists what is
+  still missing; it sends nothing, and the pack gives no required report fields, so a person copies the draft into
+  the format CSIRT-Power and CERT-In ask for. Proof of sending is attached as evidence.
+- The bundled rule pack has not been checked against the gazette text; every screen says so. The entity page lists
+  what is not checked.
 
 ### Entra ID directory sync
 

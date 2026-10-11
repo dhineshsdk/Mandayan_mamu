@@ -31,6 +31,7 @@ from sutra_compliance import (
     Entity,
     EntityRecords,
     EvidenceItem,
+    Incident,
     RulePack,
     ScheduledFix,
     build_audit_pack,
@@ -51,6 +52,7 @@ from .models import (
     CmpEvidence,
     CmpEvidenceLink,
     CmpFinding,
+    CmpIncident,
     Dataset,
     Job,
     JobCheck,
@@ -76,8 +78,9 @@ EVIDENCE_KINDS = {
     "root_cause_analysis": "Root cause analysis", "forensic_summary": "Forensic summary", "other": "Other",
 }
 # What evidence can be attached to.
-OWNER_TYPES = ("audit_report", "audit_closure", "finding", "control", "activity")
-APP_NOTES = ("Incident reporting clocks (6 hours to CSIRT-Power and CERT-In) are not recorded here yet.",)
+OWNER_TYPES = ("audit_report", "audit_closure", "finding", "control", "activity", "incident", "sabotage")
+APP_NOTES = ("The 6-hour clock starts when the entity detects the incident; the rule pack's sources do not say what "
+             "event it runs from, so confirm that against the gazette.",)
 NO_ASSETS_NOTE = ("No assets are recorded for this entity, so per-asset obligations (a risk assessment every six "
                   "months, backup age for critical systems) are not checked. Import them from the asset register.")
 
@@ -206,6 +209,8 @@ class Loaded:
             for c in db.scalars(select(CmpControl).where(CmpControl.finding_id.in_(fids)).order_by(CmpControl.id)):
                 self.controls.setdefault(c.finding_id, []).append(c)
         self.assets = list(db.scalars(select(CmpAsset).where(CmpAsset.entity_id == e.id).order_by(CmpAsset.asset_id)))
+        self.incidents = list(db.scalars(select(CmpIncident).where(CmpIncident.entity_id == e.id)
+                                         .order_by(CmpIncident.detected_at.desc(), CmpIncident.id.desc())))
         self.activities = list(db.scalars(select(CmpActivity).where(CmpActivity.entity_id == e.id)
                                           .order_by(CmpActivity.performed_on.desc(), CmpActivity.id.desc())))
         self.evidence = list(db.scalars(select(CmpEvidence).where(CmpEvidence.entity_id == e.id)
@@ -267,8 +272,16 @@ class Loaded:
         activities = tuple(ActivityRecord(x.activity, x.performed_on, x.asset_id or None, x.approved_by or None,
                                           self.evidence_ids("activity", x.id)) for x in self.activities)
         assets = tuple(Asset(x.asset_id, x.name, x.critical) for x in self.assets)
+        incidents = tuple(Incident(
+            f"I{x.id}", eid, x.title, _aware(x.detected_at),
+            {k: _aware(v) for k, v in (("csirt_power", x.reported_csirt_at), ("cert_in", x.reported_certin_at))
+             if v is not None},
+            _aware(x.sabotage_concluded_at) if x.sabotage_concluded_at else None,
+            _aware(x.sabotage_reported_at) if x.sabotage_reported_at else None, x.affects_critical_system,
+            self.evidence_ids("incident", x.id), self.evidence_ids("sabotage", x.id)) for x in self.incidents)
         return EntityRecords(entity=Entity(eid, e.name, e.entity_type, e.capacity_mw), assets=assets, audits=audits,
-                             findings=tuple(findings), activities=activities, evidence=tuple(items))
+                             findings=tuple(findings), incidents=incidents, activities=activities,
+                             evidence=tuple(items))
 
     def assess(self, now: datetime | None = None):
         return evaluate_entity(self.records, pack(), now or datetime.now(UTC))
@@ -376,6 +389,7 @@ def entity_detail(db: Session, e: CmpEntity, now: datetime | None = None) -> dic
                     "backup": backups.get(x.asset_id),
                     "open_findings": by_asset.get(x.asset_id, {}).get("open_finding_ids", [])}
                    for x in loaded.assets],
+        "incidents": [incident_json(db, e, x, loaded, a["incidents"], linked) for x in loaded.incidents],
         "evidence_gaps": ap["evidence_gaps"],
         "evidence": [{**ev[x.id], "links": [{"owner_type": t, "owner_id": o}
                                             for (t, o), ids in loaded.links.items() if x.id in ids]}
@@ -502,4 +516,78 @@ def second_schedule(db: Session, job: Job) -> dict:
         # Once the regulation is in force the final approval waits for the recorded pre-deployment audit.
         "blocks_final_approval": bool(needs and in_force and not job.pre_audit),
         "all_categories": labels,
+    }
+
+
+# ---------- incidents and the 6-hour report ----------
+
+RECIPIENT_LABELS = {"csirt_power": "CSIRT-Power", "cert_in": "CERT-In"}
+
+
+def incident_ref(x: CmpIncident) -> str:
+    return f"I{x.id}"
+
+
+def _ist(dt: datetime | None) -> str:
+    if dt is None:
+        return ""
+    return _aware(dt).astimezone(pack().local_tz).strftime("%d %b %Y, %H:%M IST")
+
+
+def incident_draft(e: CmpEntity, x: CmpIncident, assets: dict[str, CmpAsset],
+                   register: dict[str, dict]) -> dict:
+    """A draft of the report to CSIRT-Power and CERT-In, built only from what is recorded about the incident.
+
+    No source gives the required report fields, so these are the facts a reader needs, labelled as a draft. A
+    person checks and sends it; Sutra sends nothing."""
+    names = []
+    for aid in x.asset_ids or []:
+        a = assets.get(aid)
+        r = register.get(aid) or {}
+        label = aid + (f" ({a.name})" if a and a.name else "")
+        if a is not None and a.critical is not None:
+            label += ", critical system" if a.critical else ", not a critical system"
+        if r.get("site"):
+            label += f", {'OT' if r.get('is_ot') else 'IT'} at {r['site']}"
+        names.append(label)
+    crit = {True: "Yes", False: "No", None: "Not yet established"}[x.affects_critical_system]
+    fields = [
+        ("Reporting entity", f"{e.name} ({ENTITY_TYPE_LABELS.get(e.entity_type, e.entity_type)})"
+         + (f", {e.capacity_mw:g} MW" if e.capacity_mw is not None else "")),
+        ("Incident reference", incident_ref(x)),
+        ("Detected", _ist(x.detected_at)),
+        ("Summary", x.title),
+        ("Description", x.description or "Not yet recorded."),
+        ("Systems affected", "; ".join(names) if names else "Not yet recorded."),
+        ("Critical system affected", crit),
+        ("Actions taken so far", x.actions_taken or "Not yet recorded."),
+    ]
+    text = "\n".join(f"{k}: {v}" for k, v in fields)
+    missing = [k for k, v in fields if v.startswith("Not yet")]
+    return {
+        "fields": [{"label": k, "value": v} for k, v in fields], "text": text, "missing": missing,
+        "note": "Draft for a person to check and send. The rule pack gives the 6-hour window but no required report "
+                "fields (CEA-INCIDENT-6H), so use the format CSIRT-Power and CERT-In ask for and copy these facts "
+                "into it.",
+    }
+
+
+def incident_json(db: Session, e: CmpEntity, x: CmpIncident, loaded: Loaded, assessed: list[dict],
+                  linked) -> dict:
+    mine = [o for o in assessed if o["incident_id"] == incident_ref(x)]
+    assets = {a.asset_id: a for a in loaded.assets}
+    return {
+        "id": x.id, "ref": incident_ref(x), "title": x.title, "description": x.description,
+        "detected_at": x.detected_at.isoformat(timespec="seconds"), "asset_ids": x.asset_ids or [],
+        "affects_critical_system": x.affects_critical_system, "actions_taken": x.actions_taken,
+        "reported_csirt_at": x.reported_csirt_at.isoformat(timespec="seconds") if x.reported_csirt_at else None,
+        "reported_certin_at": x.reported_certin_at.isoformat(timespec="seconds") if x.reported_certin_at else None,
+        "sabotage_concluded_at": x.sabotage_concluded_at.isoformat(timespec="seconds")
+        if x.sabotage_concluded_at else None,
+        "sabotage_reported_at": x.sabotage_reported_at.isoformat(timespec="seconds")
+        if x.sabotage_reported_at else None,
+        "obligations": [{**o, "recipient_label": RECIPIENT_LABELS.get(o["recipient"] or "", "the regulator")}
+                        for o in mine],
+        "report_evidence": linked("incident", x.id), "sabotage_evidence": linked("sabotage", x.id),
+        "draft": incident_draft(e, x, assets, register_hints(db, [a.asset_id for a in loaded.assets])),
     }

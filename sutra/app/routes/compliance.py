@@ -8,7 +8,7 @@ wrong link can be removed, and the audit log keeps both.
 from __future__ import annotations
 
 import secrets
-from datetime import date
+from datetime import UTC, date, datetime
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, Response
@@ -28,6 +28,7 @@ from ..models import (
     CmpEvidence,
     CmpEvidenceLink,
     CmpFinding,
+    CmpIncident,
     Job,
     utcnow,
 )
@@ -430,6 +431,106 @@ def delete_activity(xid: int, request: Request, p: Principal = Depends(ACT), db:
     return {"ok": True}
 
 
+# ---------- incidents ----------
+
+def _utc(dt: datetime | None) -> datetime | None:
+    """Naive UTC for storage; a time without an offset is read as Indian time (the people entering it are there)."""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=cmp.pack().local_tz)
+    return dt.astimezone(UTC).replace(tzinfo=None)
+
+
+class IncidentIn(BaseModel):
+    title: str = Field(min_length=1, max_length=300)
+    description: str = Field(default="", max_length=5000)
+    detected_at: datetime
+    asset_ids: list[str] = Field(default_factory=list, max_length=500)
+    affects_critical_system: bool | None = None
+    actions_taken: str = Field(default="", max_length=5000)
+    reported_csirt_at: datetime | None = None
+    reported_certin_at: datetime | None = None
+    sabotage_concluded_at: datetime | None = None
+    sabotage_reported_at: datetime | None = None
+
+
+def _incident_fields(x: CmpIncident, body: IncidentIn) -> None:
+    now = utcnow()
+    times = {"detected_at": _utc(body.detected_at), "reported_csirt_at": _utc(body.reported_csirt_at),
+             "reported_certin_at": _utc(body.reported_certin_at),
+             "sabotage_concluded_at": _utc(body.sabotage_concluded_at),
+             "sabotage_reported_at": _utc(body.sabotage_reported_at)}
+    for v in times.values():
+        if v is not None and v > now:
+            raise ValueError("Times of things that have happened cannot be in the future.")
+    for k in ("reported_csirt_at", "reported_certin_at"):
+        if times[k] is not None and times[k] < times["detected_at"]:
+            raise ValueError("A report cannot be sent before the incident was detected.")
+    if times["sabotage_reported_at"] is not None and times["sabotage_concluded_at"] is None:
+        raise ValueError("Record when the incident was concluded to be sabotage before recording its report.")
+    if times["sabotage_concluded_at"] is not None and times["sabotage_concluded_at"] < times["detected_at"]:
+        raise ValueError("Sabotage cannot be concluded before the incident was detected.")
+    x.title, x.description, x.actions_taken = body.title.strip(), body.description.strip(), body.actions_taken.strip()
+    x.asset_ids = list(dict.fromkeys(a.strip() for a in body.asset_ids if a.strip()))
+    x.affects_critical_system = body.affects_critical_system
+    for k, v in times.items():
+        setattr(x, k, v)
+
+
+def _incident_audit(x: CmpIncident) -> dict:
+    return {"title": x.title, "detected_at": x.detected_at.isoformat(),
+            "reported_csirt_at": x.reported_csirt_at.isoformat() if x.reported_csirt_at else None,
+            "reported_certin_at": x.reported_certin_at.isoformat() if x.reported_certin_at else None,
+            "sabotage_concluded_at": x.sabotage_concluded_at.isoformat() if x.sabotage_concluded_at else None,
+            "sabotage_reported_at": x.sabotage_reported_at.isoformat() if x.sabotage_reported_at else None,
+            "affects_critical_system": x.affects_critical_system}
+
+
+@router.post("/entities/{eid}/incidents", status_code=201)
+def add_incident(eid: int, body: IncidentIn, request: Request, p: Principal = Depends(ACT),
+                 db: Session = Depends(get_db)):
+    e = _get(db, CmpEntity, eid, "entity")
+    x = CmpIncident(entity_id=e.id, ref="", created_by=p.user.id, title="", detected_at=utcnow())
+    _incident_fields(x, body)
+    db.add(x)
+    db.flush()
+    x.ref = cmp.incident_ref(x)
+    _validate(db, e)
+    audit(db, "compliance.incident_add", p.user, "cmp_incident", x.id, client_ip(request), entity=e.id,
+          **_incident_audit(x))
+    db.commit()
+    return {"id": x.id, "ref": x.ref}
+
+
+@router.put("/incidents/{xid}")
+def update_incident(xid: int, body: IncidentIn, request: Request, p: Principal = Depends(ACT),
+                    db: Session = Depends(get_db)):
+    x = _get(db, CmpIncident, xid, "incident")
+    before = _incident_audit(x)
+    _incident_fields(x, body)
+    x.updated_at = utcnow()
+    _validate(db, db.get(CmpEntity, x.entity_id))
+    audit(db, "compliance.incident_change", p.user, "cmp_incident", x.id, client_ip(request), entity=x.entity_id,
+          before=before, after=_incident_audit(x))
+    db.commit()
+    return {"ok": True}
+
+
+@router.delete("/incidents/{xid}")
+def delete_incident(xid: int, request: Request, p: Principal = Depends(ACT), db: Session = Depends(get_db)):
+    x = _get(db, CmpIncident, xid, "incident")
+    if x.reported_csirt_at or x.reported_certin_at or x.sabotage_reported_at:
+        raise ValueError("A report has been recorded for this incident, so it stays on the record.")
+    audit(db, "compliance.incident_delete", p.user, "cmp_incident", x.id, client_ip(request), entity=x.entity_id,
+          **_incident_audit(x))
+    db.execute(CmpEvidenceLink.__table__.delete().where(CmpEvidenceLink.owner_type.in_(("incident", "sabotage")),
+                                                        CmpEvidenceLink.owner_id == x.id))
+    db.delete(x)
+    db.commit()
+    return {"ok": True}
+
+
 # ---------- assets ----------
 
 class AssetIn(BaseModel):
@@ -537,6 +638,8 @@ def _owner_entity(db: Session, owner_type: str, owner_id: int) -> int:
         return db.get(CmpFinding, c.finding_id).entity_id
     if owner_type == "activity":
         return _get(db, CmpActivity, owner_id, "activity record").entity_id
+    if owner_type in ("incident", "sabotage"):
+        return _get(db, CmpIncident, owner_id, "incident").entity_id
     raise ValueError(f"Evidence can be attached to: {', '.join(cmp.OWNER_TYPES)}.")
 
 

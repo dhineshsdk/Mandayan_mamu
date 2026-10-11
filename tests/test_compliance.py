@@ -380,3 +380,53 @@ def test_second_schedule_flags_changes_that_need_a_pre_deployment_audit(env, log
         "reference": "PDA-2027-14", "audited_on": "2027-05-02", "auditor": "Example Auditors LLP"}))
     assert ss["blocks_final_approval"] is False and ss["pre_audit"]["reference"] == "PDA-2027-14"
     assert ok(last.post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"}))["status"] == "approved"
+
+
+def test_incident_clocks_and_the_report_draft(env):
+    from datetime import UTC, datetime
+
+    officer, auditor = client(env, OFFICER), client(env, AUDITOR)
+    e = ok(officer.post("/api/compliance/entities", json={"name": "Incident Station", "entity_type": "generator",
+                                                          "capacity_mw": 400, "site": "Vindhya Thermal Plant"}), 201)
+    ok(officer.post(f"/api/compliance/entities/{e['id']}/assets/import"))
+    asset = ok(officer.get(f"/api/compliance/entities/{e['id']}"))["assets"][0]
+    ok(officer.put(f"/api/compliance/assets/{asset['id']}", json={"critical": True}))
+    url = f"/api/compliance/entities/{e['id']}/incidents"
+    now = datetime.now(UTC).replace(microsecond=0)
+    iso = lambda hours: (now - timedelta(hours=hours)).isoformat()  # noqa: E731
+
+    # Seven hours ago and nothing reported yet: both reports are overdue. Times are never in the future.
+    body = {"title": "Ransomware note on an engineering workstation", "detected_at": iso(7),
+            "asset_ids": [asset["asset_id"]], "affects_critical_system": True}
+    assert officer.post(url, json={**body, "detected_at": (now + timedelta(hours=1)).isoformat()}).status_code == 400
+    assert officer.post(url, json={**body, "reported_certin_at": iso(9)}).status_code == 400  # before detection
+    inc = ok(officer.post(url, json=body), 201)
+    d = ok(auditor.get(f"/api/compliance/entities/{e['id']}"))
+    item = d["incidents"][0]
+    assert {o["recipient"]: o["state"] for o in item["obligations"]} == {"csirt_power": "overdue", "cert_in": "overdue"}
+    assert any(i["subject"] == "incident" and i["severity"] == "breach" for i in d["assessment"]["issues"])
+
+    # The draft holds only what is recorded and says what is missing.
+    draft = item["draft"]
+    fields = {f["label"]: f["value"] for f in draft["fields"]}
+    assert fields["Critical system affected"] == "Yes" and asset["asset_id"] in fields["Systems affected"]
+    assert "critical system" in fields["Systems affected"] and fields["Reporting entity"].startswith("Incident Station")
+    assert set(draft["missing"]) == {"Description", "Actions taken so far"}
+    assert "CEA-INCIDENT-6H" in draft["note"] and draft["text"].startswith("Reporting entity:")
+
+    # Reports sent within 6 hours of detection are on time; one sent later is late.
+    ok(officer.put(f"/api/compliance/incidents/{inc['id']}", json={
+        **body, "description": "Ransom note found on ENG-WS-04", "actions_taken": "Host isolated",
+        "reported_csirt_at": iso(3), "reported_certin_at": iso(0)}))
+    item = ok(auditor.get(f"/api/compliance/entities/{e['id']}"))["incidents"][0]
+    states = {o["recipient"]: o["state"] for o in item["obligations"]}
+    assert states == {"csirt_power": "done_on_time", "cert_in": "done_late"} and item["draft"]["missing"] == []
+
+    # Evidence attaches to an incident; a report on record keeps the incident.
+    up = ok(officer.post(f"/api/compliance/entities/{e['id']}/evidence", data={
+        "kind": "other", "title": "Sent to CERT-In", "owner_type": "incident", "owner_id": str(inc["id"])},
+        files={"file": ("sent.txt", b"mail", "text/plain")}), 201)
+    item = ok(officer.get(f"/api/compliance/entities/{e['id']}"))["incidents"][0]
+    assert [x["id"] for x in item["report_evidence"]] == [up["id"]]
+    assert officer.delete(f"/api/compliance/incidents/{inc['id']}").status_code == 400
+    assert auditor.post(url, json=body).status_code == 403
