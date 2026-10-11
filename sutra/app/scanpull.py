@@ -42,6 +42,9 @@ KINDS = {
                    "default_url": "", "url_hint": "https://sc.plant.example.in"},
     "crowdstrike": {"label": "CrowdStrike Falcon Spotlight", "user": "API client ID", "secret": "API client secret",
                     "default_url": "https://api.crowdstrike.com", "url_hint": "https://api.eu-1.crowdstrike.com"},
+    "aws_inspector": {"label": "Amazon Inspector", "user": "Access key ID", "secret": "Secret access key",
+                      "default_url": "https://inspector2.ap-south-1.amazonaws.com",
+                      "url_hint": "https://inspector2.ap-south-1.amazonaws.com"},
 }
 DEFAULT_SCHEDULE = {"enabled": False, "hour": 2}
 CHECK_SECONDS = 300
@@ -49,7 +52,13 @@ CHECK_SECONDS = 300
 
 def build(conn: ScannerConnection, secret: str, transport=None):
     """A connector for ``conn``. ``transport`` is for tests."""
-    from sutra_connectors import CrowdStrikeConnector, QualysConnector, TenableSCConnector, TenableVMConnector
+    from sutra_connectors import (
+        AwsInspectorConnector,
+        CrowdStrikeConnector,
+        QualysConnector,
+        TenableSCConnector,
+        TenableVMConnector,
+    )
 
     verify: bool | str = conn.ca_bundle or True
     extra = {"transport": transport} if transport is not None else {}
@@ -61,6 +70,8 @@ def build(conn: ScannerConnection, secret: str, transport=None):
         return TenableSCConnector(conn.base_url, conn.username, secret, verify=verify, **extra)
     if conn.kind == "crowdstrike":
         return CrowdStrikeConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
+    if conn.kind == "aws_inspector":
+        return AwsInspectorConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
     raise ValueError(f"Unknown scanner kind {conn.kind!r}.")
 
 

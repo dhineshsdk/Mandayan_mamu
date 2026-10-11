@@ -1,0 +1,1090 @@
+{
+ "findings": [
+  {
+   "awsAccountId": "123451256789",
+   "description": "Thread creation while a directory handle is open does a fchdir, affecting other threads (race condition)",
+   "epss": {
+    "score": 0.00015
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-2:123451256789:finding/5f7abcdef0123456789abcdef1e80328",
+   "firstObservedAt": 1749795895.486,
+   "fixAvailable": "YES",
+   "inspectorScore": 7,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "AMAZON_CVE",
+     "score": 7,
+     "scoreSource": "AMAZON_CVE",
+     "scoringVector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1749795895.486,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 7,
+      "scoringVector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+      "source": "AMAZON_CVE",
+      "version": "3.1"
+     },
+     {
+      "baseScore": 5.9,
+      "scoringVector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-40909.json",
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-1007.html",
+     "https://alas.aws.amazon.com/AL2/ALAS-2025-2879.html",
+     "https://alas.aws.amazon.com/ALAS-2025-1981.html"
+    ],
+    "relatedVulnerabilities": [
+     "ALAS-2025-1981",
+     "ALAS2023-2025-1007",
+     "ALAS2-2025-2879"
+    ],
+    "source": "AMAZON_CVE",
+    "sourceUrl": "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-40909.json",
+    "vendorCreatedAt": 1748390400,
+    "vendorSeverity": "Important",
+    "vendorUpdatedAt": 1748390400,
+    "vulnerabilityId": "CVE-2025-40909",
+    "vulnerablePackages": [
+     {
+      "arch": "X86_64",
+      "epoch": 4,
+      "fixedInVersion": "4:5.16.3-299.amzn2.0.3",
+      "name": "perl",
+      "packageManager": "OS",
+      "release": "299.amzn2.0.2",
+      "remediation": "yum update perl",
+      "version": "5.16.3"
+     },
+     {
+      "arch": "NOARCH",
+      "epoch": 1,
+      "fixedInVersion": "1:1.04-299.amzn2.0.3",
+      "name": "perl-Pod-Escapes",
+      "packageManager": "OS",
+      "release": "299.amzn2.0.2",
+      "remediation": "yum update perl-Pod-Escapes",
+      "version": "1.04"
+     },
+     {
+      "arch": "X86_64",
+      "epoch": 4,
+      "fixedInVersion": "4:5.16.3-299.amzn2.0.3",
+      "name": "perl-libs",
+      "packageManager": "OS",
+      "release": "299.amzn2.0.2",
+      "remediation": "yum update perl-libs",
+      "version": "5.16.3"
+     },
+     {
+      "arch": "X86_64",
+      "epoch": 4,
+      "fixedInVersion": "4:5.16.3-299.amzn2.0.3",
+      "name": "perl-macros",
+      "packageManager": "OS",
+      "release": "299.amzn2.0.2",
+      "remediation": "yum update perl-macros",
+      "version": "5.16.3"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::123451256789:instance-profile/eks-0012345a-1234-5678-1234-6c1abcdef012",
+       "imageId": "ami-0e0f0123456789abd",
+       "ipV4Addresses": [
+        "10.90.0.42",
+        "10.90.0.88",
+        "175.16.199.3",
+        "10.90.0.57",
+        "10.90.0.14",
+        "10.90.0.204",
+        "10.90.0.59",
+        "10.90.0.38",
+        "10.90.0.249",
+        "10.90.0.147",
+        "10.90.0.224",
+        "10.90.0.203",
+        "10.90.0.253",
+        "10.90.0.231",
+        "10.90.0.130",
+        "10.90.0.186",
+        "10.90.0.197",
+        "10.90.0.194",
+        "10.90.0.170"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748534680,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-0ababcdefabcdef11",
+       "type": "t3.medium",
+       "vpcId": "vpc-04ab0123456789123"
+      }
+     },
+     "id": "i-020babcdefabcdefd",
+     "partition": "aws",
+     "region": "us-east-2",
+     "tags": {
+      "aws:autoscaling:groupName": "eks-sei_demo_prod_linux-00c12345-abcd-1234-5678-601234567896",
+      "aws:ec2launchtemplate:version": "6",
+      "aws:eks:cluster-name": "sei_demo_prod",
+      "eks:cluster-name": "sei_demo_prod",
+      "eks:nodegroup-name": "sei_demo_prod_linux",
+      "k8s.io/cluster-autoscaler/enabled": "true",
+      "k8s.io/cluster-autoscaler/sei_demo_prod": "owned",
+      "kubernetes.io/cluster/sei_demo_prod": "owned"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "HIGH",
+   "status": "ACTIVE",
+   "title": "CVE-2025-40909 - perl, perl-Pod-Escapes and 2 more",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1749795895.486
+  },
+  {
+   "awsAccountId": "123451256789",
+   "description": "SSH servers which implement file transfer protocols are vulnerable to a denial of service attack from clients which complete the key exchange slowly, or not at all, causing pending content to be read into memory, but never transmitted.",
+   "epss": {
+    "score": 0.00051
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-2:123451256789:finding/5329abcdef0123456789abcdef21a4b8",
+   "firstObservedAt": 1748539658.967,
+   "fixAvailable": "YES",
+   "inspectorScore": 7.5,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "NVD",
+     "score": 7.5,
+     "scoreSource": "NVD",
+     "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1749795895.486,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 7.5,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     },
+     {
+      "baseScore": 7.5,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://nvd.nist.gov/vuln/detail/CVE-2025-22869",
+     "https://alas.aws.amazon.com/AL2/ALASDOCKER-2025-053.html",
+     "https://alas.aws.amazon.com/AL2/ALAS-2025-2883.html",
+     "https://alas.aws.amazon.com/AL2/ALASNITRO-ENCLAVES-2025-053.html",
+     "https://alas.aws.amazon.com/AL2/ALASDOCKER-2025-056.html",
+     "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-22869.json",
+     "https://alas.aws.amazon.com/AL2/ALASECS-2025-054.html",
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-934.html",
+     "https://alas.aws.amazon.com/ALAS-2025-1982.html",
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-1013.html",
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-914.html",
+     "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-22869.json"
+    ],
+    "relatedVulnerabilities": [],
+    "source": "NVD",
+    "sourceUrl": "https://nvd.nist.gov/vuln/detail/CVE-2025-22869",
+    "vendorCreatedAt": 1740557664,
+    "vendorSeverity": "HIGH",
+    "vendorUpdatedAt": 1746127700,
+    "vulnerabilityId": "CVE-2025-22869",
+    "vulnerablePackages": [
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:3.3.2299.0-1.amzn2",
+      "name": "amazon-ssm-agent",
+      "packageManager": "OS",
+      "release": "1.amzn2",
+      "remediation": "yum update amazon-ssm-agent",
+      "version": "3.3.1957.0"
+     },
+     {
+      "epoch": 0,
+      "filePath": "vol-0718e90f4c9530260:/p1:usr/bin/kubelet",
+      "fixedInVersion": "0.35.0",
+      "name": "golang.org/x/crypto",
+      "packageManager": "GOBINARY",
+      "version": "v0.28.0"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::123451256789:instance-profile/eks-0012345a-1234-5678-1234-6c1abcdef012",
+       "imageId": "ami-0e0f0123456789abd",
+       "ipV4Addresses": [
+        "10.90.0.42",
+        "10.90.0.88",
+        "175.16.199.1",
+        "10.90.0.57",
+        "10.90.0.14",
+        "10.90.0.204",
+        "10.90.0.59",
+        "10.90.0.38",
+        "10.90.0.249",
+        "10.90.0.147",
+        "10.90.0.224",
+        "10.90.0.203",
+        "10.90.0.253",
+        "10.90.0.231",
+        "10.90.0.130",
+        "10.90.0.186",
+        "10.90.0.197",
+        "10.90.0.194",
+        "10.90.0.170"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748534680,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-0ababcdefabcdef11",
+       "type": "t3.medium",
+       "vpcId": "vpc-04ab0123456789123"
+      }
+     },
+     "id": "i-020babcdefabcdefd",
+     "partition": "aws",
+     "region": "us-east-2",
+     "tags": {
+      "aws:autoscaling:groupName": "eks-sei_demo_prod_linux-00c12345-abcd-1234-5678-601234567896",
+      "aws:ec2launchtemplate:version": "6",
+      "aws:eks:cluster-name": "sei_demo_prod",
+      "eks:cluster-name": "sei_demo_prod",
+      "eks:nodegroup-name": "sei_demo_prod_linux",
+      "k8s.io/cluster-autoscaler/enabled": "true",
+      "k8s.io/cluster-autoscaler/sei_demo_prod": "owned",
+      "kubernetes.io/cluster/sei_demo_prod": "owned"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "HIGH",
+   "status": "ACTIVE",
+   "title": "CVE-2025-22869 - amazon-ssm-agent, golang.org/x/crypto",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1749795895.486
+  },
+  {
+   "awsAccountId": "123451256789",
+   "description": "In libxml2 before 2.13.8 and 2.14.x before 2.14.2, xmlSchemaIDCFillNodeTables in xmlschemas.c has a heap-based buffer under-read. To exploit this, a crafted XML document must be validated against an XML schema with certain identity constraints, or a crafted XML schema must be used.",
+   "epss": {
+    "score": 0.00023
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-2:123451256789:finding/52dcbabcdef0123456789abcdefd2b65",
+   "firstObservedAt": 1748629534.399,
+   "fixAvailable": "YES",
+   "inspectorScore": 2.9,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "AMAZON_CVE",
+     "score": 2.9,
+     "scoreSource": "AMAZON_CVE",
+     "scoringVector": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1749795895.486,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 2.9,
+      "scoringVector": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+      "source": "AMAZON_CVE",
+      "version": "3.1"
+     },
+     {
+      "baseScore": 7.5,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-963.html",
+     "https://alas.aws.amazon.com/AL2/ALAS-2025-2860.html",
+     "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-32415.json"
+    ],
+    "relatedVulnerabilities": [
+     "ALAS2023-2025-963",
+     "ALAS2-2025-2860"
+    ],
+    "source": "AMAZON_CVE",
+    "sourceUrl": "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-32415.json",
+    "vendorCreatedAt": 1744848000,
+    "vendorSeverity": "Low",
+    "vendorUpdatedAt": 1745452800,
+    "vulnerabilityId": "CVE-2025-32415",
+    "vulnerablePackages": [
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:2.9.1-6.amzn2.5.17",
+      "name": "libxml2",
+      "packageManager": "OS",
+      "release": "6.amzn2.5.16",
+      "remediation": "yum update libxml2",
+      "version": "2.9.1"
+     },
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:2.9.1-6.amzn2.5.17",
+      "name": "libxml2-python",
+      "packageManager": "OS",
+      "release": "6.amzn2.5.16",
+      "remediation": "yum update libxml2-python",
+      "version": "2.9.1"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::123451256789:instance-profile/eks-0012345a-1234-5678-1234-6c1abcdef012",
+       "imageId": "ami-0e0f0123456789abd",
+       "ipV4Addresses": [
+        "10.90.0.42",
+        "10.90.0.88",
+        "175.16.199.6",
+        "10.90.0.57",
+        "10.90.0.14",
+        "10.90.0.204",
+        "10.90.0.59",
+        "10.90.0.38",
+        "10.90.0.249",
+        "10.90.0.147",
+        "10.90.0.224",
+        "10.90.0.203",
+        "10.90.0.253",
+        "10.90.0.231",
+        "10.90.0.130",
+        "10.90.0.186",
+        "10.90.0.197",
+        "10.90.0.194",
+        "10.90.0.170"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748534680,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-0ababcdefabcdef11",
+       "type": "t3.medium",
+       "vpcId": "vpc-04ab0123456789123"
+      }
+     },
+     "id": "i-020babcdefabcdefd",
+     "partition": "aws",
+     "region": "us-east-2",
+     "tags": {
+      "aws:autoscaling:groupName": "eks-sei_demo_prod_linux-00c12345-abcd-1234-5678-601234567896",
+      "aws:ec2launchtemplate:version": "6",
+      "aws:eks:cluster-name": "sei_demo_prod",
+      "eks:cluster-name": "sei_demo_prod",
+      "eks:nodegroup-name": "sei_demo_prod_linux",
+      "k8s.io/cluster-autoscaler/enabled": "true",
+      "k8s.io/cluster-autoscaler/sei_demo_prod": "owned",
+      "kubernetes.io/cluster/sei_demo_prod": "owned"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "LOW",
+   "status": "ACTIVE",
+   "title": "CVE-2025-32415 - libxml2, libxml2-python",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1749795895.486
+  },
+  {
+   "awsAccountId": "123451256789",
+   "description": "In the Linux kernel, the following vulnerability has been resolved:\n\nice: arfs: fix use-after-free when freeing @rx_cpu_rmap",
+   "epss": {
+    "score": 0.00021
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-2:123451256789:finding/64eabcdef0123456789abcdefb1234bb",
+   "firstObservedAt": 1748629505.465,
+   "fixAvailable": "YES",
+   "inspectorScore": 7.8,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "AMAZON_CVE",
+     "score": 7.8,
+     "scoreSource": "AMAZON_CVE",
+     "scoringVector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1749525885.775,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 7.8,
+      "scoringVector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+      "source": "AMAZON_CVE",
+      "version": "3.1"
+     },
+     {
+      "baseScore": 7.8,
+      "scoringVector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://alas.aws.amazon.com/cve/json/v1/CVE-2022-49063.json",
+     "https://alas.aws.amazon.com/AL2/ALASKERNEL-5.10-2025-094.html"
+    ],
+    "relatedVulnerabilities": [
+     "ALAS2KERNEL-5.10-2025-094"
+    ],
+    "source": "AMAZON_CVE",
+    "sourceUrl": "https://alas.aws.amazon.com/cve/json/v1/CVE-2022-49063.json",
+    "vendorCreatedAt": 1740528000,
+    "vendorSeverity": "Important",
+    "vendorUpdatedAt": 1742256000,
+    "vulnerabilityId": "CVE-2022-49063",
+    "vulnerablePackages": [
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:5.10.237-230.949.amzn2",
+      "name": "kernel",
+      "packageManager": "OS",
+      "release": "228.935.amzn2",
+      "remediation": "yum update kernel",
+      "version": "5.10.236"
+     },
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:5.10.237-230.949.amzn2",
+      "name": "kernel-devel",
+      "packageManager": "OS",
+      "release": "228.935.amzn2",
+      "remediation": "yum update kernel-devel",
+      "version": "5.10.236"
+     },
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:5.10.237-230.949.amzn2",
+      "name": "kernel-headers",
+      "packageManager": "OS",
+      "release": "228.935.amzn2",
+      "remediation": "yum update kernel-headers",
+      "version": "5.10.236"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::123451256789:instance-profile/eks-0012345a-1234-5678-1234-6c1abcdef012",
+       "imageId": "ami-0e0f0123456789abd",
+       "ipV4Addresses": [
+        "10.90.0.87",
+        "10.90.0.60",
+        "10.90.0.30",
+        "10.90.0.74",
+        "10.90.0.206",
+        "10.90.0.207",
+        "10.90.0.37",
+        "10.90.0.149",
+        "10.90.0.235",
+        "1.128.0.3",
+        "10.90.0.225",
+        "10.90.0.212",
+        "10.90.0.199",
+        "10.90.0.240",
+        "10.90.0.164",
+        "10.90.0.160",
+        "10.90.0.182",
+        "10.90.0.70",
+        "10.90.0.180"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748534680,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-0ababcdefabcdef11",
+       "type": "t3.medium",
+       "vpcId": "vpc-04ab0123456789123"
+      }
+     },
+     "id": "i-059abcdefabcdef1b",
+     "partition": "aws",
+     "region": "us-east-2",
+     "tags": {
+      "aws:autoscaling:groupName": "eks-sei_demo_prod_linux-00c12345-abcd-1234-5678-601234567896",
+      "aws:ec2launchtemplate:version": "6",
+      "aws:eks:cluster-name": "sei_demo_prod",
+      "eks:cluster-name": "sei_demo_prod",
+      "eks:nodegroup-name": "sei_demo_prod_linux",
+      "k8s.io/cluster-autoscaler/enabled": "true",
+      "k8s.io/cluster-autoscaler/sei_demo_prod": "owned",
+      "kubernetes.io/cluster/sei_demo_prod": "owned"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "HIGH",
+   "status": "ACTIVE",
+   "title": "CVE-2022-49063 - kernel, kernel-devel and 1 more",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1749525885.775
+  },
+  {
+   "awsAccountId": "123451256789",
+   "description": "On the instance i-059abcdefabcdef1b, the port range 31699-31699 is reachable from the InternetGateway igw-0e7abcdefabcdef3e from an attached ENI eni-03fabcdefabcdef8f.",
+   "findingArn": "arn:aws:inspector2:us-east-2:123451256789:finding/6cde74bdabcdef0123456789abcdef05",
+   "firstObservedAt": 1748560596.648,
+   "lastObservedAt": 1748560596.648,
+   "networkReachabilityDetails": {
+    "networkPath": {
+     "steps": [
+      {
+       "componentArn": "arn:aws:ec2:us-east-2:123451256789:internet-gateway/igw-0e7abcdefabcdef3e",
+       "componentId": "igw-0e7abcdefabcdef3e",
+       "componentType": "AWS::EC2::InternetGateway"
+      },
+      {
+       "componentArn": "arn:aws:ec2:us-east-2:123451256789:network-acl/acl-0d9abcdefabcd0b",
+       "componentId": "acl-0d9abcdefabcd0b",
+       "componentType": "AWS::EC2::NetworkAcl"
+      },
+      {
+       "componentArn": "arn:aws:ec2:us-east-2:123451256789:security-group/sg-0ef5abcdefabcdef6",
+       "componentId": "sg-0ef5abcdefabcdef6",
+       "componentType": "AWS::EC2::SecurityGroup"
+      },
+      {
+       "componentArn": "arn:aws:ec2:us-east-2:123451256789:network-interface/eni-03fabcdefabcdef8f",
+       "componentId": "eni-03fabcdefabcdef8f",
+       "componentType": "AWS::EC2::NetworkInterface"
+      },
+      {
+       "componentArn": "arn:aws:ec2:us-east-2:123451256789:instance/i-059abcdefabcdef1b",
+       "componentId": "i-059abcdefabcdef1b",
+       "componentType": "AWS::EC2::Instance"
+      }
+     ]
+    },
+    "openPortRange": {
+     "begin": 31699,
+     "end": 31699
+    },
+    "protocol": "TCP"
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "You can restrict access to your instance by modifying the Security Groups or ACLs in the network path."
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::123451256789:instance-profile/eks-0012345a-1234-5678-1234-6c1abcdef012",
+       "imageId": "ami-0e0f0123456789abd",
+       "ipV4Addresses": [
+        "10.90.0.87",
+        "10.90.0.60",
+        "10.90.0.30",
+        "10.90.0.74",
+        "10.90.0.206",
+        "10.90.0.207",
+        "10.90.0.37",
+        "10.90.0.149",
+        "10.90.0.235",
+        "1.128.0.5",
+        "10.90.0.225",
+        "10.90.0.212",
+        "10.90.0.199",
+        "10.90.0.240",
+        "10.90.0.164",
+        "10.90.0.160",
+        "10.90.0.182",
+        "10.90.0.70",
+        "10.90.0.180"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748534680,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-0ababcdefabcdef11",
+       "type": "t3.medium",
+       "vpcId": "vpc-04ab0123456789123"
+      }
+     },
+     "id": "i-059abcdefabcdef1b",
+     "partition": "aws",
+     "region": "us-east-2",
+     "tags": {
+      "aws:autoscaling:groupName": "eks-sei_demo_prod_linux-00c12345-abcd-1234-5678-601234567896",
+      "aws:ec2launchtemplate:version": "6",
+      "aws:eks:cluster-name": "sei_demo_prod",
+      "eks:cluster-name": "sei_demo_prod",
+      "eks:nodegroup-name": "sei_demo_prod_linux",
+      "k8s.io/cluster-autoscaler/enabled": "true",
+      "k8s.io/cluster-autoscaler/sei_demo_prod": "owned",
+      "kubernetes.io/cluster/sei_demo_prod": "owned"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "INFORMATIONAL",
+   "status": "ACTIVE",
+   "title": "Port 31699 is reachable from an Internet Gateway - TCP",
+   "type": "NETWORK_REACHABILITY",
+   "updatedAt": 1748560596.648
+  },
+  {
+   "awsAccountId": "701234567890",
+   "description": "go-git is a highly extensible git implementation library written in pure Go. An argument injection vulnerability was discovered in go-git versions prior to v5.13. Successful exploitation of this vulnerability could allow an attacker to set arbitrary values to git-upload-pack flags. This only happens when the file transport protocol is being used, as that is the only protocol that shells out to git binaries. This vulnerability is fixed in 5.13.0.",
+   "epss": {
+    "score": 0.00112
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:eu-west-1:701234567890:finding/2abcdefabcdefabcdef01234567896cb",
+   "firstObservedAt": 1749094163.084,
+   "fixAvailable": "YES",
+   "inspectorScore": 9.8,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "NVD",
+     "score": 9.8,
+     "scoreSource": "NVD",
+     "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1750246253.082,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 9.8,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://nvd.nist.gov/vuln/detail/CVE-2025-21613"
+    ],
+    "relatedVulnerabilities": [],
+    "source": "NVD",
+    "sourceUrl": "https://nvd.nist.gov/vuln/detail/CVE-2025-21613",
+    "vendorCreatedAt": 1736183747,
+    "vendorSeverity": "CRITICAL",
+    "vendorUpdatedAt": 1744857237,
+    "vulnerabilityId": "CVE-2025-21613",
+    "vulnerablePackages": [
+     {
+      "epoch": 0,
+      "filePath": "vol-052abcdefabcdef9f:/p1:home/ubuntu/elastic-agent-8.17.3-linux-x86_64/data/elastic-agent-0efe49/components/cloudbeat",
+      "fixedInVersion": "5.13.0",
+      "name": "github.com/go-git/go-git/v5",
+      "packageManager": "GOBINARY",
+      "version": "v5.12.0"
+     },
+     {
+      "epoch": 0,
+      "filePath": "vol-abcdef0123456789f:/p1:opt/Elastic/Agent/data/elastic-agent-8.17.3-0efe49/components/cloudbeat",
+      "fixedInVersion": "5.13.0",
+      "name": "github.com/go-git/go-git/v5",
+      "packageManager": "GOBINARY",
+      "version": "v5.12.0"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "imageId": "ami-0abcd0123456789d1",
+       "ipV4Addresses": [
+        "1.128.0.1",
+        "175.16.199.2"
+       ],
+       "ipV6Addresses": [],
+       "keyName": "1234-abcd-test",
+       "launchedAt": 1741357592,
+       "platform": "UBUNTU_24_04",
+       "subnetId": "subnet-babcdefd",
+       "type": "c5.4xlarge",
+       "vpcId": "vpc-abcdef01"
+      }
+     },
+     "id": "i-abcdef0123456789d",
+     "partition": "aws",
+     "region": "eu-west-1",
+     "tags": {
+      "Name": "long-running-env-logs",
+      "division": "engineering",
+      "org": "security",
+      "project": "testabc",
+      "team": "cloud-security-posture"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "CRITICAL",
+   "status": "ACTIVE",
+   "title": "CVE-2025-21613 - github.com/go-git/go-git/v5, github.com/go-git/go-git/v5",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1750246253.082
+  },
+  {
+   "awsAccountId": "012345678989",
+   "description": "setuptools is a package that allows users to download, build, install, upgrade, and uninstall Python packages. A path traversal vulnerability in `PackageIndex` is present in setuptools prior to version 78.1.1. An attacker would be allowed to write files to arbitrary locations on the filesystem with the permissions of the process running the Python code, which could escalate to remote code execution depending on the context. Version 78.1.1 fixes the issue.",
+   "epss": {
+    "score": 0.0012
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-1:012345678989:finding/194f71676abcdefabcdef01234567895",
+   "firstObservedAt": 1749804372.05,
+   "fixAvailable": "YES",
+   "inspectorScore": 7.5,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "AMAZON_CVE",
+     "score": 7.5,
+     "scoreSource": "AMAZON_CVE",
+     "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1750941752.515,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 7.5,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+      "source": "AMAZON_CVE",
+      "version": "3.1"
+     },
+     {
+      "baseScore": 8.8,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-1005.html",
+     "https://alas.aws.amazon.com/AL2/ALAS-2025-2877.html",
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-1003.html",
+     "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-47273.json",
+     "https://alas.aws.amazon.com/AL2023/ALAS-2025-1004.html",
+     "https://alas.aws.amazon.com/AL2/ALAS-2025-2876.html"
+    ],
+    "relatedVulnerabilities": [
+     "ALAS2-2025-2877",
+     "ALAS2-2025-2876",
+     "ALAS2023-2025-1004",
+     "ALAS2023-2025-1005",
+     "ALAS2023-2025-1003"
+    ],
+    "source": "AMAZON_CVE",
+    "sourceUrl": "https://alas.aws.amazon.com/cve/json/v1/CVE-2025-47273.json",
+    "vendorCreatedAt": 1747440000,
+    "vendorSeverity": "Important",
+    "vendorUpdatedAt": 1748822400,
+    "vulnerabilityId": "CVE-2025-47273",
+    "vulnerablePackages": [
+     {
+      "arch": "NOARCH",
+      "epoch": 0,
+      "fixedInVersion": "0:59.6.0-2.amzn2023.0.6",
+      "name": "python3-setuptools",
+      "packageManager": "OS",
+      "release": "2.amzn2023.0.5",
+      "remediation": "sudo dnf check-update",
+      "sourceLayerHash": "sha256:023cba81b02358aa89023184475accbaf4d8b7edba68d1c8981e46747029cc80",
+      "version": "59.6.0"
+     },
+     {
+      "arch": "NOARCH",
+      "epoch": 0,
+      "fixedInVersion": "0:59.6.0-2.amzn2023.0.6",
+      "name": "python3-setuptools-wheel",
+      "packageManager": "OS",
+      "release": "2.amzn2023.0.5",
+      "remediation": "sudo dnf check-update",
+      "sourceLayerHash": "sha256:023cba81b02358aa89023184475accbaf4d8b7edba68d1c8981e46747029cc80",
+      "version": "59.6.0"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEcrContainerImage": {
+       "architecture": "amd64",
+       "imageHash": "sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+       "imageTags": [
+        "latest"
+       ],
+       "platform": "AMAZON_LINUX_2023",
+       "pushedAt": 1744892687.924,
+       "registry": "012345678989",
+       "repositoryName": "orestis-onweek-2"
+      }
+     },
+     "id": "arn:aws:ecr:us-east-1:012345678989:repository/orestis-onweek-2/sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+     "partition": "aws",
+     "region": "us-east-1",
+     "tags": {},
+     "type": "AWS_ECR_CONTAINER_IMAGE"
+    }
+   ],
+   "severity": "HIGH",
+   "status": "ACTIVE",
+   "title": "CVE-2025-47273 - python3-setuptools, python3-setuptools-wheel",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1750941752.515
+  },
+  {
+   "awsAccountId": "111111111111",
+   "description": "Example package vulnerability used to exercise the SUPPRESSED status mapping.",
+   "epss": {
+    "score": 0.00012
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-1:111111111111:finding/aaaa1111bbbb2222cccc3333dddd4444",
+   "firstObservedAt": 1749000000,
+   "fixAvailable": "YES",
+   "inspectorScore": 5.5,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "NVD",
+     "score": 5.5,
+     "scoreSource": "NVD",
+     "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1749500000,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 5.5,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://example.com/advisories/EXAMPLE-2025-0001"
+    ],
+    "relatedVulnerabilities": [],
+    "source": "NVD",
+    "sourceUrl": "https://example.com/advisories/EXAMPLE-2025-0001",
+    "vendorCreatedAt": 1748000000,
+    "vendorSeverity": "MEDIUM",
+    "vendorUpdatedAt": 1748500000,
+    "vulnerabilityId": "EXAMPLE-2025-0001",
+    "vulnerablePackages": [
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:1.2.3-1.amzn2",
+      "name": "example-lib",
+      "packageManager": "OS",
+      "release": "1.amzn2",
+      "remediation": "yum update example-lib",
+      "version": "1.2.0"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::111111111111:instance-profile/example-profile",
+       "imageId": "ami-00example00000001",
+       "ipV4Addresses": [
+        "192.0.2.10"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748000000,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-00example00000001",
+       "type": "t3.medium",
+       "vpcId": "vpc-00example00000001"
+      }
+     },
+     "id": "i-00example00000001",
+     "partition": "aws",
+     "region": "us-east-1",
+     "tags": {
+      "env": "test"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "MEDIUM",
+   "status": "SUPPRESSED",
+   "title": "EXAMPLE-2025-0001 - example-lib",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1749600000
+  },
+  {
+   "awsAccountId": "222222222222",
+   "description": "Example package vulnerability used to exercise the CLOSED status mapping.",
+   "epss": {
+    "score": 0.00034
+   },
+   "exploitAvailable": "NO",
+   "findingArn": "arn:aws:inspector2:us-east-1:222222222222:finding/eeee5555ffff6666aaaa7777bbbb8888",
+   "firstObservedAt": 1749000000,
+   "fixAvailable": "YES",
+   "inspectorScore": 7.5,
+   "inspectorScoreDetails": {
+    "adjustedCvss": {
+     "adjustments": [],
+     "cvssSource": "NVD",
+     "score": 7.5,
+     "scoreSource": "NVD",
+     "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+     "version": "3.1"
+    }
+   },
+   "lastObservedAt": 1749500000,
+   "packageVulnerabilityDetails": {
+    "cvss": [
+     {
+      "baseScore": 7.5,
+      "scoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+      "source": "NVD",
+      "version": "3.1"
+     }
+    ],
+    "referenceUrls": [
+     "https://example.com/advisories/EXAMPLE-2025-0002"
+    ],
+    "relatedVulnerabilities": [],
+    "source": "NVD",
+    "sourceUrl": "https://example.com/advisories/EXAMPLE-2025-0002",
+    "vendorCreatedAt": 1748000000,
+    "vendorSeverity": "HIGH",
+    "vendorUpdatedAt": 1748500000,
+    "vulnerabilityId": "EXAMPLE-2025-0002",
+    "vulnerablePackages": [
+     {
+      "arch": "X86_64",
+      "epoch": 0,
+      "fixedInVersion": "0:2.3.4-1.amzn2",
+      "name": "example-server",
+      "packageManager": "OS",
+      "release": "1.amzn2",
+      "remediation": "yum update example-server",
+      "version": "2.3.0"
+     }
+    ]
+   },
+   "remediation": {
+    "recommendation": {
+     "text": "None Provided"
+    }
+   },
+   "resources": [
+    {
+     "details": {
+      "awsEc2Instance": {
+       "iamInstanceProfileArn": "arn:aws:iam::222222222222:instance-profile/example-profile",
+       "imageId": "ami-00example00000002",
+       "ipV4Addresses": [
+        "198.51.100.5"
+       ],
+       "ipV6Addresses": [],
+       "launchedAt": 1748000000,
+       "platform": "AMAZON_LINUX_2",
+       "subnetId": "subnet-00example00000002",
+       "type": "t3.medium",
+       "vpcId": "vpc-00example00000002"
+      }
+     },
+     "id": "i-00example00000002",
+     "partition": "aws",
+     "region": "us-east-1",
+     "tags": {
+      "env": "test"
+     },
+     "type": "AWS_EC2_INSTANCE"
+    }
+   ],
+   "severity": "HIGH",
+   "status": "CLOSED",
+   "title": "EXAMPLE-2025-0002 - example-server",
+   "type": "PACKAGE_VULNERABILITY",
+   "updatedAt": 1749600000
+  }
+ ]
+}

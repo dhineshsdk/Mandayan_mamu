@@ -1,0 +1,16 @@
+{
+ "coveredResources": [
+  {"resourceType": "AWS_EC2_INSTANCE", "resourceId": "i-020babcdefabcdefd", "accountId": "123451234512",
+   "scanType": "PACKAGE", "scanStatus": {"statusCode": "ACTIVE", "reason": "SUCCESSFUL"},
+   "resourceMetadata": {"ec2": {"tags": {}, "amiId": "ami-0e0f0123456789abd", "platform": "LINUX"}},
+   "lastScannedAt": 1749795895.486, "scanMode": "EC2_SSM_AGENT_BASED"},
+  {"resourceType": "AWS_EC2_INSTANCE", "resourceId": "i-0aaaabbbbccccdddd", "accountId": "123451234512",
+   "scanType": "PACKAGE", "scanStatus": {"statusCode": "ACTIVE", "reason": "SUCCESSFUL"},
+   "resourceMetadata": {"ec2": {"tags": {"Name": "scada-historian-01"}, "amiId": "ami-0123", "platform": "WINDOWS"}},
+   "lastScannedAt": 1749790000, "scanMode": "EC2_AGENTLESS"},
+  {"resourceType": "AWS_EC2_INSTANCE", "resourceId": "i-0stale000000000000", "accountId": "123451234512",
+   "scanType": "PACKAGE", "scanStatus": {"statusCode": "ACTIVE", "reason": "SUCCESSFUL"},
+   "resourceMetadata": {"ec2": {"tags": {"Name": "old-box"}, "platform": "LINUX"}},
+   "lastScannedAt": 1700000000, "scanMode": "EC2_SSM_AGENT_BASED"}
+ ]
+}

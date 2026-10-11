@@ -336,7 +336,7 @@ class ScannerConnection(Base):
 
     __tablename__ = "scanner_connections"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    kind: Mapped[str] = mapped_column(String(16))  # qualys | tenable_vm | tenable_sc
+    kind: Mapped[str] = mapped_column(String(16))  # a key of sutra.app.scanpull.KINDS
     name: Mapped[str] = mapped_column(String(80))
     base_url: Mapped[str] = mapped_column(String(300))
     username: Mapped[str] = mapped_column(String(200), default="")  # Qualys user name or Tenable access key
