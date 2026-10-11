@@ -73,6 +73,11 @@ Click a team for the hosts. The team portal shows the same numbers for that team
 - In the other window, sign in as that team's manager: the **Patch jobs** badge shows one waiting. Approve with a
   comment, then sign in as the VM analyst and the vertical head in turn. Point at the audit trail: "this is your CEA
   evidence." Show that the team account has no Approve button: "whoever raises a job can never approve it."
+- Sign in as the plant engineer for the thermal plant and open **OT plans**: record the OEM's approval with its
+  reference, the compensating control and the shutdown slot, then what happened at the shutdown. "The job still says
+  approved: only the next rescan closes it."
+- Sign in as the CISO and open **Scorecards**: each team's backlog, overdue jobs, SLA breaches and time to fix, and the
+  same by plant. If you imported the second month, the Log4j job shows as proved fixed.
 - For IT, sign in as the *Network Security* team and build the NetScaler job (power): it is Act, so the vertical head
   can approve it as an emergency change.
 - Sign in as the admin and open **Audit log**: every sign-in, refusal and approval is there.

@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from ... import report
 from ... import views as shapes
+from .. import scorecard
 from ..access import Principal
 from ..deps import client_ip, current_principal, get_db, require
 from ..models import Dataset, OwnershipTeam
@@ -137,3 +138,9 @@ def portal(request: Request, p: Principal = Depends(require("M-TP", "view")), db
                       "vertical": t.vertical if t else "", "vertical_head": t.vertical_head_name if t else "",
                       "in_chart": t is not None})
     return {**{k: payload[k] for k in ("org", "as_of", "root_causes", "assets", "findings")}, "teams": teams}
+
+
+@router.get("/scorecards")
+def scorecards(request: Request, p: Principal = Depends(require("M-CSO", "view")), db: Session = Depends(get_db)):
+    """Team scorecards; for the CISO, the whole organisation's dashboard."""
+    return scorecard.build(db, p, request.app.state.analysis.result)

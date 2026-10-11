@@ -177,3 +177,9 @@ ol.steps li > div { margin-top: 2px; }
 .st-expired { background: var(--warn-bg); color: var(--warn-ink); font-weight: 600; }
 dialog.card { border: 1px solid var(--line); color: var(--ink); background: var(--panel); }
 dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
+.st-ot-approvals, .st-ot-ready { background: var(--panel-2); color: var(--ink); border: 1px solid var(--line); }
+.st-ot-oem, .st-ot-slot, .st-ot-oem-refused { background: var(--warn-bg); color: var(--warn-ink); font-weight: 600; }
+.st-ot-executed { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.st-ot-fixed { background: var(--good); color: #fff; }
+.st-ot-closed { color: var(--muted); }
+.warn-ink { color: var(--warn-ink); }

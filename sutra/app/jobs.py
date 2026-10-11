@@ -112,6 +112,9 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
                              state="waiting") for i, s in enumerate(r["steps"])]
     db.add(job)
     db.flush()
+    from . import otplans  # imports this module
+
+    otplans.plan_for(db, job, res)
     event = {"patch": "job.raise", "manual": "job.manual", "exception": "job.exception_request"}[mode]
     audit(db, event, p.user, "job", job.id, ip, rc=rc_id, team=team,
           route=job.route["reason"] if job.route else None, ticket=ticket or None,

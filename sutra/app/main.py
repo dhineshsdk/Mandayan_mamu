@@ -20,7 +20,7 @@ from .config import Settings
 from .db import make_engine, make_sessionmaker
 from .integrations import Senders
 from .jobs import Conflict, Forbidden
-from .routes import admin, auth, data, history, jobs, views
+from .routes import admin, auth, data, history, jobs, ot, views
 
 STATIC = Path(__file__).resolve().parent.parent / "web" / "static"
 
@@ -108,7 +108,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
         return JSONResponse({"error": f"{field}: {first.get('msg', 'invalid')}" if field else "Invalid request."},
                             status_code=422)
 
-    for router in (auth.router, views.router, jobs.router, data.router, history.router, admin.router,
+    for router in (auth.router, views.router, jobs.router, ot.router, data.router, history.router, admin.router,
                    admin.audit_router):
         app.include_router(router)
 

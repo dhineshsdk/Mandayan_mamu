@@ -45,6 +45,8 @@ SCREENS = {
     "headline": ("POST", "/api/headline", {"query": "log4j"}),
     "portal": ("GET", "/api/portal", None),
     "jobs": ("GET", "/api/jobs", None),
+    "ot_plans": ("GET", "/api/ot", None),
+    "scorecards": ("GET", "/api/scorecards", None),
     "uploads": ("GET", "/api/data/uploads", None),
     "datasets": ("GET", "/api/data/datasets", None),
     "admin_users": ("GET", "/api/admin/users", None),
@@ -61,6 +63,7 @@ SCREENS = {
 ACTIONS = {
     "raise_job": ("POST", "/api/jobs", {}),
     "decide_job": ("POST", "/api/jobs/999999/decision", {}),
+    "ot_record": ("POST", "/api/ot/999999/oem", {}),
     "upload": ("POST", "/api/data/uploads", None),
     "analyze": ("POST", "/api/data/analyze", {"org": "x"}),
     "demo": ("POST", "/api/data/demo", {}),
@@ -77,13 +80,13 @@ ACTIONS = {
 # What each role may reach. Written out by hand so a wrong catalogue entry fails the test.
 EXPECTED = {
     "team_member": {"portal", "jobs", "raise_job"},
-    "team_manager": {"portal", "jobs", "decide_job"},
+    "team_manager": {"portal", "jobs", "decide_job", "scorecards"},
     "vm_analyst": {"board", "board_pack", "root_causes", "receipts", "assets", "headline", "jobs", "uploads",
                    "datasets", "decide_job", "upload", "analyze", "demo"},
-    "vertical_head": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job"},
-    "plant_engineer": {"portal"},
-    "ciso": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "approval_rules", "set_rules",
-             "maintenance", "set_maintenance", "sla", "set_sla"},
+    "vertical_head": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "scorecards"},
+    "plant_engineer": {"portal", "ot_plans", "ot_record"},
+    "ciso": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "scorecards", "approval_rules",
+             "set_rules", "maintenance", "set_maintenance", "sla", "set_sla"},
     "compliance_officer": {"board", "board_pack", "audit", "audit_csv"},
     "executive": {"board", "board_pack"},
     "auditor": {"audit", "audit_csv"},
@@ -351,9 +354,9 @@ def test_unbuilt_or_unlicensed_modules_grant_nothing(env):
         assert exec_.get("/api/auth/me").json()["modules"] == []
     finally:
         admin.patch("/api/admin/modules/M-BRD", json={"licensed": True})
-    # M-OT is in the plant engineer's role but not built yet, so it is not offered.
-    me = client(env, ACCOUNTS["plant_engineer"]).get("/api/auth/me").json()
-    assert "M-OT" not in {m["key"] for m in me["modules"]}
+    # M-CMP is in the compliance officer's role but not built yet, so it is not offered.
+    me = client(env, ACCOUNTS["compliance_officer"]).get("/api/auth/me").json()
+    assert "M-CMP" not in {m["key"] for m in me["modules"]}
 
 
 def test_admin_cannot_change_their_own_access(env):
