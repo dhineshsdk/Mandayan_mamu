@@ -113,6 +113,15 @@ all of a job's findings are fixed, the job becomes **Fixed (proved by rescan)** 
 If a later import reports them again, the job reopens. An import whose scans are older than a job's last check is
 ignored for that job. Every check is kept and shown on the job page, and recorded in the audit log.
 
+### Risk acceptance
+
+A team can ask to accept a root cause's risk instead of fixing it now: it says why, names the compensating control,
+and gives an end date (at most 365 days ahead). The request goes to the team's manager, the VM analyst and the
+vertical head, and for SSVC Act also to the CISO for the final sign-off. Once accepted, it lasts until the end date;
+the next day it expires on its own (an hourly job, also run at start-up and after each import) and the team can fix it
+or ask again. A team can still fix something it has accepted, and a rescan that shows the findings gone closes the
+acceptance early. Accepting risk does not stop the CEA fix clock.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -14,7 +16,8 @@ from .models import Job, JobStep, OwnershipTeam, Setting, User, utcnow
 from .security import audit
 
 PJ = "M-PJ"
-OPEN = ("drafting", "pending", "approved", "fixing-manually", "reopened")
+OPEN = ("drafting", "pending", "approved", "fixing-manually", "reopened")  # a fix in progress
+EXCEPTION_OPEN = ("pending", "accepted")  # a risk-acceptance request or one in force
 
 
 class Forbidden(Exception):
@@ -41,7 +44,10 @@ def job_visible(p: Principal, job: Job, res: Result | None) -> bool:
 
 
 def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mode: str, ticket: str,
-              dataset_id: int, ip: str, drafts: DraftService | None = None) -> Job:
+              dataset_id: int, ip: str, drafts: DraftService | None = None, *, justification: str = "",
+              control: str = "", expires_on: date | None = None) -> Job:
+    """mode: patch (drafted job, routed for approval), manual (the team fixes it by hand under a change ticket) or
+    exception (accept the risk until ``expires_on``, routed for approval)."""
     if not p.team_allowed(team, PJ, "act"):
         raise Forbidden("You can raise jobs only for your own team.")
     rc = next((r for r in res.root_causes if r.rc_id == rc_id), None)
@@ -50,10 +56,22 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
     hosts = [res.assets[a] for a in rc.asset_ids if patch.team_of(res.assets[a]) == team]
     if not hosts:
         raise Conflict(f"{team} owns no hosts in {rc_id}.")
+    if mode == "exception":
+        if len(justification.strip()) < 20:
+            raise ValueError("Explain why the risk should be accepted (at least 20 characters).")
+        if not control.strip():
+            raise ValueError("Name the compensating control that stays in place until the exception expires.")
+        today = drafting.today()
+        if expires_on is None or not today < expires_on <= today + timedelta(days=patch.MAX_EXCEPTION_DAYS):
+            raise ValueError(f"The exception must expire after today and within {patch.MAX_EXCEPTION_DAYS} days.")
     # One open job per team per root cause, across imports (root-cause IDs are renumbered each import; keys are not).
-    existing = db.scalars(select(Job).where(Job.rc_key == rc.key, Job.team == team, Job.status.in_(OPEN))).first()
+    # A risk acceptance is tracked separately: a team may still fix what it has accepted for now.
+    is_exc = Job.mode == "exception"
+    clash = (is_exc & Job.status.in_(EXCEPTION_OPEN)) if mode == "exception" else (~is_exc & Job.status.in_(OPEN))
+    existing = db.scalars(select(Job).where(Job.rc_key == rc.key, Job.team == team, clash)).first()
     if existing:
-        raise Conflict(f"{team} already has job J-{existing.id:03d} open for {rc_id}.")
+        what = "a risk acceptance" if mode == "exception" else "job"
+        raise Conflict(f"{team} already has {what} J-{existing.id:03d} open for {rc_id}.")
     chart = db.get(OwnershipTeam, team)
     findings = {f.finding_id: f for f in res.findings}
     mine = [findings[f] for f in rc.finding_ids if patch.team_of(res.assets[findings[f].asset_id]) == team]
@@ -64,14 +82,24 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
               raised_by=p.user.id)
     if mode == "manual":
         job.status = "fixing-manually"
+    elif mode == "exception":
+        if chart is None:
+            raise Conflict(f"{team} is not in the ownership chart, so nobody can approve its requests.")
+        r = patch.exception_route(rc)
+        who = _approvers(chart)
+        missing = [patch.ROLE_LABEL[s] for s in r["steps"] if s in ("manager", "vertical_head") and not who[s][0]]
+        if missing:
+            raise Conflict(f"The ownership chart has no {', '.join(missing).lower()} for {team}.")
+        job.status, job.route = "pending", r
+        job.justification, job.compensating_control, job.expires_on = justification.strip(), control.strip(), expires_on
+        job.steps = [JobStep(position=i, role=s, expected_email=who[s][0], expected_name=who[s][1],
+                             state="current" if i == 0 else "waiting") for i, s in enumerate(r["steps"])]
     else:
         if chart is None:
             raise Conflict(f"{team} is not in the ownership chart, so nobody can approve its jobs. "
                            "Ask an admin to upload the chart.")
         r = patch.route(rc, hosts, approval_rules(db))
-        who = {"manager": (chart.manager_email, chart.manager_name),
-               "vm_analyst": (chart.vm_analyst_email, chart.vm_analyst_name),
-               "vertical_head": (chart.vertical_head_email, chart.vertical_head_name)}
+        who = _approvers(chart)
         missing = [patch.ROLE_LABEL[s] for s in r["steps"] if s != "vm_analyst" and not who[s][0]]
         if missing:
             raise Conflict(f"The ownership chart has no {', '.join(missing).lower()} for {team}.")
@@ -82,8 +110,10 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
     db.add(job)
     db.flush()
     job.jira_key = f"{(chart.jira_project if chart and chart.jira_project else 'SEC')}-{job.id}"
-    audit(db, "job.raise" if mode == "patch" else "job.manual", p.user, "job", job.id, ip, rc=rc_id, team=team,
-          route=job.route["reason"] if job.route else None, ticket=ticket or None)
+    event = {"patch": "job.raise", "manual": "job.manual", "exception": "job.exception_request"}[mode]
+    audit(db, event, p.user, "job", job.id, ip, rc=rc_id, team=team,
+          route=job.route["reason"] if job.route else None, ticket=ticket or None,
+          expires_on=expires_on.isoformat() if mode == "exception" else None)
     drafts = drafts or drafting.DraftService(drafter=drafting.template_only())
     if job.status == "drafting" and not drafts.background:
         drafting.apply_draft(db, job, drafts.draft_now(inp))
@@ -91,6 +121,14 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
     if job.status == "drafting":  # the first approval step opens when the draft is written
         drafts.submit(job.id, inp)
     return job
+
+
+def _approvers(chart: OwnershipTeam) -> dict[str, tuple[str, str]]:
+    """Expected signer per step. The VM analyst and CISO steps can be signed by anyone holding that role."""
+    return {"manager": (chart.manager_email, chart.manager_name),
+            "vm_analyst": (chart.vm_analyst_email, chart.vm_analyst_name),
+            "vertical_head": (chart.vertical_head_email, chart.vertical_head_name),
+            "ciso": ("", "")}
 
 
 def can_sign(p: Principal, job: Job, step: JobStep) -> str | None:
@@ -117,6 +155,9 @@ def can_sign(p: Principal, job: Job, step: JobStep) -> str | None:
             return f"Only the head of {job.vertical or 'this vertical'} can sign this step."
         if email != step.expected_email.lower():
             return f"The ownership chart names {step.expected_name or step.expected_email} as head of {job.vertical}."
+    elif step.role == "ciso":
+        if "ciso" not in p.role_keys or not p.is_org_wide(PJ, "approve"):
+            return "Only the CISO can give the final sign-off on accepting this risk."
     else:
         return "Unknown step."
     return None
@@ -140,7 +181,7 @@ def decide(db: Session, p: Principal, job: Job, action: str, comment: str, ip: s
         if nxt:
             nxt.state = "current"
         else:
-            job.status = "approved"
+            job.status = "accepted" if job.mode == "exception" else "approved"
     elif action == "reject":
         step.state, job.status = "rejected", "rejected"
     else:
@@ -174,4 +215,7 @@ def job_json(db: Session, job: Job, p: Principal | None = None, res: Result | No
         "fixed_on": job.fixed_on.isoformat() if job.fixed_on else None,
         "closed_at": job.closed_at.isoformat(timespec="seconds") if job.closed_at else None,
         "targets": len(job.targets),
+        "exception": {"justification": job.justification, "control": job.compensating_control,
+                      "expires_on": job.expires_on.isoformat() if job.expires_on else None}
+        if job.mode == "exception" else None,
     }

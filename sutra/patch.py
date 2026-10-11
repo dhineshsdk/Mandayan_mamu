@@ -9,7 +9,8 @@ from __future__ import annotations
 
 from .model import Asset, RootCause
 
-ROLE_LABEL = {"manager": "Manager", "vm_analyst": "VM analyst", "vertical_head": "Vertical head"}
+ROLE_LABEL = {"manager": "Manager", "vm_analyst": "VM analyst", "vertical_head": "Vertical head", "ciso": "CISO"}
+MAX_EXCEPTION_DAYS = 365
 UNOWNED = "(no owner)"
 
 
@@ -33,3 +34,12 @@ def route(rc: RootCause, hosts: list[Asset], rules: dict) -> dict:
                 "reason": f"{why}: needs the vertical head{extra}"}
     return {"steps": ["manager", "vm_analyst"], "type": "patch-job", "emergency": False,
             "reason": f"SSVC {rc.ssvc} on non-critical IT assets: manager and VM analyst are enough"}
+
+
+def exception_route(rc: RootCause) -> dict:
+    """Who must approve accepting the risk instead of fixing it. Fixed rules, not thresholds: accepting risk always
+    needs the vertical head, and an actively exploited (SSVC Act) root cause also needs the CISO's final sign-off."""
+    steps = ["manager", "vm_analyst", "vertical_head"] + (["ciso"] if rc.ssvc == "Act" else [])
+    why = ("SSVC Act: the CISO gives the final sign-off" if rc.ssvc == "Act"
+           else "accepting risk needs the vertical head")
+    return {"steps": steps, "type": "risk-acceptance", "emergency": False, "reason": f"Risk acceptance: {why}"}

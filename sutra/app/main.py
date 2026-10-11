@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import drafting, migrate
+from . import drafting, migrate, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -39,7 +39,10 @@ def create_app(settings: Settings | None = None, drafter=None) -> FastAPI:
             sync_catalog(db)
             app.state.analysis.load_current(db)
         drafting.resume(app.state.drafts, app.state.analysis.result)
+        sweeper.sweep(app.state.sessionmaker)
+        app.state.sweeper.start()
         yield
+        app.state.sweeper.stop()
         app.state.drafts.shutdown()
         app.state.engine.dispose()
 
@@ -49,6 +52,7 @@ def create_app(settings: Settings | None = None, drafter=None) -> FastAPI:
     app.state.sessionmaker = make_sessionmaker(app.state.engine)
     app.state.analysis = AnalysisStore()
     app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter)
+    app.state.sweeper = sweeper.Sweeper(app.state.sessionmaker)
 
     @app.middleware("http")
     async def guard(request: Request, call_next):

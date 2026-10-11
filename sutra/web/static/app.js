@@ -172,7 +172,7 @@ function emptyState() {
     <p class="sub">${can("M-DAT", "act") ? "Load a demo company or import scanner exports to begin." : "An analyst has not imported any scan data yet."}</p>
     ${can("M-DAT", "act") ? '<a class="btn primary" href="#/import">Import data</a>' : ""}</div>`;
 }
-const STATUS_LABEL = { drafting: "Drafting", "draft-failed": "Draft failed", pending: "Awaiting approval", approved: "Approved", rejected: "Rejected", "sent-back": "Sent back", "fixing-manually": "Fixing manually", "verified-fixed": "Fixed (proved by rescan)", reopened: "Reopened by rescan" };
+const STATUS_LABEL = { drafting: "Drafting", "draft-failed": "Draft failed", pending: "Awaiting approval", approved: "Approved", rejected: "Rejected", "sent-back": "Sent back", "fixing-manually": "Fixing manually", "verified-fixed": "Fixed (proved by rescan)", reopened: "Reopened by rescan", accepted: "Risk accepted", expired: "Acceptance expired" };
 function jobStatus(j) {
   if (j.status === "pending") { const s = j.steps.find((x) => x.state === "current"); return `<span class="status st-pending">Waiting: ${esc(s.label)}</span>`; }
   if (j.status === "approved") return `<span class="status st-approved">${j.is_ot ? "Approved: staged for shutdown" : "Approved: ready to run in rings"}</span>`;
@@ -183,31 +183,63 @@ function jobTable(jobs) {
   return `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Team</th><th>Type</th><th>SSVC</th><th>Status</th><th>Jira</th></tr></thead>
     <tbody>${jobs.map((j) => `<tr class="click" data-job="${j.pk}"><td class="id"><b>${esc(j.id)}</b></td>
       <td><div class="t">${esc(j.rc_title)}</div><div class="fix">${j.hosts.length} hosts · ${j.findings.length} findings</div></td>
-      <td>${esc(j.team)}</td><td>${j.mode === "manual" ? "Manual fix" : j.is_ot ? "Staged plan" : "Patch job"}${j.route && j.route.emergency ? ' <span class="badge warn">emergency</span>' : ""}</td>
+      <td>${esc(j.team)}</td><td>${j.mode === "manual" ? "Manual fix" : j.mode === "exception" ? "Risk acceptance" : j.is_ot ? "Staged plan" : "Patch job"}${j.route && j.route.emergency ? ' <span class="badge warn">emergency</span>' : ""}</td>
       <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td class="mono">${esc(j.jira)}</td></tr>`).join("")}</tbody></table></div>`;
 }
 const OPEN = ["drafting", "pending", "approved", "fixing-manually", "reopened"];
 // Buttons to raise a job, for each team this person may raise jobs for that owns hosts in this root cause.
+const EXC_OPEN = ["pending", "accepted"];
 function raiseButtons(rc, teams, jobs) {
   return teams.map((team) => {
-    const open = jobs.find((j) => j.rc_current_id === rc.id && j.team === team && OPEN.includes(j.status));
-    if (open) return `<div><a href="#/job/${open.pk}">${esc(open.id)}</a> ${jobStatus(open)}${teams.length > 1 ? ` <span class="muted">${esc(team)}</span>` : ""}</div>`;
+    const mine = jobs.filter((j) => j.rc_current_id === rc.id && j.team === team);
+    const open = mine.find((j) => j.mode !== "exception" && OPEN.includes(j.status));
+    const exc = mine.find((j) => j.mode === "exception" && EXC_OPEN.includes(j.status));
+    const excLine = exc ? `<div><a href="#/job/${exc.pk}">${esc(exc.id)}</a> ${exc.status === "accepted" ? `<span class="status st-accepted">Risk accepted until ${esc(fmtDate(exc.exception.expires_on))}</span>` : jobStatus(exc)}</div>` : "";
+    const who = teams.length > 1 ? ` <span class="muted">${esc(team)}</span>` : "";
+    if (open) return `<div><a href="#/job/${open.pk}">${esc(open.id)}</a> ${jobStatus(open)}${who}</div>${excLine}`;
     return `<div class="toolbar" style="margin:0 0 4px">${teams.length > 1 ? `<span class="muted">${esc(team)}:</span>` : ""}
       <button class="btn small primary" data-raise="${esc(rc.id)}" data-team="${esc(team)}" data-mode="patch">${rc.is_ot ? "Draft staged plan" : "Build patch job"}</button>
-      <button class="btn small" data-raise="${esc(rc.id)}" data-team="${esc(team)}" data-mode="manual">Fixing it myself</button></div>`;
+      <button class="btn small" data-raise="${esc(rc.id)}" data-team="${esc(team)}" data-mode="manual">Fixing it myself</button>
+      ${exc ? "" : `<button class="btn small" data-raise="${esc(rc.id)}" data-team="${esc(team)}" data-mode="exception" data-title="${esc(rc.title)}">Accept the risk</button>`}</div>${excLine}`;
   }).join("");
+}
+// The risk-acceptance request form, in a modal dialog. Resolves to the request body, or null if cancelled.
+function exceptionForm(title) {
+  const day = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  const dlg = document.createElement("dialog");
+  dlg.className = "card";
+  dlg.innerHTML = `<form method="dialog" class="stack-form" style="min-width:min(560px,90vw)">
+    <h2 style="margin-top:0">Accept the risk: ${esc(title)}</h2>
+    <p class="muted" style="margin:0">The request goes to your manager, the VM analyst and the vertical head, and to the CISO when the root cause is being exploited (SSVC Act). It ends on the date you give; then the findings are back on your list. A rescan that shows them fixed closes it early.</p>
+    <label>Why the risk should be accepted for now<textarea name="justification" minlength="20" maxlength="2000" required></textarea></label>
+    <label>Compensating control in place until then<textarea name="control" maxlength="1000" required></textarea></label>
+    <label>Accepted until <input type="date" name="expires_on" min="${day(1)}" max="${day(365)}" value="${day(90)}" required></label>
+    <div class="toolbar"><button class="btn primary" value="ok">Send for approval</button><button class="btn" value="cancel" formnovalidate>Cancel</button></div></form>`;
+  document.body.appendChild(dlg);
+  return new Promise((resolve) => {
+    dlg.addEventListener("close", () => {
+      const f = dlg.querySelector("form");
+      const out = dlg.returnValue === "ok" ? { justification: f.justification.value, control: f.control.value, expires_on: f.expires_on.value } : null;
+      dlg.remove(); resolve(out);
+    });
+    dlg.showModal();
+  });
 }
 function wireRaise(root) {
   root.querySelectorAll("[data-raise]").forEach((b) => b.addEventListener("click", async (e) => {
     e.stopPropagation();
-    let ticket = "";
+    let ticket = "", extra = {};
     if (b.dataset.mode === "manual") {
       ticket = prompt("Change ticket for the manual fix (for example CHG0012345). Closure still needs a rescan.");
       if (ticket === null) return;
     }
+    if (b.dataset.mode === "exception") {
+      extra = await exceptionForm(b.dataset.title);
+      if (!extra) return;
+    }
     b.disabled = true;
     try {
-      const job = await post("/api/jobs", { rc_id: b.dataset.raise, team: b.dataset.team, mode: b.dataset.mode, ticket });
+      const job = await post("/api/jobs", { rc_id: b.dataset.raise, team: b.dataset.team, mode: b.dataset.mode, ticket, ...extra });
       location.hash = `#/job/${job.pk}`;
     } catch (err) { alert(err.message); b.disabled = false; }
   }));
@@ -456,6 +488,7 @@ VIEWS.jobs = {
         <tr><td>Attend or Track*, or a crown-jewel IT asset</td><td>Raises job</td><td>Approves</td><td>Approves</td><td>Approves</td></tr>
         <tr><td>Act (actively exploited)</td><td>Raises job</td><td>Approves</td><td>Approves</td><td>Approves; can fast-track as an emergency change</td></tr>
         <tr><td>Any OT asset</td><td>Raises a staged plan</td><td>Approves</td><td>Approves</td><td>Approves, plus OEM approval and a shutdown slot</td></tr>
+        <tr><td>Risk acceptance (until a date)</td><td>Requests it</td><td>Approves</td><td>Approves</td><td>Approves; for Act the CISO gives the final sign-off</td></tr>
         </tbody></table></div>
         <p class="muted" style="margin-bottom:0">The person who raised a job cannot approve it, and nobody signs two steps of the same job. Thresholds are set under Administration.</p></div>`;
   },
@@ -476,14 +509,18 @@ VIEWS.job = {
         ${j.route && j.route.emergency ? '<span class="badge warn">Emergency change allowed</span>' : ""}</div>
       ${j.route ? `<div class="card"><h2>Approval route</h2><p class="muted" style="margin-top:0">${esc(j.route.reason)}.</p>
         <div class="route"><div class="step approved"><div class="role">Team</div><div class="who">${esc(j.raised_by)}</div><div class="st">Raised</div></div>
-        ${j.steps.map((s) => `<div class="step ${esc(s.state)}"><div class="role">${esc(s.label)}</div><div class="who">${esc(s.decided_by || s.who || "Any VM analyst")}</div>
+        ${j.steps.map((s) => `<div class="step ${esc(s.state)}"><div class="role">${esc(s.label)}</div><div class="who">${esc(s.decided_by || s.who || (s.role === "ciso" ? "The CISO" : "Any VM analyst"))}</div>
           <div class="st">${esc(stepState[s.state])}${s.at ? ` · ${esc(fmtTime(s.at))}` : ""}</div>${s.comment ? `<div class="note-demo">“${esc(s.comment)}”</div>` : ""}</div>`).join("")}
         ${j.is_ot ? `<div class="step ${j.status === "approved" ? "current" : "waiting"}"><div class="role">Plant</div><div class="who">Plant engineer</div><div class="st">${j.status === "approved" ? "Executes at shutdown" : "After approval"}</div></div>` : ""}</div>
         ${j.can_decide ? `<div style="margin-top:12px"><textarea id="comment" maxlength="500" placeholder="Comment (optional)"></textarea>
           <div class="toolbar" style="margin-top:8px"><button class="btn primary" data-act="approve">Approve${j.route.emergency && cur.role === "vertical_head" ? " as emergency change" : ""}</button>
           <button class="btn" data-act="sendback">Send back</button><button class="btn" data-act="reject">Reject</button></div></div>` :
-          cur ? `<p class="muted" style="margin-bottom:0">Waiting for ${esc(cur.who || "a VM analyst")}.${j.waiting_reason && can("M-PJ", "approve") ? ` ${esc(j.waiting_reason)}` : ""}</p>` : ""}
-        </div>` : `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team ${j.status === "verified-fixed" ? "fixed" : "is fixing"} this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}.${j.status === "verified-fixed" ? "" : " The findings close only when a rescan proves the fix."}</p></div>`}
+          cur ? `<p class="muted" style="margin-bottom:0">Waiting for ${esc(cur.who || (cur.role === "ciso" ? "the CISO" : "a VM analyst"))}.${j.waiting_reason && can("M-PJ", "approve") ? ` ${esc(j.waiting_reason)}` : ""}</p>` : ""}
+        </div>` : ""}
+      ${j.exception ? `<div class="card mt"><h2>Risk acceptance</h2><dl class="kv"><dt>Why</dt><dd>${esc(j.exception.justification)}</dd>
+        <dt>Compensating control</dt><dd>${esc(j.exception.control)}</dd><dt>Accepted until</dt><dd>${esc(fmtDate(j.exception.expires_on))}${j.status === "expired" ? ' <span class="badge warn">expired</span>' : ""}</dd></dl>
+        <p class="muted" style="margin-bottom:0">Accepting the risk does not stop the CEA fix clock. A rescan that shows the findings fixed closes this early.</p></div>` : ""}
+      ${j.mode === "manual" ? `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team ${j.status === "verified-fixed" ? "fixed" : "is fixing"} this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}.${j.status === "verified-fixed" ? "" : " The findings close only when a rescan proves the fix."}</p></div>` : ""}
       ${rescanHtml(j)}
       ${j.status === "drafting" ? '<div class="card mt"><h2>Drafting</h2><p style="margin:0">Sutra is writing the draft. The first approval step opens when it is ready. <a href="">Refresh</a></p></div>' : ""}
       ${j.status === "draft-failed" ? '<div class="card mt"><h2>Draft failed</h2><p style="margin:0">Sutra could not write a draft for this job, so it was closed without approvals. Raise it again; if it fails again, tell your Sutra administrator.</p></div>' : ""}
