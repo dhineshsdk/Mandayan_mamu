@@ -339,3 +339,44 @@ def test_the_audit_pack_exports_with_its_evidence_and_a_digest(env, log4j_job):
         exports = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "compliance.audit_pack_export",
                                                            AuditEvent.target_id == str(e["id"]))))
     assert {x.detail["format"] for x in exports} == {"json", "zip"}
+
+
+def test_second_schedule_flags_changes_that_need_a_pre_deployment_audit(env, log4j_job, monkeypatch):
+    # A job linked to a critical CEA finding is a fix for a previously found critical vulnerability.
+    officer = client(env, OFFICER)
+    e = ok(officer.post("/api/compliance/entities", json={"name": "Schedule Station", "entity_type": "generator",
+                                                          "capacity_mw": 200}), 201)
+    a = ok(officer.post(f"/api/compliance/entities/{e['id']}/audits", json={
+        "ref": "CSA-S", "auditor": "Example LLP", "auditor_status": "cert_in_empanelled", "started_on": days(-9)}),
+        201)
+    ok(officer.post(f"/api/compliance/audits/{a['id']}/findings", json={
+        "ref": "S-1", "severity": "critical", "title": "Log4Shell", "job_id": log4j_job["pk"]}), 201)
+    ss = ok(client(env, VM).get(f"/api/jobs/{log4j_job['pk']}"))["second_schedule"]
+    assert ss["needs_pre_deployment_audit"] is True
+    assert ss["categories"] == [{"id": "critical_vulnerability_fix", "label": ss["all_categories"][
+        "critical_vulnerability_fix"], "from": "sutra"}]
+    assert ss["citations"][0]["rule_id"] == "CEA-SECOND-SCHEDULE"
+
+    # A person says what kind of change a fix is; once the regulation is in force the final approval waits for
+    # the recorded pre-deployment audit.
+    team = client(env, LINUX)
+    rc = next(t for t in team.get("/api/portal").json()["teams"][0]["tasks"] if "rhel8-base-v3" in t["title"])
+    j = ok(team.post("/api/jobs", json={"rc_id": rc["id"], "team": "IT Infra - Linux", "mode": "patch"}), 201)
+    assert ok(team.get(f"/api/jobs/{j['pk']}"))["second_schedule"]["needs_pre_deployment_audit"] is False
+    assert team.put(f"/api/jobs/{j['pk']}/change-categories", json={"categories": ["firmware"]}).status_code == 400
+    ss = ok(team.put(f"/api/jobs/{j['pk']}/change-categories", json={"categories": ["authentication_privilege"]}))
+    assert ss["needs_pre_deployment_audit"] is True and ss["matched"] == ["authentication_privilege"]
+    assert client(env, AUDITOR).put(f"/api/jobs/{j['pk']}/change-categories",
+                                    json={"categories": []}).status_code == 403
+
+    monkeypatch.setattr(cmp, "today_local", lambda: date(2027, 5, 3))
+    approvers = (MANAGER, VM, HEAD)[:len(j["steps"])]
+    for who in approvers[:-1]:
+        ok(client(env, who).post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"}))
+    last = client(env, approvers[-1])
+    r = last.post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"})
+    assert r.status_code == 409 and "Second Schedule" in r.json()["error"]
+    ss = ok(team.post(f"/api/jobs/{j['pk']}/pre-deployment-audit", json={
+        "reference": "PDA-2027-14", "audited_on": "2027-05-02", "auditor": "Example Auditors LLP"}))
+    assert ss["blocks_final_approval"] is False and ss["pre_audit"]["reference"] == "PDA-2027-14"
+    assert ok(last.post(f"/api/jobs/{j['pk']}/decision", json={"action": "approve"}))["status"] == "approved"

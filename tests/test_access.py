@@ -17,7 +17,7 @@ from sutra.app import cli
 from sutra.app.catalog import CATALOG_PATH
 from sutra.app.config import Settings
 from sutra.app.main import create_app
-from sutra.app.models import AuditEvent, User, utcnow
+from sutra.app.models import AuditEvent, ModuleGrant, User, utcnow
 
 DOMAIN = "vindhyapower.example"
 
@@ -61,10 +61,14 @@ SCREENS = {
     "integrations": ("GET", "/api/admin/integrations", None),
     "audit": ("GET", "/api/audit", None),
     "audit_csv": ("GET", "/api/audit.csv", None),
+    "compliance": ("GET", "/api/compliance/entities", None),
+    "compliance_meta": ("GET", "/api/compliance/meta", None),
 }
 # Actions: sent with a body that is rejected after the access check, so "allowed" means "not 401/403".
 ACTIONS = {
     "raise_job": ("POST", "/api/jobs", {}),
+    "cmp_record": ("POST", "/api/compliance/entities", {}),
+    "cmp_finding": ("POST", "/api/compliance/audits/999999/findings", {}),
     "decide_job": ("POST", "/api/jobs/999999/decision", {}),
     "ot_record": ("POST", "/api/ot/999999/oem", {}),
     "upload": ("POST", "/api/data/uploads", None),
@@ -91,10 +95,12 @@ EXPECTED = {
     "vertical_head": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "scorecards"},
     "plant_engineer": {"portal", "ot_plans", "ot_record"},
     "ciso": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job", "scorecards", "approval_rules",
-             "set_rules", "maintenance", "set_maintenance", "sla", "set_sla"},
-    "compliance_officer": {"board", "board_pack", "audit", "audit_csv"},
+             "set_rules", "maintenance", "set_maintenance", "sla", "set_sla", "compliance", "compliance_meta",
+             "cmp_record", "cmp_finding"},
+    "compliance_officer": {"board", "board_pack", "audit", "audit_csv", "compliance", "compliance_meta", "cmp_record",
+                           "cmp_finding"},
     "executive": {"board", "board_pack"},
-    "auditor": {"audit", "audit_csv"},
+    "auditor": {"audit", "audit_csv", "compliance", "compliance_meta"},
     "admin": {"uploads", "datasets", "connections", "intel", "add_connection", "start_pull",
               "admin_users", "directory", "admin_catalog", "admin_ownership", "approval_rules", "audit",
               "audit_csv", "upload", "analyze", "demo", "create_user", "update_user", "set_licence", "set_rules",
@@ -438,3 +444,34 @@ def test_security_headers(env):
     assert r.status_code == 200
     assert "script-src 'self'" in r.headers["content-security-policy"]
     assert r.headers["x-frame-options"] == "DENY"
+
+
+def test_auditor_access_is_read_only_whatever_else_is_given(env):
+    admin = client(env, ACCOUNTS["admin"])
+    app, _ = env
+    with app.state.sessionmaker() as db:
+        uid = db.scalars(select(User.id).where(User.email == ACCOUNTS["auditor"])).one()
+    # Never combined with another role, and never given more than view.
+    r = admin.put(f"/api/admin/users/{uid}/roles", json=[{"role": "auditor", "scope_type": "org"},
+                                                          {"role": "compliance_officer", "scope_type": "org"}])
+    assert r.status_code == 400 and "cannot be combined" in r.json()["error"]
+    r = admin.post(f"/api/admin/users/{uid}/grants", json={"module": "M-CMP", "action": "act", "effect": "allow",
+                                                           "scope_type": "org", "reason": "help with evidence"})
+    assert r.status_code == 400 and "view" in r.json()["error"]
+    # A grant made before the role was given does not survive it either.
+    with app.state.sessionmaker() as db:
+        user = db.get(User, uid)
+        user.grants.append(ModuleGrant(module_key="M-CMP", action="act", effect="allow", scope_type="org"))
+        db.commit()
+    try:
+        auditor = client(env, ACCOUNTS["auditor"])
+        me = auditor.get("/api/auth/me").json()
+        assert me["user"]["read_only"] is True and me["user"]["expires_at"]
+        assert {a for m in me["modules"] for a in m["actions"]} == {"view"}
+        assert auditor.post("/api/compliance/entities", json={"name": "x", "entity_type": "generator"}).status_code \
+            == 403
+    finally:
+        with app.state.sessionmaker() as db:
+            user = db.get(User, uid)
+            user.grants = [g for g in user.grants if g.module_key != "M-CMP"]
+            db.commit()

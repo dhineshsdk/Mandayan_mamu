@@ -60,7 +60,8 @@ def me_json(db: Session, p: Principal, sess: AuthSession) -> dict:
     return {
         "user": {"id": p.user.id, "email": p.user.email, "name": p.user.display_name,
                  "must_change_password": p.user.must_change_password, "has_password": bool(p.user.password_hash),
-                 "expires_at": p.user.expires_at.isoformat(timespec="seconds") if p.user.expires_at else None},
+                 "expires_at": p.user.expires_at.isoformat(timespec="seconds") if p.user.expires_at else None,
+                 "read_only": p.read_only},
         "roles": [{"role": r, "scope": s.label(), "scope_type": s.type, "scope_value": s.value} for r, s in p.roles],
         "modules": [{"key": k, "name": names.get(k, k), "actions": mods[k],
                      "scope": sorted({s.label() for a in mods[k] for s in p.scopes(k, a)})} for k in sorted(mods)],

@@ -157,6 +157,11 @@ def _apply_roles(db: Session, user: User, roles: list[RoleAssign], expires_at: d
         rows.append({"role": a.role, "scope_type": a.scope_type, "scope_value": value})
     # Roles from Entra ID directory sync stay; the sync owns them.
     synced = [r for r in user.roles if r.source == "entra"]
+    final = {r["role"] for r in rows} | {r.role_key for r in synced}
+    limited = [known[k].name for k in final if k in known and known[k].time_limited]
+    if limited and len(final) > 1:
+        raise ValueError(f"{limited[0]} access is read-only and time-limited, so it cannot be combined with other "
+                         "roles. Give the person a separate account for other work.")
     user.roles = synced
     db.flush()  # delete the old rows first: the unit of work would otherwise insert before deleting
     have = {(r.role_key, r.scope_type, r.scope_value) for r in synced}
@@ -263,6 +268,9 @@ def add_grant(uid: int, body: GrantIn, request: Request, p: Principal = Depends(
     if not (body.action in actions or (body.effect == "deny" and body.action == "*")):
         raise ValueError(f"Action must be one of {', '.join(sorted(actions))}" +
                          (" or * (the whole module)." if body.effect == "deny" else "."))
+    if body.effect == "allow" and body.action != "view" and any(
+            r.time_limited for r in db.scalars(select(Role).where(Role.key.in_([x.role_key for x in user.roles])))):
+        raise ValueError("This account has time-limited, read-only access, so it can only be given view access.")
     value = _check_scope(db, body.scope_type, body.scope_value) if body.effect == "allow" else ""
     g = ModuleGrant(user_id=user.id, module_key=module.key, action=body.action, effect=body.effect,
                     scope_type=body.scope_type if body.effect == "allow" else ORG, scope_value=value,

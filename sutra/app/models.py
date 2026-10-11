@@ -246,6 +246,10 @@ class Job(Base):
     sla_breached_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     fixed_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # scan date of the rescan that proved it
     closed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # when Sutra saw that rescan
+    # CEA Second Schedule: what kind of change the fix is (sutra.app.compliance.second_schedule), and the
+    # pre-deployment cyber security audit once recorded: {"reference", "audited_on", "auditor", "by", "at"}.
+    change_categories: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
+    pre_audit: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     steps: Mapped[list[JobStep]] = relationship(cascade="all, delete-orphan", lazy="selectin",
                                                 order_by="JobStep.position")
 

@@ -34,11 +34,12 @@ from sutra_compliance import (
     RulePack,
     ScheduledFix,
     build_audit_pack,
+    check_change,
     evaluate_entity,
     load_rule_pack,
 )
 from sutra_compliance.model import AUDITOR_STATUSES, FINDING_SEVERITIES
-from sutra_compliance.rulepack import ENTITY_TYPES, PeriodicRule
+from sutra_compliance.rulepack import ENTITY_TYPES, ChangePreAuditRule, PeriodicRule
 
 from .models import (
     AssetSnapshot,
@@ -455,3 +456,50 @@ def pack_zip(workspace: Path, ap: AuditPack, evidence: list[CmpEvidence]) -> byt
         if missing:
             z.writestr("MISSING-FILES.json", json.dumps(missing, indent=2))
     return buf.getvalue()
+
+
+# ---------- Second Schedule: changes that need a cyber security audit before deployment ----------
+
+CRITICAL_FIX = "critical_vulnerability_fix"
+
+
+def change_categories() -> dict[str, str]:
+    """{category id: label} from the rule pack's Second Schedule rule."""
+    return {c.id: c.label for r in pack().rules_of(ChangePreAuditRule) for c in r.categories}
+
+
+def check_categories(values: list[str]) -> list[str]:
+    known = change_categories()
+    out = list(dict.fromkeys(v.strip() for v in values if v.strip()))
+    bad = [v for v in out if v not in known]
+    if bad:
+        raise ValueError(f"Unknown change category {', '.join(bad)}; choose from {', '.join(known)}.")
+    return out
+
+
+def second_schedule(db: Session, job: Job) -> dict:
+    """Whether deploying ``job`` needs a CEA pre-deployment cyber security audit, and why.
+
+    Categories come from the people who raise and approve the job, plus one Sutra adds itself: a job linked to a
+    critical finding of a CEA audit is a fix for a previously found critical vulnerability."""
+    linked = list(db.scalars(select(CmpFinding).where(CmpFinding.job_id == job.id, CmpFinding.severity == "critical")))
+    derived = [CRITICAL_FIX] if linked else []
+    chosen = list(job.change_categories or [])
+    result = check_change(chosen + derived, pack())
+    labels = change_categories()
+    in_force = pack().is_in_force(today_local())
+    needs = result.needs_pre_deployment_audit and job.mode != "exception"
+    return {
+        "applies": job.mode != "exception",
+        "needs_pre_deployment_audit": needs,
+        "categories": [{"id": c, "label": labels.get(c, c), "from": "sutra" if c in derived and c not in chosen
+                        else "person"} for c in dict.fromkeys(chosen + derived)],
+        "matched": list(result.matched_categories),
+        "linked_findings": [{"id": f.id, "ref": f.ref, "entity_id": f.entity_id} for f in linked],
+        "citations": [c.to_dict() for c in result.citations],
+        "pre_audit": job.pre_audit,
+        "in_force": in_force,
+        # Once the regulation is in force the final approval waits for the recorded pre-deployment audit.
+        "blocks_final_approval": bool(needs and in_force and not job.pre_audit),
+        "all_categories": labels,
+    }

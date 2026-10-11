@@ -243,6 +243,14 @@ comes from the CEA rule pack in `./compliance` (`sutra_compliance`); Sutra compu
 - The audit pack downloads as a ZIP: `audit-pack.json` (status, every finding's clock and timeline, citations,
   per-asset review, evidence index and evidence gaps, with a SHA-256 digest that
   `sutra_compliance.verify_audit_pack()` checks) and every evidence file. The same evidence gaps are on screen.
+- The auditor account is read-only and time-limited: it must have an expiry date, cannot be combined with another
+  role or given more than view access (anything else is refused, and removed if it was given before), and its access
+  end date is shown to the auditor.
+- Second Schedule: each patch job says whether its change needs a cyber security audit before deployment. People
+  tick what kind of change it is (authentication and privilege changes, new interfaces and so on, from the rule pack);
+  Sutra adds "fix for a previously found critical vulnerability" itself when the job is linked to a critical CEA
+  finding. Once the regulation is in force (1 April 2027) the final approval waits until the pre-deployment audit is
+  recorded on the job; before then it is a warning.
 - The bundled rule pack has not been checked against the gazette text; every screen says so. Incident reporting
   clocks are not recorded yet, and the entity page lists what is not checked.
 

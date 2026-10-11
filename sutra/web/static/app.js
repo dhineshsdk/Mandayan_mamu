@@ -89,7 +89,8 @@ function buildNav() {
     '<p class="muted" style="padding:0 10px">No modules are switched on for you yet. Ask an administrator.</p>';
   const u = ME.user;
   document.getElementById("who").textContent = u.name;
-  document.getElementById("me-foot").innerHTML = ME.roles.map((r) => `${esc(ROLE_NAME[r.role] || r.role)}<br><span>${esc(r.scope)}</span>`).join("<br>") || "No role";
+  document.getElementById("me-foot").innerHTML = ME.roles.map((r) => `${esc(ROLE_NAME[r.role] || r.role)}<br><span>${esc(r.scope)}</span>`).join("<br>") || "No role"
+  if (u.expires_at) document.getElementById("me-foot").innerHTML += `<br><span class="warn-ink">${u.read_only ? "Read-only access" : "Access"} ends ${esc(fmtDate(u.expires_at))}</span>`;
 }
 function homeView() { const n = NAV.find(allowed); return n ? n.view : "account"; }
 async function refreshInbox() {
@@ -531,6 +532,7 @@ VIEWS.job = {
       ${j.mode === "manual" ? `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team ${j.status === "verified-fixed" ? "fixed" : "is fixing"} this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}.${j.status === "verified-fixed" ? "" : " The findings close only when a rescan proves the fix."}</p></div>` : ""}
       ${j.ot_plan ? otPlanHtml(j.ot_plan, j, false) : ""}
       ${rescanHtml(j)}
+      ${secondScheduleHtml(j)}
       ${j.status === "drafting" ? '<div class="card mt"><h2>Drafting</h2><p style="margin:0">Sutra is writing the draft. The first approval step opens when it is ready. <a href="">Refresh</a></p></div>' : ""}
       ${j.status === "draft-failed" ? '<div class="card mt"><h2>Draft failed</h2><p style="margin:0">Sutra could not write a draft for this job, so it was closed without approvals. Raise it again; if it fails again, tell your Sutra administrator.</p></div>' : ""}
       ${d && d.lane ? draftHtml(j, d) : ""}
@@ -551,6 +553,7 @@ VIEWS.job = {
         <tbody>${j.audit.map((a) => `<tr><td class="mono">${esc(fmtTime(a.at))}</td><td>${esc(a.actor || "Sutra")}</td><td>${esc(a.action)}</td><td>${esc(a.comment)}</td></tr>`).join("")}</tbody></table></div></div>`;
   },
   wire(root, j) {
+    wireSecondSchedule(root, j);
     root.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", async () => {
       b.disabled = true;
       try {
@@ -671,6 +674,37 @@ VIEWS.otplan = {
 };
 
 const OUTCOME = { fixed: "Fixed", "partly-fixed": "Partly fixed", "not-fixed": "Not fixed", "not-rescanned": "Not rescanned", reopened: "Findings back: reopened" };
+function secondScheduleHtml(j) {
+  const ss = j.second_schedule;
+  if (!ss || !ss.applies) return "";
+  const edit = (can("M-PJ", "act") || can("M-PJ", "approve")) && OPEN.includes(j.status);
+  const chosen = new Set(ss.categories.filter((c) => c.from === "person").map((c) => c.id));
+  const auto = ss.categories.filter((c) => c.from === "sutra");
+  const pa = ss.pre_audit;
+  const head = ss.needs_pre_deployment_audit
+    ? `<p style="margin-top:0"><span class="badge warn">Needs a cyber security audit before deployment</span> ${ss.categories.map((c) => esc(c.label)).join("; ")}.${ss.in_force ? "" : " The CEA regulation applies from 1 April 2027; until then this is a warning only."}${ss.blocks_final_approval ? " <b>The final approval waits until the pre-deployment audit is recorded.</b>" : ""}</p>`
+    : '<p class="muted" style="margin-top:0">No Second Schedule category applies to this change, so no pre-deployment audit is needed.</p>';
+  return `<div class="card mt" id="ss-card"><h2>CEA Second Schedule</h2>${head}
+    ${auto.length ? `<p class="muted">Sutra added "${esc(auto[0].label)}" because the job fixes critical CEA audit finding${ss.linked_findings.length === 1 ? "" : "s"} ${ss.linked_findings.map((f) => esc(f.ref)).join(", ")}.</p>` : ""}
+    ${pa ? `<p>Pre-deployment audit <b class="mono">${esc(pa.reference)}</b> by ${esc(pa.auditor)} on ${esc(fmtDate(pa.audited_on))}, recorded by ${esc(pa.by)}.</p>` : ""}
+    ${edit ? `<details><summary>What kind of change is this?</summary><form id="ss-cats" class="stack-form">${Object.entries(ss.all_categories).map(([k, l]) => `<label class="check"><input type="checkbox" name="cat" value="${k}"${chosen.has(k) ? " checked" : ""}> ${esc(l)}</label>`).join("")}
+      <div class="toolbar"><button class="btn">Save</button></div></form></details>
+      ${ss.needs_pre_deployment_audit ? `<details${ss.blocks_final_approval ? " open" : ""}><summary>${pa ? "Replace the" : "Record the"} pre-deployment audit</summary><form id="ss-audit" class="form-grid">
+        <label>Audit reference <input name="reference" maxlength="120" required></label><label>Auditor <input name="auditor" maxlength="200" required></label>
+        <label>Audited on <input type="date" name="audited_on" max="${todayIso()}" required></label><div class="toolbar"><button class="btn primary">Record audit</button></div></form></details>` : ""}` : ""}
+    ${ss.citations.length ? `<p class="muted" style="margin-bottom:0">Rule ${ss.citations.map((c) => esc(c.rule_id)).join(", ")}, not yet checked against the gazette text.</p>` : ""}</div>`;
+}
+function wireSecondSchedule(root, j) {
+  const cats = root.querySelector("#ss-cats"), aud = root.querySelector("#ss-audit");
+  if (cats) cats.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try { await api(`/api/jobs/${j.pk}/change-categories`, { method: "PUT", json: { categories: [...cats.querySelectorAll("input:checked")].map((x) => x.value) } }); render(); } catch (err) { alert(err.message); }
+  });
+  if (aud) aud.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try { await post(`/api/jobs/${j.pk}/pre-deployment-audit`, { reference: aud.reference.value, auditor: aud.auditor.value, audited_on: aud.audited_on.value }); render(); } catch (err) { alert(err.message); }
+  });
+}
 function rescanHtml(j) {
   const head = j.status === "verified-fixed" ? `<p style="margin-top:0"><b>Fixed.</b> The scan of ${esc(fmtDate(j.fixed_on))} no longer reports any of the ${j.targets} findings this job covers.</p>`
     : `<p class="muted" style="margin-top:0">This job closes by itself when a later import shows none of its ${j.targets} findings on hosts that were scanned again. Nobody marks it fixed by hand.</p>`;
