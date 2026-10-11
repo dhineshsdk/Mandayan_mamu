@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Literal
 
 from fastapi import APIRouter, Depends, Request
@@ -22,8 +23,12 @@ router = APIRouter(prefix="/api/jobs")
 class RaiseIn(BaseModel):
     rc_id: str = Field(max_length=16)
     team: str = Field(max_length=120)
-    mode: Literal["patch", "manual"] = "patch"
+    mode: Literal["patch", "manual", "exception"] = "patch"
     ticket: str = Field(default="", max_length=80)
+    # Risk acceptance (mode "exception") only.
+    justification: str = Field(default="", max_length=2000)
+    control: str = Field(default="", max_length=1000)
+    expires_on: date | None = None
 
 
 class DecisionIn(BaseModel):
@@ -82,7 +87,8 @@ def raise_job(body: RaiseIn, request: Request, p: Principal = Depends(require("M
     if store.result is None:
         raise LookupError("No data has been imported yet.")
     job = J.raise_job(db, p, store.result, body.rc_id, body.team, body.mode, body.ticket.strip(), store.dataset_id,
-                      client_ip(request), request.app.state.drafts)
+                      client_ip(request), request.app.state.drafts, justification=body.justification,
+                      control=body.control, expires_on=body.expires_on)
     return J.job_json(db, job, p, store.result)
 
 

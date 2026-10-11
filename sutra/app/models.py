@@ -198,9 +198,10 @@ class Job(Base):
     rc_title: Mapped[str] = mapped_column(Text)
     team: Mapped[str] = mapped_column(String(120), index=True)
     vertical: Mapped[str] = mapped_column(String(120), default="")
-    mode: Mapped[str] = mapped_column(String(16))  # patch | manual
+    mode: Mapped[str] = mapped_column(String(16))  # patch | manual | exception
     # drafting | pending | approved | fixing-manually | reopened (open); rejected | sent-back | draft-failed |
     # verified-fixed (closed). Only a rescan sets verified-fixed or reopened (sutra.app.closure).
+    # Risk acceptances (mode "exception"): pending -> accepted -> expired (sutra.app.sweeper), or verified-fixed.
     status: Mapped[str] = mapped_column(String(20))
     ssvc: Mapped[str] = mapped_column(String(8))
     is_ot: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -212,6 +213,10 @@ class Job(Base):
     draft: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     # The (asset_id, fingerprint) pairs the job must make disappear; what rescans are checked against.
     targets: Mapped[list] = mapped_column(JSON, default=list)
+    # Risk acceptance only: why, what holds the risk down meanwhile, and when the acceptance ends.
+    justification: Mapped[str] = mapped_column(Text, default="")
+    compensating_control: Mapped[str] = mapped_column(Text, default="")
+    expires_on: Mapped[date | None] = mapped_column(Date, nullable=True)
     raised_by: Mapped[int] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     fixed_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # scan date of the rescan that proved it

@@ -36,7 +36,7 @@
     {"key": "ciso", "name": "CISO", "scope": "org",
      "description": "Security head",
      "permissions": {"M-BRD": ["view", "act"], "M-CSO": ["view"], "M-RC": ["view"], "M-CMP": ["view", "act"],
-                     "M-PJ": ["view"], "M-ADM": ["act"]}},
+                     "M-PJ": ["view", "approve"], "M-ADM": ["act"]}},
     {"key": "compliance_officer", "name": "Compliance officer", "scope": "org",
      "description": "CEA or ISO owner, often in the CISO office",
      "permissions": {"M-CMP": ["view", "act"], "M-AUD": ["view"], "M-BRD": ["view"]}},
@@ -52,6 +52,7 @@
   ],
   "_notes": {
     "M-ADM act": "CISO's 'approval thresholds (act)' from the doc: M-ADM act allows editing approval thresholds only; M-ADM admin covers users, roles, grants, licences and the ownership chart.",
+    "M-PJ approve (CISO)": "The doc's 'final sign-off on risk acceptance for Act'. The CISO can sign only the CISO step of a risk acceptance (sutra.app.jobs.can_sign); patch-job steps stay with the manager, VM analyst and vertical head.",
     "OEM / vendor": "V3 role from the doc; not in the catalogue until the Third-party access module exists."
   }
 }

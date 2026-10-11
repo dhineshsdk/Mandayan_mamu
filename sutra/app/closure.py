@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 from .models import AssetSnapshot, Dataset, Job, JobCheck, Observation, utcnow
 from .security import audit
 
-CHECKED = ("drafting", "pending", "approved", "fixing-manually", "reopened", "verified-fixed")
+CHECKED = ("drafting", "pending", "approved", "fixing-manually", "reopened", "verified-fixed", "accepted", "expired")
 MAX_ITEMS = 200
 
 
