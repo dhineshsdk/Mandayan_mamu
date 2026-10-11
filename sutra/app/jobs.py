@@ -48,14 +48,14 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
     hosts = [res.assets[a] for a in rc.asset_ids if patch.team_of(res.assets[a]) == team]
     if not hosts:
         raise Conflict(f"{team} owns no hosts in {rc_id}.")
-    existing = db.scalars(select(Job).where(Job.dataset_id == dataset_id, Job.rc_id == rc_id, Job.team == team,
-                                            Job.status.in_(OPEN))).first()
+    # One open job per team per root cause, across imports (root-cause IDs are renumbered each import; keys are not).
+    existing = db.scalars(select(Job).where(Job.rc_key == rc.key, Job.team == team, Job.status.in_(OPEN))).first()
     if existing:
         raise Conflict(f"{team} already has job J-{existing.id:03d} open for {rc_id}.")
     chart = db.get(OwnershipTeam, team)
     findings = {f.finding_id: f for f in res.findings}
     mine = [findings[f] for f in rc.finding_ids if patch.team_of(res.assets[findings[f].asset_id]) == team]
-    job = Job(dataset_id=dataset_id, rc_id=rc.rc_id, rc_title=rc.title, team=team,
+    job = Job(dataset_id=dataset_id, rc_id=rc.rc_id, rc_key=rc.key, rc_title=rc.title, team=team,
               vertical=chart.vertical if chart else "", mode=mode, ssvc=rc.ssvc, is_ot=rc.is_ot,
               ticket=ticket, hosts=[h.asset_id for h in hosts], findings=[f.finding_id for f in mine],
               raised_by=p.user.id)
@@ -145,7 +145,8 @@ def decide(db: Session, p: Principal, job: Job, action: str, comment: str, ip: s
     return job
 
 
-def job_json(db: Session, job: Job, p: Principal | None = None) -> dict:
+def job_json(db: Session, job: Job, p: Principal | None = None, res: Result | None = None) -> dict:
+    """``res`` (the current analysis) maps the job's root cause to its ID in the latest import, if still there."""
     users = {u.id: u for u in db.scalars(select(User).where(User.id.in_(
         {job.raised_by} | {s.decided_by for s in job.steps if s.decided_by})))}
     cur = next((s for s in job.steps if s.state == "current"), None)
@@ -159,6 +160,7 @@ def job_json(db: Session, job: Job, p: Principal | None = None) -> dict:
                    "state": s.state, "comment": s.comment,
                    "decided_by": users[s.decided_by].display_name if s.decided_by in users else None,
                    "at": s.decided_at.isoformat(timespec="seconds") if s.decided_at else None} for s in job.steps],
+        "rc_current_id": next((r.rc_id for r in res.root_causes if r.key == job.rc_key), None) if res else None,
         "can_decide": bool(p and cur and can_sign(p, job, cur) is None),
         "waiting_reason": (can_sign(p, job, cur) if p and cur else None),
     }

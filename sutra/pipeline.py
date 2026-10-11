@@ -23,10 +23,13 @@ class Result:
     coverage: dict = field(default_factory=dict)
 
 
-def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: Path | None = None) -> Result:
+def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: Path | None = None,
+        known_first_seen: dict[tuple[str, str], date] | None = None) -> Result:
     """Analyse any mix of Qualys CSV, Tenable CSV and .nessus files; the format is detected from content.
 
     A CMDB or ownership chart among ``files`` is recognised too, so a whole export folder can be passed.
+    ``known_first_seen`` maps (asset_id, fingerprint) to the earliest first-seen date from earlier imports, so a
+    finding's age (and its CEA clock) does not reset when a scanner export lacks history.
     """
     cmdb_assets = ingest.load_cmdb(cmdb) if cmdb else []
     raws, sources = [], {}
@@ -44,6 +47,10 @@ def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: 
 
     assets = ingest.resolve_assets(cmdb_assets, raws)
     findings = ingest.dedupe(raws)
+    for f in findings if known_first_seen else ():
+        earlier = known_first_seen.get((f.asset_id, ingest.fingerprint(f)))
+        if earlier and (f.first_seen is None or earlier < f.first_seen):
+            f.first_seen = earlier
     as_of = max(f.last_seen for f in findings if f.last_seen) if any(f.last_seen for f in findings) else date.today()
 
     rcs = rootcause.group(assets, findings)

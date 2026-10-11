@@ -20,7 +20,8 @@ Sign in as the admin, upload the ownership chart, add people and give them roles
 under **Import data** (any account with the VM analyst or admin role can).
 
 For a demonstration on synthetic data, `sutra demo-users --profile power` (or `manufacturing`) loads an invented
-company and creates one account per role from its ownership chart. Each password is random and printed once.
+company as two monthly imports (5 Sep and 5 Oct 2026; `--months` changes the count) and creates one account per role
+from its ownership chart. Each password is random and printed once.
 Restart `sutra serve` afterwards so it picks up the new data.
 
 ### Stack and why
@@ -85,8 +86,25 @@ the session, never from the request. The roles and modules are data in
   one-time password they must change, sessions are random tokens stored hashed, cookies are HttpOnly, Secure and
   SameSite=Lax, and every state change needs a CSRF token. Nobody can change their own access.
 
-SAML sign-in is not built yet; OIDC covers Entra ID. Analysis results are held in memory and rebuilt from the current
-import at start-up; moving them into the database with history is Milestone 2 of the roadmap.
+SAML sign-in is not built yet; OIDC covers Entra ID.
+
+### Import history
+
+Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's
+assets and findings in the database (`asset_snapshots`, `observations`). From that:
+
+- **What changed** compares any two imports, per team: fixed, new, still open, and not rescanned. A finding missing
+  from the newer import counts as fixed only if its host was scanned in that import; otherwise it is "not rescanned",
+  because a missing scan is not a fix. Teams see their own rows; the board sees counts without host names.
+- **First seen survives**: a finding is identified by its asset and a fingerprint of what is wrong (package and fixed
+  version, credential, control, or CVEs and title). When a scan carries no first-seen date (`.nessus` does not), the
+  earliest date from earlier imports is kept, so the CEA clock does not restart.
+- **Patch jobs** are tied to a root cause's stable key, not its per-import ID, so they survive a new import and a
+  second open job for the same root cause and team is refused.
+- **Unowned assets**: hosts missing from the asset register, or whose owner is not in the ownership chart, are listed
+  as a coverage gap because nobody is asked to fix them.
+
+The analysis of the current import is held in memory and rebuilt at start-up, using the history for first-seen dates.
 
 ## Supported inputs
 
@@ -122,7 +140,10 @@ import at start-up; moving them into the database with history is Milestone 2 of
 ## Synthetic data
 
 Two fictional companies, each written as a Qualys CSV, a Tenable.sc CSV of the IT estate, two `.nessus` plant scans
-six months apart, a CMDB and an ownership chart:
+six months apart, a CMDB and an ownership chart. `sutra synth --month N` writes the same estate N × 30 days later:
+Log4j is fixed everywhere, about a quarter of other IT findings are fixed, a Chrome flaw arrives on laptops that run
+Acrobat, and OT is unchanged because it waits for a shutdown. Later months carry only the latest plant scan, as a
+real monthly export would. All of this is in `sutra/synth.py` and is deterministic.
 
 - **power**: an HQ with RHEL, Ubuntu Kubernetes and Windows server fleets and 80 laptops, internet-facing NetScaler
   gateways, a thermal plant with Windows 7 HMIs, engineering workstations and Siemens S7-1500 PLCs, and a solar park.
@@ -150,3 +171,5 @@ pytest
 
 `tests/test_access.py` is the Milestone 1 exit check: for every role, the screens it should have return data and every
 other API returns 403; a manager cannot approve another team's job; nobody approves their own job.
+`tests/test_history.py` is the Milestone 2 exit check: two imports 30 days apart show what was fixed, new and still
+open per team, and the counts reconcile with both imports.

@@ -1,4 +1,4 @@
-# Demo script (about 18 minutes)
+# Demo script (about 20 minutes)
 
 For a CISO, plant head or IT head at a power or manufacturing company. Pick the demo company that matches the room.
 
@@ -6,6 +6,7 @@ For a CISO, plant head or IT head at a power or manufacturing company. Pick the 
 
 ```
 SUTRA_COOKIE_SECURE=0 sutra demo-users --profile power     # or manufacturing; prints one account per role
+                                                           # loads two monthly imports (5 Sep and 5 Oct 2026)
 SUTRA_COOKIE_SECURE=0 sutra serve
 ```
 
@@ -24,12 +25,12 @@ Sign in as the CISO (`ciso@…`).
 
 - **Expected annual loss** in rupees, with a range. "This is the number your board asks for, and every rupee
   traces back to a scanner row."
-- **Work to do**: about 1,000 detections become 19 fixes. "This is the whole point: fix one thing, close hundreds of
+- **Work to do**: about 750 scanner rows (power) or 450 (manufacturing) become about 20 fixes. "This is the whole point: fix one thing, close hundreds of
   findings."
 - **Top 10 fixes close almost all the rupee risk.**
 - **CEA fix clock**: how many findings would already be past the window.
-- **Coverage**: 12 assets in the register were never scanned, including crown-jewel databases and solar RTUs.
-  "We show you what we cannot see. Other tools stay silent about it."
+- **Coverage**: 12 assets in the register were never scanned (power), including crown-jewel databases and solar RTUs,
+  and the hosts nobody owns are counted too. "We show you what we cannot see. Other tools stay silent about it."
 - Click **Open board pack**: one printable page for the board meeting.
 
 ## 3. One root cause, end to end (4 minutes)
@@ -40,14 +41,22 @@ Click **RC-002** (power) or **RC-001** (manufacturing): the vendor HMI image.
   person executes, and the compensating control is tracked so the CEA clock stays honest."
 - **Why Act**: exploited in the wild (CISA KEV), safety-relevant plant.
 - **Rupee risk**: open the inputs. "Every assumption is visible and you can change it."
-- **Findings and receipts**: each finding shows the scanner, plugin or QID, file and row. Both plant scans are
-  listed, which is how we know the finding has been open for six months.
+- **Findings and receipts**: each finding shows the scanner, plugin or QID, file and row. The first-seen date is six
+  months back: a .nessus file carries no first-seen date, so Sutra keeps it from the earlier import and the CEA clock
+  does not restart with every scan.
 
 ## 4. Root-cause queue (2 minutes)
 
-Filter to **OT only**, then search for a CVE. "This is the analyst's day: 19 rows, not 600."
-Point out the **base image** rows: 46 RHEL hosts share one golden image, including 6 build boxes the CMDB never
+Filter to **OT only**, then search for a CVE. "This is the analyst's day: 20 rows, not 750."
+Point out the **base image** rows: dozens of RHEL hosts share one golden image, including build boxes the CMDB never
 listed. Sutra matched them to the image by their packages.
+
+## 4b. What changed since last month (2 minutes)
+
+Open **What changed**. It compares the two imports: Log4j was fixed everywhere, a new Chrome flaw arrived on laptops,
+and the plant teams have nothing fixed because OT waits for the shutdown. "A finding only counts as fixed when its host
+was scanned again and the finding was gone. If the host was not rescanned, we say so instead of calling it fixed."
+Click a team for the hosts. The team portal shows the same numbers for that team only.
 
 ## 5. Team portal and patch approvals (4 minutes)
 

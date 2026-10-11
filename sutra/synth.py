@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-AS_OF = date(2026, 10, 5)
+AS_OF = date(2026, 9, 5)  # fixed so demos are reproducible; the default two monthly imports end on 5 Oct 2026
 
 POWER_PROCESSES = {
     "gen": ("Unit-2 generation (250 MW)", 1_000_000),
@@ -428,11 +428,42 @@ PROFILES = {
 ORG = PROFILES["power"]["org"]
 
 
-def _detected(rng: random.Random, v: Vuln) -> tuple[datetime, datetime]:
+def _detected(rng: random.Random, v: Vuln, as_of: date) -> tuple[datetime, datetime]:
+    """First detection relative to the base scan date, so a finding keeps its age in later months."""
     first = AS_OF - timedelta(days=rng.randint(*v.age_days))
     first_dt = datetime(first.year, first.month, first.day, rng.randint(0, 23), rng.randint(0, 59), rng.randint(0, 59))
-    last_dt = datetime(AS_OF.year, AS_OF.month, AS_OF.day, rng.randint(1, 6), rng.randint(0, 59), rng.randint(0, 59))
+    last_dt = datetime(as_of.year, as_of.month, as_of.day, rng.randint(1, 6), rng.randint(0, 59), rng.randint(0, 59))
     return first_dt, last_dt
+
+
+# What changes in each later month of the synthetic story. Fixed everywhere: the emergency fixes. A quarter of the
+# other IT findings are patched each month; OT findings wait for a shutdown. A new Chrome flaw reaches some laptops.
+FIXED_IN_FOLLOWUP = {"log4j"}
+STAYS_OPEN = {"citrix", "fortios"}  # the headline-check examples in docs/DEMO_SCRIPT.md stay open every month
+FOLLOWUP_FIX_SHARE = 0.25
+FOLLOWUP_NEW = ("acrobat", "chrome", 0.5)  # hosts with the first and without the second get the second
+
+
+def _followup(hosts: list["Host"], seed: int, month: int) -> dict[tuple[str, str], int]:
+    """Apply ``month`` months of fixes and new findings. Returns the month each new finding appeared."""
+    appeared: dict[tuple[str, str], int] = {}
+    for m in range(1, month + 1):
+        for h in hosts:
+            if h.is_ot:
+                continue
+            kept = []
+            for k in h.vulns:
+                r = random.Random(f"{seed}:{m}:{h.asset_id}:{k}:fix").random()
+                if k in FIXED_IN_FOLLOWUP or (r < FOLLOWUP_FIX_SHARE and k not in STAYS_OPEN):
+                    continue
+                kept.append(k)
+            have, add, p = FOLLOWUP_NEW
+            if have in h.vulns and add not in h.vulns and add not in kept and (h.asset_id, add) not in appeared:
+                if random.Random(f"{seed}:{m}:{h.asset_id}:{add}:new").random() < p:
+                    kept.append(add)
+                    appeared[(h.asset_id, add)] = m
+            h.vulns = kept
+    return appeared
 
 
 def _qualys_results(v: Vuln) -> str:
@@ -513,12 +544,18 @@ def _nessus_item(parent, plugin, name, family, severity, port, proto, output, so
     ET.SubElement(item, "plugin_output").text = output
 
 
-def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, Path]:
-    """Write the CMDB, a Qualys CSV, a Tenable.sc CSV (IT) and a .nessus file (plant scan) for one profile."""
+def generate(out_dir: Path, seed: int = 7, profile: str = "power", month: int = 0) -> dict[str, Path]:
+    """Write the CMDB, a Qualys CSV, a Tenable.sc CSV (IT) and .nessus plant scans for one profile.
+
+    ``month`` > 0 writes the same estate ``month`` x 30 days later, after the fixes and new findings described by
+    FIXED_IN_FOLLOWUP, STAYS_OPEN, FOLLOWUP_FIX_SHARE and FOLLOWUP_NEW, so two imports can be compared.
+    """
     prof = PROFILES[profile]
     rng = random.Random(seed)
     out_dir.mkdir(parents=True, exist_ok=True)
     hosts = prof["build"](rng)
+    as_of = AS_OF + timedelta(days=30 * month)
+    appeared = _followup(hosts, seed, month) if month else {}
     paths = {"qualys": out_dir / "qualys_vm_export.csv", "tenable": out_dir / "tenable_sc_export.csv",
              "nessus_baseline": out_dir / "tenable_plant_scan_baseline.nessus",
              "nessus": out_dir / "tenable_plant_scan.nessus", "cmdb": out_dir / "cmdb_assets.csv",
@@ -547,7 +584,7 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
     q_rows, t_rows, plant = [], [], []
     for h in hosts:
         fqdn = f"{h.hostname}.{prof['domain']}"
-        scan_dt = datetime(AS_OF.year, AS_OF.month, AS_OF.day, 2, rng.randint(0, 59), rng.randint(0, 59))
+        scan_dt = datetime(as_of.year, as_of.month, as_of.day, 2, rng.randint(0, 59), rng.randint(0, 59))
         if "qualys" in h.scanners:
             q_rows.append([h.ip, fqdn, h.hostname.upper()[:15], h.os, "host scanned, found vuln", 45038,
                            "Host Scan Time - Scanner", "Ig", 1, "", "", fqdn, "", scan_dt.strftime("%m/%d/%Y %H:%M:%S"),
@@ -562,7 +599,10 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
             plant.append((h, fqdn, items))
         for key in h.vulns:
             v = V[key]
-            first, last = _detected(rng, v)
+            first, last = _detected(random.Random(f"{seed}:{h.asset_id}:{key}"), v, as_of)
+            if (h.asset_id, key) in appeared:  # new this month: first seen after the previous scan
+                start = AS_OF + timedelta(days=30 * (appeared[(h.asset_id, key)] - 1))
+                first = datetime.combine(start + timedelta(days=1 + rng.randint(0, 27)), first.time())
             port, proto = _port(v)
             exploit = v.sev == "critical" or key in ("glibc8", "runc", "chrome", "sudo8")
             if "qualys" in h.scanners and v.qid:
@@ -585,7 +625,7 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
     rng.shuffle(t_rows)
     with paths["qualys"].open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, quoting=csv.QUOTE_ALL)
-        w.writerow(["Scan Results", f"{AS_OF:%m/%d/%Y} at 06:00:00 (GMT+0530)"])
+        w.writerow(["Scan Results", f"{as_of:%m/%d/%Y} at 06:00:00 (GMT+0530)"])
         w.writerow([prof["org"], "Report: Sutra synthetic detections"])
         w.writerow([])
         w.writerow(QUALYS_COLS)
@@ -596,9 +636,12 @@ def generate(out_dir: Path, seed: int = 7, profile: str = "power") -> dict[str, 
         w.writerows(t_rows)
     # The plant is scanned twice, six months apart: .nessus files carry no first-seen date, so finding age
     # comes from the earliest scan that saw it.
-    baseline = AS_OF - timedelta(days=180)
-    _write_nessus(paths["nessus_baseline"], prof["org"], plant, baseline, rng)
-    _write_nessus(paths["nessus"], prof["org"], plant, AS_OF, rng)
+    # A follow-up month carries only the new plant scan; the baseline was imported with the first month.
+    if month:
+        del paths["nessus_baseline"]
+    else:
+        _write_nessus(paths["nessus_baseline"], prof["org"], plant, AS_OF - timedelta(days=180), rng)
+    _write_nessus(paths["nessus"], prof["org"], plant, as_of, rng)
     return paths
 
 

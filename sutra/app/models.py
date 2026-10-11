@@ -5,9 +5,9 @@ All timestamps are stored as naive UTC (``utcnow()``) so SQLite and Postgres beh
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -129,7 +129,11 @@ class Setting(Base):
 
 
 class Dataset(Base):
-    """An analysed set of import files (Milestone 2 replaces this with per-import snapshots)."""
+    """One import: the files, when the scans happened (as_of) and when Sutra saw them (created_at).
+
+    Every import is kept. Its assets and findings are stored as a snapshot (AssetSnapshot, Observation),
+    which is what history, "first seen" and "fixed since the last import" are computed from.
+    """
 
     __tablename__ = "datasets"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -138,14 +142,59 @@ class Dataset(Base):
     files: Mapped[list] = mapped_column(JSON)  # [{"path", "name", "format"}]
     is_current: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)  # when Sutra saw it
+    as_of: Mapped[date | None] = mapped_column(Date, nullable=True)  # latest scan date in the files
+    summary: Mapped[dict] = mapped_column(JSON, default=dict)
+
+
+class AssetSnapshot(Base):
+    """An asset as it stood in one import."""
+
+    __tablename__ = "asset_snapshots"
+    __table_args__ = (UniqueConstraint("dataset_id", "asset_id"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    dataset_id: Mapped[int] = mapped_column(ForeignKey("datasets.id", ondelete="CASCADE"), index=True)
+    asset_id: Mapped[str] = mapped_column(String(120))
+    hostname: Mapped[str] = mapped_column(String(255), default="")
+    ip: Mapped[str] = mapped_column(String(64), default="")
+    site: Mapped[str] = mapped_column(String(120), default="")
+    team: Mapped[str] = mapped_column(String(120), default="")  # owner in the asset register
+    owned: Mapped[bool] = mapped_column(Boolean, default=False)  # team is in the ownership chart
+    in_cmdb: Mapped[bool] = mapped_column(Boolean, default=True)
+    scanned: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_ot: Mapped[bool] = mapped_column(Boolean, default=False)
+    criticality: Mapped[int] = mapped_column(Integer, default=3)
+
+
+class Observation(Base):
+    """A finding seen in one import. ``first_seen``/``last_seen`` are when the scanners saw it happen;
+    ``first_imported_at`` is when Sutra first saw it, in this or an earlier import."""
+
+    __tablename__ = "observations"
+    __table_args__ = (UniqueConstraint("dataset_id", "asset_id", "fingerprint"),
+                      Index("ix_observations_identity", "asset_id", "fingerprint"))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    dataset_id: Mapped[int] = mapped_column(ForeignKey("datasets.id", ondelete="CASCADE"), index=True)
+    asset_id: Mapped[str] = mapped_column(String(120))
+    fingerprint: Mapped[str] = mapped_column(String(400))
+    team: Mapped[str] = mapped_column(String(120), default="")
+    site: Mapped[str] = mapped_column(String(120), default="")
+    title: Mapped[str] = mapped_column(Text, default="")
+    severity: Mapped[str] = mapped_column(String(12), default="")
+    cves: Mapped[list] = mapped_column(JSON, default=list)
+    rc_key: Mapped[str] = mapped_column(String(400), default="")
+    rc_title: Mapped[str] = mapped_column(Text, default="")
+    first_seen: Mapped[date | None] = mapped_column(Date, nullable=True)
+    last_seen: Mapped[date | None] = mapped_column(Date, nullable=True)
+    first_imported_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class Job(Base):
     __tablename__ = "jobs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     dataset_id: Mapped[int] = mapped_column(ForeignKey("datasets.id", ondelete="CASCADE"), index=True)
-    rc_id: Mapped[str] = mapped_column(String(16))
+    rc_id: Mapped[str] = mapped_column(String(16))  # the ID in the import the job was raised from
+    rc_key: Mapped[str] = mapped_column(String(400), default="")  # stable across imports
     rc_title: Mapped[str] = mapped_column(Text)
     team: Mapped[str] = mapped_column(String(120), index=True)
     vertical: Mapped[str] = mapped_column(String(120), default="")

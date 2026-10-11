@@ -60,9 +60,18 @@ def status(request: Request, p: Principal = Depends(current_principal), db: Sess
             "synthetic": bool(ds and ds.kind == "demo")}
 
 
+def unowned(db: Session, res) -> list[str]:
+    """Assets with no owning team in the ownership chart: nobody will be asked to fix them."""
+    chart = {t.team for t in db.scalars(select(OwnershipTeam))}
+    return sorted(a.asset_id for a in res.assets.values() if not (a.in_cmdb and a.owner in chart))
+
+
 @router.get("/board")
-def board(request: Request, p: Principal = Depends(require("M-BRD", "view"))):
-    return _board(scoped(request, p, "M-BRD")[1])
+def board(request: Request, p: Principal = Depends(require("M-BRD", "view")), db: Session = Depends(get_db)):
+    res, payload = scoped(request, p, "M-BRD")
+    out = _board(payload)
+    out["coverage"]["unowned"] = len(unowned(db, res))
+    return out
 
 
 @router.get("/board/pack")
@@ -94,9 +103,11 @@ def download(name: str, request: Request, p: Principal = Depends(require("M-RC",
 
 
 @router.get("/assets")
-def assets(request: Request, p: Principal = Depends(require("M-AST", "view"))):
-    payload = scoped(request, p, "M-AST")[1]
-    return {k: payload[k] for k in ("org", "as_of", "coverage", "assets", "findings")}
+def assets(request: Request, p: Principal = Depends(require("M-AST", "view")), db: Session = Depends(get_db)):
+    res, payload = scoped(request, p, "M-AST")
+    out = {k: payload[k] for k in ("org", "as_of", "coverage", "assets", "findings")}
+    out["coverage"] = {**out["coverage"], "unowned": unowned(db, res)}
+    return out
 
 
 class HeadlineIn(BaseModel):

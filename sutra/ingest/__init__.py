@@ -175,12 +175,11 @@ def resolve_assets(cmdb: list[Asset], raws: list[dict]) -> dict[str, Asset]:
     by_id = {a.asset_id: a for a in cmdb}
     by_ip = {a.ip: a for a in cmdb}
     by_host = {a.hostname: a for a in cmdb if a.hostname}
-    unknown = 0
     for r in raws:
         a = by_ip.get(r["ip"]) or by_host.get(r["host"])
         if a is None:
-            unknown += 1
-            a = Asset(asset_id=f"UNK-{unknown:04d}", hostname=r["host"], ip=r["ip"], os=r.get("os", ""),
+            # Named by address so the same unregistered host keeps its ID from one import to the next.
+            a = Asset(asset_id=f"UNK-{r['ip'] or r['host']}", hostname=r["host"], ip=r["ip"], os=r.get("os", ""),
                       in_cmdb=False, owner="(unknown: not in CMDB)")
             by_id[a.asset_id] = a
             by_ip[a.ip] = a
@@ -201,6 +200,17 @@ def _dedupe_key(r: dict) -> tuple:
     if r["kind"] == "package":
         return ("pkg", r["package"].lower(), nz.strip_epoch(r["fixed"]))
     return ("other", tuple(r["cves"]) or r["title"].lower())
+
+
+def fingerprint(f: Finding) -> str:
+    """A finding's identity on its asset, stable across imports and scanners (used for history)."""
+    if f.kind == "package" and f.package:
+        return f"pkg|{f.package.lower()}|{f.fixed}"
+    if f.kind == "credential" and f.credential_fp:
+        return f"cred|{f.credential_fp}"
+    if f.kind == "config" and f.control:
+        return f"config|{f.control}"
+    return "other|" + (",".join(sorted(f.cves)) or f.title.lower())
 
 
 def dedupe(raws: list[dict]) -> list[Finding]:
