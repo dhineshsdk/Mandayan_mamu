@@ -24,12 +24,13 @@ class Result:
 
 
 def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: Path | None = None,
-        known_first_seen: dict[tuple[str, str], date] | None = None) -> Result:
+        known_first_seen: dict[tuple[str, str], date] | None = None, intel: dict | None = None) -> Result:
     """Analyse any mix of Qualys CSV, Tenable CSV and .nessus files; the format is detected from content.
 
     A CMDB or ownership chart among ``files`` is recognised too, so a whole export folder can be passed.
     ``known_first_seen`` maps (asset_id, fingerprint) to the earliest first-seen date from earlier imports, so a
     finding's age (and its CEA clock) does not reset when a scanner export lacks history.
+    ``intel`` (CVE -> exploitation details) overrides the file at ``intel_path``; the server passes its live feeds.
     """
     cmdb_assets = ingest.load_cmdb(cmdb) if cmdb else []
     raws, sources = [], {}
@@ -54,7 +55,7 @@ def run(files: list[Path], cmdb: Path | None = None, org: str = "", intel_path: 
     as_of = max(f.last_seen for f in findings if f.last_seen) if any(f.last_seen for f in findings) else date.today()
 
     rcs = rootcause.group(assets, findings)
-    portfolio = risk.assess(rcs, assets, findings, risk.load_intel(intel_path), as_of)
+    portfolio = risk.assess(rcs, assets, findings, intel if intel is not None else risk.load_intel(intel_path), as_of)
 
     rcs.sort(key=lambda r: (-r.ale_mean, risk.SSVC_ORDER[r.ssvc]))
     for i, rc in enumerate(rcs, start=1):

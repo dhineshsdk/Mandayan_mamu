@@ -1,4 +1,4 @@
-"""Scanner API connections and pulls (part of Data and connectors, M-DAT).
+"""Scanner API connections and pulls, and the threat-intel feeds (part of Data and connectors, M-DAT).
 
 Seeing connections and pulls needs M-DAT view; starting a pull needs act; adding or changing a connection, its
 credentials or the schedule needs admin. Secrets are write-only: no response ever contains one.
@@ -135,3 +135,25 @@ def get_pull(pid: int, p: Principal = Depends(require("M-DAT", "view")), db: Ses
     if x is None:
         raise LookupError("No such pull.")
     return scanpull.pull_json(x)
+
+
+# ---------- threat intelligence (CISA KEV and EPSS) ----------
+
+@router.get("/intel")
+def intel_status(request: Request, p: Principal = Depends(require("M-DAT", "view"))):
+    store = request.app.state.intel
+    current = request.app.state.analysis.intel
+    return {**store.status(), "refreshing": request.app.state.intel_updater.busy(),
+            "known_exploited": sum(1 for v in current.values() if v.get("exploitation") == "active"),
+            "with_epss": sum(1 for v in current.values() if "epss" in v)}
+
+
+@router.post("/intel/refresh")
+def intel_refresh(request: Request, p: Principal = Depends(require("M-DAT", "act")), db: Session = Depends(get_db)):
+    try:
+        out = request.app.state.intel_updater.refresh()
+    except RuntimeError as e:
+        raise Conflict(str(e)) from e
+    audit(db, "data.intel_refresh", p.user, "setting", "threat_intel", client_ip(request), **out)
+    db.commit()
+    return {"results": out, **intel_status(request, p)}

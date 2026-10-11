@@ -59,6 +59,9 @@ class Settings:
     servicenow_password: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_PASSWORD", ""),
                                      repr=False)
     servicenow_table: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_TABLE", "change_request"))
+    # Fetch the CISA KEV catalog and EPSS scores once a day. Off for servers with no internet access; the feed URLs
+    # can instead point at an internal mirror (SUTRA_KEV_URL, SUTRA_EPSS_URL).
+    intel_refresh: bool = field(default_factory=lambda: _bool("SUTRA_INTEL_REFRESH", True))
 
     def __post_init__(self):
         self.workspace = Path(self.workspace)

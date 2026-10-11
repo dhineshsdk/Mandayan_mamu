@@ -185,6 +185,23 @@ result like an export, carrying over the asset register from the latest import t
   in the workspace) and are never returned by the API. If that key changes, enter the credentials again.
 - An internal CA can be trusted by giving the path of its CA bundle on the Sutra server.
 
+### Threat intelligence
+
+Sutra fetches the [CISA Known Exploited Vulnerabilities](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+catalog and [FIRST EPSS](https://www.first.org/epss/) scores once a day (and on demand under **Import data**), then
+re-analyses the current import.
+
+- A CVE in the KEV catalog counts as actively exploited, which drives the SSVC decision. Sutra also shows when CISA
+  added it and whether it is known to be used in ransomware.
+- EPSS scores (the probability of exploitation activity in the next 30 days) are fetched for the CVEs in the current
+  import and shown next to each root cause. They do not change SSVC.
+- Public exploit code has no free authoritative feed, so "public exploit" comes from the short curated list in
+  `sutra/data/threat_intel.json`, and every screen says so.
+- Until the catalog has been fetched, Sutra uses that file's sample list for both states and marks them as a sample.
+  A failed or malformed download keeps the last good copy and is shown on the Import data page.
+- Servers without internet access: set `SUTRA_KEV_URL` and `SUTRA_EPSS_URL` to an internal mirror, or
+  `SUTRA_INTEL_REFRESH=0` to stop the daily fetch.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's
@@ -253,8 +270,9 @@ behaves as it would on real data.
 
 ## Assumptions to argue with
 
-All risk assumptions are in `ASSUMPTIONS` in `sutra/risk.py`, and the exploitation states in
-`sutra/data/threat_intel.json` are a small sample snapshot, not a live CISA KEV or EPSS feed. The rupee figures are
+All risk assumptions are in `ASSUMPTIONS` in `sutra/risk.py`. The server uses live CISA KEV and EPSS data (see
+Threat intelligence); the command-line reports still use the sample list in `sutra/data/threat_intel.json`. The
+"public exploit" list in that file is curated by hand and short. The rupee figures are
 hypotheses for demos, not calibrated loss data. The CEA windows come from a vendor summary quoted in the plan and need
 checking against the gazette text.
 

@@ -342,6 +342,7 @@ VIEWS.rc = {
     const ri = r.risk_inputs;
     const findings = r.finding_ids.map((f) => d.findings[f]);
     const kev = r.cves.filter((c) => c.exploitation === "active");
+    const poc = r.cves.filter((c) => c.exploitation === "poc");
     const asset = (a) => d.assets[a];
     const myTeams = ME.raise_for_teams.filter((t) => r.owners.includes(t));
     const jobs = d.jobs.filter((j) => j.rc_current_id === r.id);
@@ -355,7 +356,8 @@ VIEWS.rc = {
           <p class="muted" style="margin:0">${esc(r.executor)}.</p>
           <p style="margin:10px 0 0">Closes <b>${r.findings}</b> findings on <b>${r.hosts}</b> hosts.</p></div>
         <div class="card"><h2>Why ${esc(r.ssvc)}</h2>
-          <dl class="kv"><dt>Exploitation</dt><dd>${esc(r.exploitation)}${kev.length ? ` <span class="badge kev">KEV: ${kev.map((c) => esc(c.name || c.id)).join(", ")}</span>` : ""}</dd>
+          <dl class="kv"><dt>Exploitation</dt><dd>${esc(r.exploitation)}${kev.length ? ` <span class="badge kev">KEV${intelSource(kev[0])}: ${kev.map((c) => esc(c.name || c.id) + (c.ransomware ? ", used in ransomware" : "")).join("; ")}</span>` : ""}${poc.length ? ` <span class="badge">Public exploit${intelSource(poc[0])}: ${poc.map((c) => esc(c.name || c.id)).join("; ")}</span>` : ""}</dd>
+          ${epssText(r.cves) ? `<dt>Likelihood</dt><dd>${epssText(r.cves)}</dd>` : ""}
           <dt>Exposure</dt><dd>${esc(r.exposure)} (most exposed zone: ${esc(ri.top_zone)})</dd>
           <dt>Human impact</dt><dd>${esc(r.human_impact)}</dd></dl>
           <p class="muted" style="margin:10px 0 0">${esc(SSVC_MEANING[r.ssvc])}</p></div>
@@ -778,7 +780,9 @@ VIEWS.headline = {
       out.innerHTML = '<p class="muted">Checking…</p>';
       try {
         const r = await post("/api/headline", { query: q });
-        const intel = r.intel ? ` <span class="badge kev">${esc(r.intel.exploitation === "active" ? "Known exploited" : "Public exploit")}: ${esc(r.intel.name)}</span>` : "";
+        const ex = r.intel && r.intel.exploitation !== "none" ? r.intel : null;
+        const intel = (ex ? ` <span class="badge kev">${ex.exploitation === "active" ? "Known exploited" : "Public exploit"}${intelSource(ex)}: ${esc(ex.name)}</span>` : "")
+          + (r.intel && r.intel.epss != null ? ` <span class="badge">EPSS ${(r.intel.epss * 100).toFixed(1)}%</span>` : "");
         out.innerHTML = `<div class="card">
           <div class="answer ${r.exposed ? "yes" : "no"}">${r.exposed ? `Yes: ${r.hosts} host${r.hosts === 1 ? "" : "s"} exposed` : "Not found on any scanned host in your scope"}${intel}</div>
           <p class="muted">${r.exposed ? `${r.findings} findings · ${r.internet_hosts} internet-facing · ${r.ot_hosts} OT.` : ""}
@@ -794,13 +798,17 @@ VIEWS.headline = {
 };
 
 VIEWS.import = {
-  async load() { const [u, ds, c] = await Promise.all([api("/api/data/uploads"), api("/api/data/datasets"), api("/api/data/connections")]); return { ...u, datasets: ds, conn: c }; },
+  async load() {
+    const [u, ds, c, intel] = await Promise.all([api("/api/data/uploads"), api("/api/data/datasets"), api("/api/data/connections"), api("/api/data/intel")]);
+    return { ...u, datasets: ds, conn: c, intel };
+  },
   html(d) {
     const act = can("M-DAT", "act");
     return `
       <h1>Import data</h1>
       <p class="sub">Pull from your scanners' APIs, or import their exports, an asset register and an ownership chart. Each import replaces the current data for everyone.</p>
       ${connectionsHtml(d.conn)}
+      ${intelHtml(d.intel)}
       ${act ? `<div class="card"><h2>Your exports</h2>
         <p class="muted" style="margin-top:0">Supported: Qualys VM detection CSV, Tenable.sc or Tenable.io CSV, Nessus <code>.nessus</code> XML, an asset register CSV
           (<code>asset_id, hostname, ip, site, zone, os, owner, business_process, inr_per_hour, criticality, image, config_template, is_ot, safety_critical, personal_data</code>)
@@ -823,6 +831,7 @@ VIEWS.import = {
   },
   wire(root, d) {
     wireConnections(root, d.conn);
+    wireIntel(root);
     if (!can("M-DAT", "act")) return;
     const msg = root.querySelector("#imp-msg");
     const fail = (e) => (msg.innerHTML = `<div class="error" style="margin-top:10px">${esc(e.message)}</div>`);
@@ -852,6 +861,36 @@ VIEWS.import = {
     root.querySelector("#clear").addEventListener("click", async () => { await api("/api/data/uploads", { method: "DELETE" }); render(); });
   },
 };
+
+// ---------- threat intel feeds (Data and connectors) ----------
+function intelHtml(d) {
+  const feed = (f, what) => f.fetched_at ? `${what()} Fetched ${esc(fmtTime(f.fetched_at))}.${f.error ? ` <span class="warn-ink">The last attempt failed: ${esc(f.error)}</span>` : ""}`
+    : f.error ? `<span class="warn-ink">Never fetched. The last attempt failed: ${esc(f.error)}</span>` : "Not fetched yet.";
+  return `<div class="card mt"><h2>Threat intelligence</h2>
+    <p class="muted" style="margin-top:0">A CVE counts as actively exploited when it is in the CISA Known Exploited Vulnerabilities catalog. EPSS scores from FIRST show how likely exploitation is in the next 30 days. Public exploit code comes from a short curated list in Sutra, because there is no free authoritative feed for it. Both feeds refresh daily.</p>
+    ${d.live ? "" : '<div class="error">Using the sample list that ships with Sutra until the CISA catalog is fetched. Exploitation shown on every screen is a sample, not live data.</div>'}
+    <dl class="kv"><dt>CISA KEV</dt><dd>${feed(d.kev, () => `Catalog ${esc(d.kev.catalog_version)}, ${num(d.kev.count)} CVEs.`)}</dd>
+      <dt>EPSS</dt><dd>${feed(d.epss, () => `Scores for ${num(d.epss.count)} CVEs.`)}</dd>
+      <dt>In use now</dt><dd>${num(d.known_exploited)} known exploited CVEs, ${num(d.with_epss)} with an EPSS score</dd></dl>
+    ${can("M-DAT", "act") ? `<div class="toolbar" style="margin-top:12px"><button class="btn" id="intel-now" ${d.refreshing ? "disabled" : ""}>${d.refreshing ? "Refreshing…" : "Refresh now"}</button></div>` : ""}
+    <div id="intel-msg"></div></div>`;
+}
+function wireIntel(root) {
+  const b = root.querySelector("#intel-now");
+  if (!b) return;
+  b.addEventListener("click", async () => {
+    b.disabled = true; b.textContent = "Refreshing…";
+    try { await post("/api/data/intel/refresh", {}); render(); }
+    catch (err) { root.querySelector("#intel-msg").innerHTML = `<div class="error" style="margin-top:10px">${esc(err.message)}</div>`; b.disabled = false; b.textContent = "Refresh now"; }
+  });
+}
+function epssText(cves) {
+  const scored = cves.filter((c) => c.epss != null);
+  if (!scored.length) return "";
+  const top = scored.reduce((a, c) => (c.epss > a.epss ? c : a));
+  return `EPSS ${(top.epss * 100).toFixed(1)}% for ${esc(top.id)} (percentile ${Math.floor(top.epss_percentile * 100)})`;
+}
+const intelSource = (c) => c.source === "sample" ? " (sample list)" : c.source === "curated" ? " (curated list)" : "";
 
 // ---------- scanner API connections (Data and connectors) ----------
 const PULL_STATUS = { running: "Running", ok: "Imported", failed: "Failed: nothing imported" };
