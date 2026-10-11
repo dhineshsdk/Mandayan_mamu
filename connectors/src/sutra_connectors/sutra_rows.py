@@ -13,12 +13,14 @@ detection's ``record_id``. Two keys the file importers do not set are added: ``s
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable, Iterator
 from importlib import import_module
 from types import ModuleType
 
 from .models import STATE_FIXED, ScannerFinding
 
+_KB = re.compile(r"KB\d{6,7}", re.I)  # as sutra.ingest.normalize.KB
 _PACKAGE_PARSERS = {"Qualys": "package_from_qualys", "Tenable": "package_from_tenable"}
 
 
@@ -39,7 +41,13 @@ def to_sutra_row(f: ScannerFinding, nz: ModuleType | None = None) -> dict:
     fields = {"kind": "info"} if f.severity == "info" else nz.classify(f.title, f.evidence)
     pkg = inst = fixed = ""
     if fields["kind"] == "other":
-        pkg, inst, fixed = getattr(nz, _PACKAGE_PARSERS[f.scanner])(f.title, f.evidence)
+        if f.package and _KB.fullmatch(f.fixed_version or ""):
+            # A Windows update: grouped like the file importers group a missing KB.
+            pkg, inst, fixed = "Microsoft Windows OS patch", "missing", f.fixed_version.upper()
+        elif f.package:
+            pkg, inst, fixed = f.package, nz.strip_epoch(f.installed), nz.strip_epoch(f.fixed_version)
+        elif f.scanner in _PACKAGE_PARSERS:
+            pkg, inst, fixed = getattr(nz, _PACKAGE_PARSERS[f.scanner])(f.title, f.evidence)
         if pkg:
             fields["kind"] = "package"
     return dict(scanner=f.scanner, ref=f.scanner_ref, file=f.source, row=f.record_id, ip=f.ip.strip(),

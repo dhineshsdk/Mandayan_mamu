@@ -23,7 +23,7 @@ STATES = (STATE_OPEN, STATE_REOPENED, STATE_FIXED)
 class ScannerFinding:
     """One vulnerability detection on one host, as one scanner reports it."""
 
-    scanner: str  # "Qualys" or "Tenable": the same labels the file importers use
+    scanner: str  # "Qualys" or "Tenable" (the labels the file importers use), "CrowdStrike" or "Defender"
     scanner_ref: str  # "QID 38173" or "Plugin 19506": the receipt Sutra shows next to every finding
     source: str  # where it was pulled from, e.g. "qualys-api:qualysapi.qg1.apps.qualys.in"
     record_id: str  # stable ID of this detection inside ``source``, the API equivalent of a file row
@@ -42,6 +42,11 @@ class ScannerFinding:
     first_seen: datetime | None
     last_seen: datetime | None
     last_fixed: datetime | None = None
+    # Agent-based tools (CrowdStrike, Defender) name the vulnerable package directly. When ``package`` is set,
+    # these are used as is instead of parsing them out of the title and evidence.
+    package: str = ""
+    installed: str = ""
+    fixed_version: str = ""
     vendor_ids: dict[str, str] = field(default_factory=dict, compare=False)
 
 

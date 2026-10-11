@@ -1,4 +1,4 @@
-"""Scheduled pulls from scanner APIs (``sutra_connectors``), so nobody has to export a file.
+"""Scheduled pulls from scanner and agent APIs (``sutra_connectors``), so nobody has to export a file.
 
 A pull reads every enabled scanner connection in full (all open detections, and every host the scanner knows), then
 analyses the result exactly like an uploaded export and makes it the current import. Details:
@@ -40,6 +40,8 @@ KINDS = {
                    "default_url": "https://cloud.tenable.com", "url_hint": "https://cloud.tenable.com"},
     "tenable_sc": {"label": "Tenable Security Center", "user": "Access key", "secret": "Secret key",
                    "default_url": "", "url_hint": "https://sc.plant.example.in"},
+    "crowdstrike": {"label": "CrowdStrike Falcon Spotlight", "user": "API client ID", "secret": "API client secret",
+                    "default_url": "https://api.crowdstrike.com", "url_hint": "https://api.eu-1.crowdstrike.com"},
 }
 DEFAULT_SCHEDULE = {"enabled": False, "hour": 2}
 CHECK_SECONDS = 300
@@ -47,7 +49,7 @@ CHECK_SECONDS = 300
 
 def build(conn: ScannerConnection, secret: str, transport=None):
     """A connector for ``conn``. ``transport`` is for tests."""
-    from sutra_connectors import QualysConnector, TenableSCConnector, TenableVMConnector
+    from sutra_connectors import CrowdStrikeConnector, QualysConnector, TenableSCConnector, TenableVMConnector
 
     verify: bool | str = conn.ca_bundle or True
     extra = {"transport": transport} if transport is not None else {}
@@ -57,6 +59,8 @@ def build(conn: ScannerConnection, secret: str, transport=None):
         return TenableVMConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
     if conn.kind == "tenable_sc":
         return TenableSCConnector(conn.base_url, conn.username, secret, verify=verify, **extra)
+    if conn.kind == "crowdstrike":
+        return CrowdStrikeConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
     raise ValueError(f"Unknown scanner kind {conn.kind!r}.")
 
 
