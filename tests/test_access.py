@@ -360,9 +360,15 @@ def test_unbuilt_or_unlicensed_modules_grant_nothing(env):
         assert exec_.get("/api/auth/me").json()["modules"] == []
     finally:
         admin.patch("/api/admin/modules/M-BRD", json={"licensed": True})
-    # M-CMP is in the compliance officer's role but not built yet, so it is not offered.
-    me = client(env, ACCOUNTS["compliance_officer"]).get("/api/auth/me").json()
-    assert "M-CMP" not in {m["key"] for m in me["modules"]}
+    # Unlicensing M-CMP takes the compliance module away from the compliance officer too.
+    officer = client(env, ACCOUNTS["compliance_officer"])
+    assert officer.get("/api/compliance/entities").status_code == 200
+    assert admin.patch("/api/admin/modules/M-CMP", json={"licensed": False}).status_code == 200
+    try:
+        assert officer.get("/api/compliance/entities").status_code == 403
+        assert "M-CMP" not in {m["key"] for m in officer.get("/api/auth/me").json()["modules"]}
+    finally:
+        admin.patch("/api/admin/modules/M-CMP", json={"licensed": True})
 
 
 def test_admin_cannot_change_their_own_access(env):

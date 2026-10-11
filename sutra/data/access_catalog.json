@@ -11,7 +11,7 @@
     {"key": "M-PJ", "name": "Patch jobs and approvals", "built": true},
     {"key": "M-OT", "name": "OT plans", "built": true},
     {"key": "M-HC", "name": "Headline check", "built": true},
-    {"key": "M-CMP", "name": "Compliance", "built": false},
+    {"key": "M-CMP", "name": "Compliance", "built": true},
     {"key": "M-AUD", "name": "Audit evidence", "built": true},
     {"key": "M-DAT", "name": "Data and connectors", "built": true},
     {"key": "M-ADM", "name": "Administration", "built": true}

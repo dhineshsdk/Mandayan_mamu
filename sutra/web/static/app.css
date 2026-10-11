@@ -190,3 +190,8 @@ pre.config { white-space: pre; background: var(--panel-2); border-radius: 6px; p
 pre.config .add { color: var(--good); }
 pre.config .del { color: var(--warn-ink); }
 pre.config .hunk { color: var(--accent); }
+.st-cmp-amber { background: var(--warn-bg); color: var(--attend); }
+ul.evidence-list, ul.plain { margin: 4px 0; padding-left: 18px; }
+ul.evidence-list li, ul.plain > li { margin: 4px 0; }
+tr.detail-row > td { border-top: 0; padding-top: 0; }
+form.inline-form { display: inline-flex; gap: 6px; align-items: center; margin-left: 6px; }
