@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -e ./patchdraft -e ./explain -e ./range[test] -e . ruff
+      - run: pip install -e ./patchdraft -e ./connectors -e ./compliance -e ./explain -e "./range[test]" -e . ruff
       - run: ruff check range
       - run: python -m pytest range -q
       - name: Release gate (fails if any bad claim, lost finding or stale published score)
