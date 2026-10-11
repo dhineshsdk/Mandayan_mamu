@@ -1,0 +1,16 @@
+{
+  "http_method": "GET",
+  "results": {
+    "model_name": "FortiGate",
+    "model_number": "60F",
+    "model": "FGT60F",
+    "hostname": "fw-plant-01"
+  },
+  "vdom": "root",
+  "path": "system",
+  "name": "status",
+  "status": "success",
+  "serial": "FGT60FTK00000000",
+  "version": "v7.2.8",
+  "build": 1639
+}

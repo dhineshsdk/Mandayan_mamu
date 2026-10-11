@@ -365,6 +365,54 @@ class ScanPull(Base):
     dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id", ondelete="SET NULL"), nullable=True)
 
 
+class NetworkDevice(Base):
+    """A firewall or switch Sutra reads its configuration from, read-only (``sutra.app.netconfig``). The secret is
+    encrypted (``sutra.app.vault``)."""
+
+    __tablename__ = "network_devices"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16))  # a key of sutra.app.netconfig.KINDS
+    name: Mapped[str] = mapped_column(String(80))
+    address: Mapped[str] = mapped_column(String(300))  # https:// URL for API kinds, host or host:port for SSH
+    username: Mapped[str] = mapped_column(String(200), default="")  # SSH kinds only
+    secret: Mapped[str] = mapped_column(Text, default="")  # encrypted API token, API key or password
+    ca_bundle: Mapped[str] = mapped_column(String(500), default="")
+    host_key: Mapped[str] = mapped_column(String(100), default="")  # pinned SSH host key fingerprint
+    site: Mapped[str] = mapped_column(String(80), default="")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    last_attempt_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # "" (never tried) | first | changed | unchanged | failed
+    last_status: Mapped[str] = mapped_column(String(12), default="")
+    last_error: Mapped[str] = mapped_column(Text, default="")
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class ConfigSnapshot(Base):
+    """One distinct configuration of a device, secrets already masked. A collection that finds the same configuration
+    as the latest snapshot only moves ``last_seen_at``."""
+
+    __tablename__ = "config_snapshots"
+    __table_args__ = (Index("ix_config_snapshots_device", "device_id", "id"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    device_id: Mapped[int] = mapped_column(ForeignKey("network_devices.id", ondelete="CASCADE"))
+    collected_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)  # first seen
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    digest: Mapped[str] = mapped_column(String(64))
+    hostname: Mapped[str] = mapped_column(String(200), default="")
+    model: Mapped[str] = mapped_column(String(120), default="")
+    serial: Mapped[str] = mapped_column(String(120), default="")
+    version: Mapped[str] = mapped_column(String(120), default="")
+    config_format: Mapped[str] = mapped_column(String(16))
+    config: Mapped[str] = mapped_column(Text)
+    masked: Mapped[int] = mapped_column(Integer, default=0)
+    facts: Mapped[dict] = mapped_column(JSON, default=dict)
+    # [{"ip", "mac", "interface"}] and [{"mac", "vlan", "port"}] as of last_seen_at (switches only)
+    arp: Mapped[list] = mapped_column(JSON, default=list)
+    mac_table: Mapped[list] = mapped_column(JSON, default=list)
+
+
 class AuditEvent(Base):
     __tablename__ = "audit_events"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

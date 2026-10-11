@@ -799,8 +799,8 @@ VIEWS.headline = {
 
 VIEWS.import = {
   async load() {
-    const [u, ds, c, intel] = await Promise.all([api("/api/data/uploads"), api("/api/data/datasets"), api("/api/data/connections"), api("/api/data/intel")]);
-    return { ...u, datasets: ds, conn: c, intel };
+    const [u, ds, c, intel, dev] = await Promise.all([api("/api/data/uploads"), api("/api/data/datasets"), api("/api/data/connections"), api("/api/data/intel"), api("/api/data/devices")]);
+    return { ...u, datasets: ds, conn: c, intel, dev };
   },
   html(d) {
     const act = can("M-DAT", "act");
@@ -808,6 +808,7 @@ VIEWS.import = {
       <h1>Import data</h1>
       <p class="sub">Pull from your scanners' APIs, or import their exports, an asset register and an ownership chart. Each import replaces the current data for everyone.</p>
       ${connectionsHtml(d.conn)}
+      ${devicesHtml(d.dev, d.conn.schedule)}
       ${intelHtml(d.intel)}
       ${act ? `<div class="card"><h2>Your exports</h2>
         <p class="muted" style="margin-top:0">Supported: Qualys VM detection CSV, Tenable.sc or Tenable.io CSV, Nessus <code>.nessus</code> XML, Trivy and Grype JSON image scans (<code>trivy image --format json</code>, <code>grype -o json</code>), an asset register CSV
@@ -831,6 +832,7 @@ VIEWS.import = {
   },
   wire(root, d) {
     wireConnections(root, d.conn);
+    wireDevices(root, d.dev);
     wireIntel(root);
     if (!can("M-DAT", "act")) return;
     const msg = root.querySelector("#imp-msg");
@@ -977,6 +979,126 @@ function wireConnections(root, d) {
   if (d.pulls.some((x) => x.status === "running")) {
     const seq = renderSeq;
     setTimeout(async () => { if (seq === renderSeq) { await refreshStatus(); render(); } }, 3000);
+  }
+}
+
+// ---------- firewall and switch configurations (Data and connectors) ----------
+const DEV_STATUS = { first: ["st-approved", "First configuration stored"], changed: ["st-pending", "Configuration changed"],
+  unchanged: ["st-approved", "No change"], failed: ["st-rejected", "Failed"] };
+const devFacts = (f) => [f.firewall_policies != null ? `${num(f.firewall_policies)} firewall policies` : "", f.security_rules != null ? `${num(f.security_rules)} security rules` : ""].filter(Boolean).join(", ");
+function deviceForm(kinds, x) {
+  const k = x ? x.kind : "fortigate", kind = kinds[k];
+  return `<form class="form-grid" data-dev="${x ? x.id : ""}" style="margin-top:10px">
+    <label>Device type <select name="kind" ${x ? "disabled" : ""}>${Object.entries(kinds).map(([key, v]) => `<option value="${key}"${key === k ? " selected" : ""}>${esc(v.label)}</option>`).join("")}</select></label>
+    <label>Name <input name="name" maxlength="80" required value="${esc(x ? x.name : "")}" placeholder="For example Plant 1 core switch"></label>
+    <label>Site <input name="site" maxlength="80" value="${esc(x ? x.site : "")}" placeholder="Optional"></label>
+    <label>Address <input name="address" maxlength="300" required value="${esc(x ? x.address : "")}" placeholder="${esc(kind.address_hint)}"></label>
+    <label data-ssh ${kind.transport === "ssh" ? "" : "hidden"}>SSH user name <input name="username" maxlength="200" value="${esc(x ? x.username : "")}" autocomplete="off"></label>
+    <label><span data-secret-label>${esc(kind.secret)}</span> <input name="secret" type="password" maxlength="2000" ${x ? 'placeholder="Unchanged"' : "required"} autocomplete="new-password"></label>
+    <label data-api ${kind.transport === "api" ? "" : "hidden"}>CA bundle path (internal CA only) <input name="ca_bundle" maxlength="500" value="${esc(x ? x.ca_bundle : "")}" placeholder="Leave empty for public certificates"></label>
+    <label data-ssh ${kind.transport === "ssh" ? "" : "hidden"}>Host key fingerprint <input name="host_key" maxlength="100" placeholder="${x && x.host_key ? esc(x.host_key) : "Optional: SHA256:… (else pinned on first use)"}" autocomplete="off"></label>
+    ${x && x.host_key ? '<label class="check" data-ssh><input type="checkbox" name="clear_host_key"> Clear the pinned host key (the device was replaced)</label>' : ""}
+    <label class="check"><input type="checkbox" name="enabled" ${!x || x.enabled ? "checked" : ""}> Included in collections</label>
+    <div class="toolbar"><button class="btn primary">${x ? "Save" : "Add device"}</button>${x ? '<button type="button" class="btn" data-cancel>Cancel</button>' : ""}</div></form>`;
+}
+function devicesHtml(d, schedule) {
+  const admin = can("M-DAT", "admin"), act = can("M-DAT", "act");
+  const rows = d.devices.map((x) => {
+    const cur = x.current, st = DEV_STATUS[x.last_status];
+    const sw = cur ? `${esc(cur.hostname || "–")}<div class="fix">${esc([cur.model, cur.version].filter(Boolean).join(", "))}</div>` : '<span class="muted">Not collected yet</span>';
+    const seen = cur ? [devFacts(cur.facts), x.kind === "cisco_ios" ? `${num(cur.arp)} ARP, ${num(cur.mac_table)} MAC entries` : ""].filter(Boolean).join("; ") : "";
+    return `<tr><td><b>${esc(x.name)}</b><div class="fix">${esc(x.kind_label)}${x.site ? ` · ${esc(x.site)}` : ""}</div></td><td class="mono">${esc(x.address)}</td><td>${sw}</td>
+      <td>${st ? `<span class="status ${st[0]}">${st[1]}</span> <span class="mono muted">${esc(fmtTime(x.last_attempt))}</span>` : '<span class="muted">Never</span>'}${x.last_error ? `<div class="fix warn-ink">${esc(x.last_error)}</div>` : ""}${seen ? `<div class="fix">${esc(seen)}</div>` : ""}${x.enabled ? "" : '<div class="fix">Not included in collections</div>'}</td>
+      <td style="white-space:nowrap">${x.snapshots ? `<button class="btn small" data-hist="${x.id}">History (${x.snapshots})</button>` : ""}
+        ${act ? ` <button class="btn small" data-collect="${x.id}" ${d.collecting ? "disabled" : ""}>Collect</button>` : ""}
+        ${admin ? ` <button class="btn small" data-dedit="${x.id}">Edit</button> <button class="btn small" data-ddel="${x.id}">Remove</button>` : ""}</td></tr>`;
+  }).join("");
+  return `<div class="card mt"><h2>Firewall and switch configurations</h2>
+    <p class="muted" style="margin-top:0">Sutra reads each device's configuration read-only: FortiGate and Palo Alto firewalls through their management APIs, Cisco IOS switches and routers over SSH (with their ARP and MAC tables). Passwords, keys and SNMP communities are masked before anything is stored, and only real changes are kept as new versions. Collection runs with the daily scanner pull${schedule.enabled ? ` at ${String(schedule.hour).padStart(2, "0")}:00 IST` : " when that is switched on"}.</p>
+    ${rows ? `<div class="table-wrap"><table><thead><tr><th>Device</th><th>Address</th><th>Device reports</th><th>Last collection</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No devices yet.</p>'}
+    <div id="dev-edit"></div>
+    ${admin ? `<details style="margin-top:10px"><summary>Add a device</summary>${deviceForm(d.kinds, null)}</details>` : ""}
+    ${act ? `<div class="toolbar" style="margin-top:12px"><button class="btn primary" id="collect-now" ${d.collecting || !d.devices.some((x) => x.enabled) ? "disabled" : ""}>${d.collecting ? "Collecting…" : "Collect all now"}</button></div>` : ""}
+    <div id="dev-msg"></div><div id="dev-detail"></div></div>`;
+}
+function diffHtml(lines) {
+  return lines.map((l) => {
+    const cls = l.startsWith("@@") ? "hunk" : l.startsWith("+") && !l.startsWith("+++") ? "add" : l.startsWith("-") && !l.startsWith("---") ? "del" : "";
+    return cls ? `<span class="${cls}">${esc(l)}</span>` : esc(l);
+  }).join("\n");
+}
+function wireDevices(root, d) {
+  const msg = root.querySelector("#dev-msg"), detail = root.querySelector("#dev-detail");
+  const fail = (e) => (msg.innerHTML = `<div class="error" style="margin-top:10px">${esc(e.message)}</div>`);
+  const wireForm = (f) => {
+    const kindSel = f.querySelector("select[name=kind]");
+    kindSel.addEventListener("change", () => {
+      const k = d.kinds[kindSel.value];
+      f.querySelector("[data-secret-label]").textContent = k.secret;
+      f.querySelector("input[name=address]").placeholder = k.address_hint;
+      f.querySelectorAll("[data-ssh]").forEach((el) => { el.hidden = k.transport !== "ssh"; });
+      f.querySelectorAll("[data-api]").forEach((el) => { el.hidden = k.transport !== "api"; });
+    });
+    const cancel = f.querySelector("[data-cancel]");
+    if (cancel) cancel.addEventListener("click", () => { root.querySelector("#dev-edit").innerHTML = ""; });
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const clear = f.querySelector("input[name=clear_host_key]");
+      const body = { kind: kindSel.value, name: f.name.value, site: f.site.value, address: f.address.value, username: f.username.value, secret: f.secret.value,
+        ca_bundle: f.ca_bundle.value, host_key: f.host_key.value, clear_host_key: !!(clear && clear.checked), enabled: f.enabled.checked };
+      try {
+        if (f.dataset.dev) await api(`/api/data/devices/${f.dataset.dev}`, { method: "PUT", json: body });
+        else await post("/api/data/devices", body);
+        render();
+      } catch (err) { fail(err); }
+    });
+  };
+  root.querySelectorAll("form[data-dev]").forEach(wireForm);
+  root.querySelectorAll("[data-dedit]").forEach((b) => b.addEventListener("click", () => {
+    const x = d.devices.find((v) => String(v.id) === b.dataset.dedit);
+    const box = root.querySelector("#dev-edit");
+    box.innerHTML = `<h3>Edit ${esc(x.name)}</h3>${deviceForm(d.kinds, x)}`;
+    wireForm(box.querySelector("form"));
+  }));
+  root.querySelectorAll("[data-ddel]").forEach((b) => b.addEventListener("click", async () => {
+    if (!confirm("Remove this device? Its stored credentials and every stored configuration are deleted.")) return;
+    try { await api(`/api/data/devices/${b.dataset.ddel}`, { method: "DELETE" }); render(); } catch (err) { fail(err); }
+  }));
+  const start = async (device, btn) => {
+    btn.disabled = true; btn.textContent = "Collecting…";
+    try { await post("/api/data/devices/collect", { device }); } catch (err) { fail(err); btn.disabled = false; return; }
+    render();
+  };
+  root.querySelectorAll("[data-collect]").forEach((b) => b.addEventListener("click", () => start(Number(b.dataset.collect), b)));
+  const all = root.querySelector("#collect-now");
+  if (all) all.addEventListener("click", () => start(null, all));
+  const show = async (title, body) => { detail.innerHTML = `<h3>${title}</h3>${body}`; };
+  root.querySelectorAll("[data-hist]").forEach((b) => b.addEventListener("click", async () => {
+    try {
+      const h = await api(`/api/data/devices/${b.dataset.hist}/snapshots`);
+      await show(`Configuration history: ${esc(h.device.name)}`, `<div class="table-wrap"><table><thead><tr><th>First seen</th><th>Last seen</th><th>Device reports</th><th class="n">Size</th><th>Masked secrets</th><th></th></tr></thead><tbody>
+        ${h.snapshots.map((s, i) => `<tr><td class="mono">${esc(fmtTime(s.collected))}</td><td class="mono">${esc(fmtTime(s.last_seen))}</td><td>${esc([s.hostname, s.model, s.version].filter(Boolean).join(", "))}${devFacts(s.facts) ? `<div class="fix">${esc(devFacts(s.facts))}</div>` : ""}</td>
+          <td class="n">${num(Math.max(1, Math.round(s.bytes / 1024)))} KB</td><td>${num(s.masked)}</td>
+          <td style="white-space:nowrap"><button class="btn small" data-view="${s.id}">View</button> <button class="btn small" data-diff="${s.id}">${i === h.snapshots.length - 1 ? "First version" : "Changes"}</button> <a class="btn small" href="/api/data/snapshots/${s.id}/download">Download</a></td></tr>`).join("")}</tbody></table></div><div id="dev-text"></div>`);
+      const text = detail.querySelector("#dev-text");
+      detail.querySelectorAll("[data-view]").forEach((v) => v.addEventListener("click", async () => {
+        try {
+          const s = await api(`/api/data/snapshots/${v.dataset.view}`);
+          const tables = s.arp_table.length || s.mac_entries.length ? `<p class="muted">${num(s.arp_table.length)} ARP entries and ${num(s.mac_entries.length)} learned MAC addresses as of ${esc(fmtTime(s.last_seen))}.</p>` : "";
+          text.innerHTML = `${tables}<pre class="config">${esc(s.config)}</pre>`;
+        } catch (err) { fail(err); }
+      }));
+      detail.querySelectorAll("[data-diff]").forEach((v) => v.addEventListener("click", async () => {
+        try {
+          const x = await api(`/api/data/snapshots/${v.dataset.diff}/diff`);
+          text.innerHTML = `<p class="muted">${x.from ? `${num(x.added)} lines added and ${num(x.removed)} removed since the previous version.` : "The first version stored for this device."}${x.truncated ? " Only the first part of the change is shown; download both versions to compare the rest." : ""}</p><pre class="config">${diffHtml(x.lines)}</pre>`;
+        } catch (err) { fail(err); }
+      }));
+    } catch (err) { fail(err); }
+  }));
+  if (d.collecting) {
+    const seq = renderSeq;
+    setTimeout(async () => { if (seq === renderSeq) render(); }, 3000);
   }
 }
 

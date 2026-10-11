@@ -37,3 +37,8 @@ class ApiError(ConnectorError):
 
 class ExportFailed(ConnectorError):
     """An asynchronous export job ended in a failed or cancelled state, or did not finish in time."""
+
+
+class HostKeyError(ConnectorError):
+    """An SSH server presented a host key other than the one pinned for it: the device was replaced or rebuilt, or
+    something is intercepting the connection. Never retried."""

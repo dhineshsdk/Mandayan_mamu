@@ -13,6 +13,19 @@ customers already run, so nobody has to export a file:
 | `AzureDefenderConnector` | Microsoft Defender for Cloud (servers) | `GET /{scope}/providers/Microsoft.Security/subAssessments` | `GET /{scope}/providers/Microsoft.Security/assessments` |
 | `NozomiConnector` | Nozomi Networks Guardian or CMC (OT) | `GET /api/open/query/do`, `node_cves` | `GET /api/open/query/do`, `assets` |
 
+It also collects firewall and switch configurations, read-only, with every password, key and SNMP community masked
+before the configuration leaves the collector (`src/sutra_connectors/netdevices.py`; research notes in
+`docs/api-notes/network-devices.md`):
+
+| Collector | Devices | Reads |
+| --- | --- | --- |
+| `FortiGateCollector` | Fortinet FortiGate (FortiOS REST API, API token) | `GET /api/v2/monitor/system/status`, `GET /api/v2/monitor/system/config/backup?scope=global` |
+| `PanOsCollector` | Palo Alto Networks firewalls (PAN-OS XML API, API key) | `show system info`, running configuration (`type=config&action=show`) |
+| `CiscoIosCollector` | Cisco IOS and IOS-XE switches and routers (SSH) | `show version`, `show running-config`, `show ip arp`, `show mac address-table` |
+
+SSH host keys are pinned: the first key a device presents is recorded, and a different key later raises
+`HostKeyError`. The SSH session can send only those four commands and the two that switch off paging.
+
 This is a plain Python library. Scheduling, credential storage and wiring into the Sutra app come with the app's
 database milestone; nothing here touches the app server, auth or database.
 
@@ -25,7 +38,7 @@ ruff check .
 PYTHONPATH=.. pytest
 ```
 
-Python 3.10+. Runtime dependencies: `httpx` and `defusedxml`. With the repository root on `PYTHONPATH`, the adapter
+Python 3.10+. Runtime dependencies: `httpx`, `defusedxml` and `paramiko` (SSH to network devices). With the repository root on `PYTHONPATH`, the adapter
 tests also check that connector rows match the rows Sutra's own file importers build; without the `sutra` package
 they are skipped.
 

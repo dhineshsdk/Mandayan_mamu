@@ -184,3 +184,9 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .st-ot-closed { color: var(--muted); }
 .warn-ink { color: var(--warn-ink); }
 .kv dd .badge { white-space: normal; max-width: 100%; margin-top: 4px; }
+
+/* firewall and switch configurations */
+pre.config { white-space: pre; background: var(--panel-2); border-radius: 6px; padding: 10px; font-size: 12px; margin: 8px 0 0; overflow: auto; max-height: 520px; }
+pre.config .add { color: var(--good); }
+pre.config .del { color: var(--warn-ink); }
+pre.config .hunk { color: var(--accent); }

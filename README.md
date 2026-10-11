@@ -202,6 +202,26 @@ result like an export, carrying over the asset register from the latest import t
   in the workspace) and are never returned by the API. If that key changes, enter the credentials again.
 - An internal CA can be trusted by giving the path of its CA bundle on the Sutra server.
 
+### Firewall and switch configurations
+
+Under **Import data → Firewall and switch configurations** an administrator adds devices Sutra reads its
+configuration from, read-only: Fortinet FortiGate (a REST API token for an administrator with a read-only profile),
+Palo Alto Networks firewalls (an XML API key for a read-only administrator) and Cisco IOS or IOS-XE switches and
+routers over SSH (an account that logs in at the `#` prompt; Sutra never sends `enable`). From switches Sutra also
+reads the ARP and MAC address tables. Collection runs with the daily scanner pull, and VM analysts and
+administrators can collect by hand.
+
+- Passwords, keys, pre-shared keys and SNMP communities are replaced with `SUTRA-MASKED` before a configuration is
+  stored, so Sutra never holds a device secret beyond the credential it logs in with (encrypted like scanner ones).
+- A new version is stored only when the configuration really changed (lines a device rewrites by itself, such as the
+  IOS "Last configuration change" stamp, are ignored). Each version can be viewed, compared with the one before it and
+  downloaded; every view and download is audited.
+- One device failing does not stop the others, and its last good configuration is kept.
+- An SSH device's host key is pinned the first time it answers. If a different key appears, collection from that
+  device stops until an administrator clears the pinned key (after replacing the device) or enters the new
+  fingerprint.
+- Not yet: routes, ARP tables from firewalls, and other vendors (see `connectors/docs/api-notes/network-devices.md`).
+
 ### Entra ID directory sync
 
 Under **Administration → Entra ID sync** an administrator maps Entra ID groups to Sutra roles, for example a VM team

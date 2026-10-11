@@ -13,14 +13,14 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import directory, drafting, intel, migrate, notify, scanpull, sweeper
+from . import directory, drafting, intel, migrate, netconfig, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
 from .db import make_engine, make_sessionmaker
 from .integrations import Senders
 from .jobs import Conflict, Forbidden
-from .routes import admin, auth, data, history, jobs, ot, scanners, views
+from .routes import admin, auth, data, history, jobs, netdevices, ot, scanners, views
 
 STATIC = Path(__file__).resolve().parent.parent / "web" / "static"
 
@@ -50,12 +50,14 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
             app.state.sweeper.start()
             app.state.dispatcher.start()
             app.state.puller.start_schedule()
+            app.state.collector.start_schedule()
             if settings.intel_refresh:
                 app.state.intel_updater.start()
             app.state.directory.start()
         yield
         app.state.directory.stop()
         app.state.intel_updater.stop()
+        app.state.collector.stop()
         app.state.puller.stop()
         app.state.dispatcher.stop()
         app.state.sweeper.stop()
@@ -72,6 +74,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.senders = Senders(settings)
     app.state.dispatcher = notify.Dispatcher(app.state.sessionmaker, app.state.senders)
     app.state.puller = scanpull.Puller(app)
+    app.state.collector = netconfig.Collector(app)
     app.state.intel = intel.IntelStore(settings.workspace)
     app.state.intel_updater = intel.IntelUpdater(app)
     app.state.directory = directory.Syncer(app)
@@ -123,8 +126,8 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
         return JSONResponse({"error": f"{field}: {first.get('msg', 'invalid')}" if field else "Invalid request."},
                             status_code=422)
 
-    for router in (auth.router, views.router, jobs.router, ot.router, data.router, scanners.router, history.router,
-                   admin.router, admin.audit_router):
+    for router in (auth.router, views.router, jobs.router, ot.router, data.router, scanners.router, netdevices.router,
+                   history.router, admin.router, admin.audit_router):
         app.include_router(router)
 
     @app.api_route("/api/{rest:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"], include_in_schema=False)
