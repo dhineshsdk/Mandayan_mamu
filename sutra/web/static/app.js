@@ -894,6 +894,8 @@ const intelSource = (c) => c.source === "sample" ? " (sample list)" : c.source =
 
 // ---------- scanner API connections (Data and connectors) ----------
 const PULL_STATUS = { running: "Running", ok: "Imported", failed: "Failed: nothing imported" };
+const connectionOptions = (kind, values) => (kind.options || []).map((o) =>
+  `<label>${esc(o.label)} <input data-opt="${esc(o.key)}" maxlength="2000" required value="${esc((values || {})[o.key] || "")}" placeholder="${esc(o.hint || "")}" autocomplete="off"></label>`).join("");
 function connectionForm(kinds, c) {
   const k = c ? c.kind : "qualys";
   return `<form class="form-grid" data-conn="${c ? c.id : ""}" style="margin-top:10px">
@@ -902,6 +904,7 @@ function connectionForm(kinds, c) {
     <label>API address <input name="base_url" maxlength="300" value="${esc(c ? c.base_url : "")}" placeholder="${esc(kinds[k].url_hint)}"></label>
     <label><span data-user-label>${esc(kinds[k].user)}</span> <input name="username" maxlength="200" required value="${esc(c ? c.username : "")}" autocomplete="off"></label>
     <label><span data-secret-label>${esc(kinds[k].secret)}</span> <input name="secret" type="password" maxlength="500" ${c ? 'placeholder="Unchanged"' : "required"} autocomplete="new-password"></label>
+    <div data-opts style="display:contents">${connectionOptions(kinds[k], c ? c.options : {})}</div>
     <label>CA bundle path (internal CA only) <input name="ca_bundle" maxlength="500" value="${esc(c ? c.ca_bundle : "")}" placeholder="Leave empty for public certificates"></label>
     <label class="check"><input type="checkbox" name="enabled" ${!c || c.enabled ? "checked" : ""}> Included in pulls</label>
     <div class="toolbar"><button class="btn primary">${c ? "Save" : "Add connection"}</button>${c ? '<button type="button" class="btn" data-cancel>Cancel</button>' : ""}</div></form>`;
@@ -935,12 +938,14 @@ function wireConnections(root, d) {
       const k = d.kinds[kindSel.value];
       f.querySelector("[data-user-label]").textContent = k.user; f.querySelector("[data-secret-label]").textContent = k.secret;
       f.querySelector("input[name=base_url]").placeholder = k.url_hint;
+      f.querySelector("[data-opts]").innerHTML = connectionOptions(k, {});
     });
     const cancel = f.querySelector("[data-cancel]");
     if (cancel) cancel.addEventListener("click", () => { root.querySelector("#conn-edit").innerHTML = ""; });
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const body = { kind: kindSel.value, name: f.name.value, base_url: f.base_url.value, username: f.username.value, secret: f.secret.value, ca_bundle: f.ca_bundle.value, enabled: f.enabled.checked };
+      const body = { kind: kindSel.value, name: f.name.value, base_url: f.base_url.value, username: f.username.value, secret: f.secret.value, ca_bundle: f.ca_bundle.value, enabled: f.enabled.checked,
+        options: Object.fromEntries([...f.querySelectorAll("[data-opt]")].map((i) => [i.dataset.opt, i.value])) };
       try {
         if (f.dataset.conn) await api(`/api/data/connections/${f.dataset.conn}`, { method: "PUT", json: body });
         else await post("/api/data/connections", body);

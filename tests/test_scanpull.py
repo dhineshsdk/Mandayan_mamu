@@ -275,3 +275,43 @@ def test_aws_inspector_pull_through_the_real_connector(tmp_path):
     # CVE on one host) that keeps all three as sources, with the epoch stripped from the fixed version.
     (ssh,) = [f for f in res.findings if "CVE-2025-32728" in f.cves]
     assert len(ssh.sources) == 3 and ssh.fixed == "7.4p1-22.amzn2.0.10"
+
+
+def test_defender_for_cloud_connection_needs_its_options_and_pulls(tmp_path):
+    """A Defender for Cloud connection: the tenant and scopes are required settings, and a pull runs through the
+    real connector against its own fake Azure API (fixtures from Elastic's Defender for Cloud test data)."""
+    import sys
+    from pathlib import Path
+
+    import httpx
+
+    sys.path.insert(0, str(Path(__file__).parents[1] / "connectors" / "tests"))
+    try:
+        from test_azure_defender import SUB, TENANT, FakeAzure
+    finally:
+        sys.path.pop(0)
+    settings = Settings(workspace=tmp_path, database_url=f"sqlite:///{tmp_path / 'sutra.db'}")
+    passwords = {e: pw for e, pw, _ in cli.demo_users(settings, "power", months=0)}
+    app = create_app(settings, background=False)
+    app.state.puller.transport = httpx.MockTransport(FakeAzure())
+    with TestClient(app, base_url="https://testserver"):
+        env = (app, passwords)
+        admin = client(env, ADMIN)
+        conn = {"kind": "azure_defender", "name": "Azure", "base_url": "", "username": "app-id", "secret": "s3cret"}
+        missing = admin.post("/api/data/connections", json=conn)
+        assert missing.status_code == 400 and "tenant" in missing.json()["error"]
+        bad = admin.post("/api/data/connections", json={**conn, "options": {"tenant_id": TENANT, "scopes": "a/b"}})
+        assert bad.status_code == 400 and "management group" in bad.json()["error"]
+        r = admin.post("/api/data/connections", json={**conn, "options": {
+            "tenant_id": TENANT, "scopes": f" {SUB} ", "unknown": "dropped"}})
+        assert r.status_code == 201, r.text
+        assert r.json()["options"] == {"tenant_id": TENANT, "scopes": SUB}
+        assert r.json()["base_url"] == "https://management.azure.com"
+        pull = client(env, VM).post("/api/data/pulls").json()["pull"]
+        _wait(app)
+        done = client(env, VM).get(f"/api/data/pulls/{pull}").json()
+    assert done["status"] == "ok", done
+    # One open server vulnerability (the other is healthy, so fixed) and two machines with an assessment result.
+    assert done["results"][0]["findings"] == 1 and done["results"][0]["hosts"] == 2
+    (f,) = app.state.analysis.result.findings
+    assert f.package == "libxml2_for_linux" and "CVE-2025-49796" in f.cves

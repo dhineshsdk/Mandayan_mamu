@@ -174,8 +174,8 @@ view is not built: Sutra holds no cost data to base one on.
 ### Scanner API pulls
 
 Under **Import data → Scanner connections** an administrator adds read-only API connections to Qualys VMDR, Tenable
-Vulnerability Management, Tenable Security Center, CrowdStrike Falcon Spotlight or Amazon Inspector (the
-`sutra_connectors` library in `connectors/`). For CrowdStrike, create an API client with read access to
+Vulnerability Management, Tenable Security Center, CrowdStrike Falcon Spotlight, Amazon Inspector or Microsoft
+Defender for Cloud (the `sutra_connectors` library in `connectors/`). For CrowdStrike, create an API client with read access to
 Vulnerabilities and Hosts and use your cloud's API address (for example `https://api.eu-1.crowdstrike.com`); hosts
 whose sensor has not reported for 30 days do not count as assessed. For Amazon Inspector, create an access key for
 an IAM user whose policy allows only `inspector2:ListFindings` and `inspector2:ListCoverage`, and add one connection
@@ -183,7 +183,12 @@ per region with that region's endpoint (for example `https://inspector2.ap-south
 delegated administrator account should cover every account in an AWS Organization (to confirm on a live organization;
 see `connectors/docs/api-notes/aws-inspector.md`). Sutra reads package vulnerabilities
 on EC2 instances, ECR images and Lambda functions; an instance is named by its `Name` tag, else its instance ID, so
-give the asset register the same host names. A pull reads
+give the asset register the same host names. For Defender for Cloud, register an app in Entra ID, give it the
+Security Reader role on the subscriptions or management groups to read, and enter its tenant ID, client ID and secret
+with those subscription IDs or management group names. Sutra reads the software vulnerabilities Defender
+Vulnerability Management reports on virtual machines; a machine is named by its Azure VM name, and every machine with
+a vulnerability assessment result counts as assessed. Container image and AKS node findings are not read yet. A pull
+reads
 every enabled connection in full (all open detections, and every host the scanner has assessed) and imports the
 result like an export, carrying over the asset register from the latest import that had one. Pulls run by hand
 (VM analyst or admin) or once a day at a chosen hour, India time.

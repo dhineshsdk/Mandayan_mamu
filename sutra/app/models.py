@@ -342,6 +342,7 @@ class ScannerConnection(Base):
     username: Mapped[str] = mapped_column(String(200), default="")  # Qualys user name or Tenable access key
     secret: Mapped[str] = mapped_column(Text, default="")  # encrypted password or secret key
     ca_bundle: Mapped[str] = mapped_column(String(500), default="")  # path to a CA bundle for an internal CA
+    options: Mapped[dict] = mapped_column(JSON, default=dict)  # settings only some kinds have (scanpull.KINDS)
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
