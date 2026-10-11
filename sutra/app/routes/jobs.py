@@ -80,7 +80,7 @@ def raise_job(body: RaiseIn, request: Request, p: Principal = Depends(require("M
     if store.result is None:
         raise LookupError("No data has been imported yet.")
     job = J.raise_job(db, p, store.result, body.rc_id, body.team, body.mode, body.ticket.strip(), store.dataset_id,
-                      client_ip(request))
+                      client_ip(request), request.app.state.drafts)
     return J.job_json(db, job, p, store.result)
 
 

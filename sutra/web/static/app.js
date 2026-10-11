@@ -172,7 +172,7 @@ function emptyState() {
     <p class="sub">${can("M-DAT", "act") ? "Load a demo company or import scanner exports to begin." : "An analyst has not imported any scan data yet."}</p>
     ${can("M-DAT", "act") ? '<a class="btn primary" href="#/import">Import data</a>' : ""}</div>`;
 }
-const STATUS_LABEL = { pending: "Awaiting approval", approved: "Approved", rejected: "Rejected", "sent-back": "Sent back", "fixing-manually": "Fixing manually" };
+const STATUS_LABEL = { drafting: "Drafting", "draft-failed": "Draft failed", pending: "Awaiting approval", approved: "Approved", rejected: "Rejected", "sent-back": "Sent back", "fixing-manually": "Fixing manually" };
 function jobStatus(j) {
   if (j.status === "pending") { const s = j.steps.find((x) => x.state === "current"); return `<span class="status st-pending">Waiting: ${esc(s.label)}</span>`; }
   if (j.status === "approved") return `<span class="status st-approved">${j.is_ot ? "Approved: staged for shutdown" : "Approved: ready to run in rings"}</span>`;
@@ -186,7 +186,7 @@ function jobTable(jobs) {
       <td>${esc(j.team)}</td><td>${j.mode === "manual" ? "Manual fix" : j.is_ot ? "Staged plan" : "Patch job"}${j.route && j.route.emergency ? ' <span class="badge warn">emergency</span>' : ""}</td>
       <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td class="mono">${esc(j.jira)}</td></tr>`).join("")}</tbody></table></div>`;
 }
-const OPEN = ["pending", "approved", "fixing-manually"];
+const OPEN = ["drafting", "pending", "approved", "fixing-manually"];
 // Buttons to raise a job, for each team this person may raise jobs for that owns hosts in this root cause.
 function raiseButtons(rc, teams, jobs) {
   return teams.map((team) => {
@@ -484,7 +484,10 @@ VIEWS.job = {
           <button class="btn" data-act="sendback">Send back</button><button class="btn" data-act="reject">Reject</button></div></div>` :
           cur ? `<p class="muted" style="margin-bottom:0">Waiting for ${esc(cur.who || "a VM analyst")}.${j.waiting_reason && can("M-PJ", "approve") ? ` ${esc(j.waiting_reason)}` : ""}</p>` : ""}
         </div>` : `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team is fixing this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}. The findings close only when a rescan proves the fix.</p></div>`}
-      ${d ? `<div class="grid two" style="margin-top:14px">
+      ${j.status === "drafting" ? '<div class="card mt"><h2>Drafting</h2><p style="margin:0">Sutra is writing the draft. The first approval step opens when it is ready. <a href="">Refresh</a></p></div>' : ""}
+      ${j.status === "draft-failed" ? '<div class="card mt"><h2>Draft failed</h2><p style="margin:0">Sutra could not write a draft for this job, so it was closed without approvals. Raise it again; if it fails again, tell your Sutra administrator.</p></div>' : ""}
+      ${d && d.lane ? draftHtml(j, d) : ""}
+      ${d && !d.lane ? `<div class="grid two" style="margin-top:14px">
         <div class="card"><h2>${j.is_ot ? "Staged plan" : "Patch job"} drafted by Sutra</h2>
           <p style="margin-top:0">${esc(d.summary)}</p>
           <dl class="kv"><dt>Tool</dt><dd>${esc(d.tool)}</dd><dt>Window</dt><dd>${esc(d.window)}</dd>
@@ -498,7 +501,7 @@ VIEWS.job = {
       <div class="card mt"><h2>${j.is_ot ? "Plan steps" : "Playbook"}</h2><pre class="playbook">${esc(d.playbook)}</pre></div>` : ""}
       <div class="card mt"><h2>Audit trail</h2><div class="table-wrap"><table>
         <thead><tr><th>When</th><th>Who</th><th>What</th><th>Comment</th></tr></thead>
-        <tbody>${j.audit.map((a) => `<tr><td class="mono">${esc(fmtTime(a.at))}</td><td>${esc(a.actor)}</td><td>${esc(a.action)}</td><td>${esc(a.comment)}</td></tr>`).join("")}</tbody></table></div></div>`;
+        <tbody>${j.audit.map((a) => `<tr><td class="mono">${esc(fmtTime(a.at))}</td><td>${esc(a.actor || "Sutra")}</td><td>${esc(a.action)}</td><td>${esc(a.comment)}</td></tr>`).join("")}</tbody></table></div></div>`;
   },
   wire(root, j) {
     root.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", async () => {
@@ -510,6 +513,41 @@ VIEWS.job = {
     }));
   },
 };
+
+function cites(list) {
+  if (!list || !list.length) return "";
+  // Name the root cause, hosts and changes; count findings, which can run to hundreds.
+  const named = [...new Set(list.filter((c) => c.kind !== "finding").map((c) => c.label))];
+  const findings = list.filter((c) => c.kind === "finding").length;
+  const parts = named.slice(0, 6).map(esc);
+  if (named.length > 6) parts.push(`${named.length - 6} more`);
+  if (findings) parts.push(`${findings} finding${findings === 1 ? "" : "s"}`);
+  const full = list.map((c) => `${c.kind} ${c.id}: ${c.label}`).join("\n");
+  return `<div class="fix" title="${esc(full)}">Based on: ${parts.join("; ")}</div>`;
+}
+function draftHtml(j, d) {
+  const by = d.source === "ai" ? `Drafted by Claude${d.model ? ` (${esc(d.model)})` : ""} and checked by Sutra against the scan data.` :
+    `Drafted from Sutra's templates.${d.fallback_reason ? ` ${esc(d.fallback_reason)}.` : ""}`;
+  return `<div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>${d.lane === "ot" ? "Staged plan" : "Patch job"}</h2>
+      <p style="margin-top:0">${esc(d.summary)}</p>
+      <dl class="kv"><dt>${d.lane === "ot" ? "Carried out by" : "Tool"}</dt><dd>${esc(d.tool)}</dd><dt>Window</dt><dd>${esc(d.window)}</dd>
+      <dt>Changes</dt><dd>${d.changes.map((c) => `${esc(c.text)} <span class="muted">(${c.hosts.length} host${c.hosts.length === 1 ? "" : "s"})</span>`).join("<br>")}</dd>
+      ${d.oem_approval ? `<dt>OEM approval</dt><dd><span class="badge warn">${esc(d.oem_approval)}</span></dd>` : ""}</dl>
+      ${d.compensating_controls.length ? `<h2 style="margin-top:12px">Until the fix: compensating controls</h2><ul style="margin-top:0">${d.compensating_controls.map((c) => `<li>${esc(c.control)} <span class="muted">(${c.hosts.map(esc).join(", ")})</span>${cites(c.cites)}</li>`).join("")}</ul>` : ""}
+      <p class="note-demo">${by} Who approves comes from fixed rules, never from the draft.</p>
+      ${d.warnings.length ? `<p class="muted">${d.warnings.map(esc).join("<br>")}</p>` : ""}</div>
+    <div class="card"><h2>Rings</h2><div class="table-wrap"><table><thead><tr><th>Ring</th><th>Hosts</th><th>Window</th></tr></thead><tbody>
+      ${d.rings.map((r) => `<tr><td><b>${esc(r.name)}</b><div class="fix">${esc(r.purpose)}</div></td><td>${r.hosts.map(esc).join(", ")}</td><td>${esc(r.window)}</td></tr>`).join("")}</tbody></table></div>
+      ${d.excluded.length ? `<p><b>Left out:</b> ${d.excluded.map((e) => `${esc(e.hostname || e.asset_id)}: ${esc(e.reason)}`).join("; ")}</p>` : ""}</div></div>
+    ${d.oem_request ? `<div class="card mt"><h2>OEM approval request</h2><p style="margin-top:0">${esc(d.oem_request.detail)}</p><p class="muted">${d.oem_request.changes.map(esc).join("<br>")}</p>${cites(d.oem_request.cites)}</div>` : ""}
+    <div class="card mt"><h2>${d.lane === "ot" ? "Plan steps" : "Steps"}</h2><ol class="steps">
+      ${d.steps.map((s) => `<li><b>${esc(s.label)}</b>${s.ring ? ` <span class="badge">Ring ${s.ring}</span>` : ""}${s.changes.length ? ` <span class="muted">${s.changes.map(esc).join("; ")}</span>` : ""}<div>${esc(s.detail)}</div>${cites(s.cites)}</li>`).join("")}</ol></div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card"><h2>Pre-checks</h2><ul style="margin-top:0">${d.prechecks.map((x) => `<li>${esc(x.text)}${cites(x.cites)}</li>`).join("")}</ul></div>
+      <div class="card"><h2>Rollback</h2><p style="margin-top:0"><b>When:</b> ${esc(d.rollback.trigger)}</p><ol>${d.rollback.steps.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>${cites(d.rollback.cites)}</div></div>
+    ${d.assumptions.length ? `<div class="card mt"><h2>Assumptions to check</h2><ul style="margin:0">${d.assumptions.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}`;
+}
 
 VIEWS.changes = {
   async load(arg) {
@@ -689,16 +727,17 @@ function auditRows(events) {
 VIEWS.admin = {
   async load(tab) {
     const full = can("M-ADM", "admin");
-    tab = full ? tab || "people" : "rules";
+    tab = full ? tab || "people" : ["rules", "maintenance"].includes(tab) ? tab : "rules";
     const d = { tab, full };
     if (full) d.catalog = await api("/api/admin/catalog");
     if (tab === "people") d.users = await api("/api/admin/users");
     if (tab === "ownership") d.teams = await api("/api/admin/ownership");
     if (tab === "rules") d.rules = await api("/api/admin/approval-rules");
+    if (tab === "maintenance") d.maint = await api("/api/admin/maintenance");
     return d;
   },
   html(d) {
-    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"]];
+    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"]];
     return `<h1>Administration</h1>
       <div class="tabs">${tabs.map(([k, l]) => `<a href="#/admin/${k}" class="${k === d.tab ? "active" : ""}">${esc(l)}</a>`).join("")}</div>
       <div id="admin-msg"></div>
@@ -810,6 +849,42 @@ const ADMIN_TABS = {
             vertical_head_for_ssvc: [...root.querySelectorAll("input[name=ssvc]:checked")].map((x) => x.value),
             crown_jewel_min_criticality: Number(root.querySelector("#crit").value),
             emergency_fast_track_for_act: root.querySelector("#emerg").checked } });
+          adminMsg(root, "Saved.");
+        } catch (err) { adminMsg(root, esc(err.message), "error"); }
+      });
+    },
+  },
+  maintenance: {
+    html(d) {
+      const m = d.maint.maintenance;
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      const sites = [...new Set([...d.maint.ot_sites, ...Object.keys(m.ot_shutdowns)])].sort();
+      return `<div class="card"><h2>IT change window</h2>
+        <p class="muted" style="margin-top:0">Patch-job drafts put each ring in the next weekly window after the day the job is raised, one week apart.</p>
+        <form id="maint" class="stack-form">
+          <label>Day <select id="m-day">${days.map((x, i) => `<option value="${i}" ${i === m.weekday ? "selected" : ""}>${x}</option>`).join("")}</select></label>
+          <label>Starts at <input id="m-start" type="time" value="${esc(m.start)}" required></label>
+          <label>Lasts (hours) <input id="m-dur" type="number" min="1" max="24" value="${m.duration_hours}" required></label>
+          <label>Time zone label <input id="m-tz" maxlength="16" value="${esc(m.timezone_label)}" required></label>
+          <h2 style="margin-top:10px">Next planned plant shutdown</h2>
+          <p class="muted" style="margin-top:0">OT plans are scheduled only for a shutdown operations has named. Without a date the plan says the slot is not set. A plan that spans two sites gets no date.</p>
+          ${sites.length ? `<div class="table-wrap"><table><thead><tr><th>Site</th><th>Shutdown date</th></tr></thead><tbody>
+            ${sites.map((x) => `<tr><td>${esc(x)}</td><td><input type="date" data-site="${esc(x)}" value="${esc(m.ot_shutdowns[x] || "")}"></td></tr>`).join("")}</tbody></table></div>`
+            : '<p class="muted">No OT sites in the current import.</p>'}
+          <div><button class="btn primary">Save</button></div>
+        </form>
+        <p class="muted" style="margin-bottom:0">Drafts are written by ${d.maint.ai_drafting ? "Claude, checked against the scan data, with the templates as fallback" : "rule-based templates (no Anthropic API key is set)"}. New settings apply to jobs raised after saving.</p></div>`;
+    },
+    wire(root) {
+      root.querySelector("#maint").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const ot = {};
+        root.querySelectorAll("input[data-site]").forEach((i) => { if (i.value) ot[i.dataset.site] = i.value; });
+        try {
+          await api("/api/admin/maintenance", { method: "PUT", json: {
+            weekday: Number(root.querySelector("#m-day").value), start: root.querySelector("#m-start").value,
+            duration_hours: Number(root.querySelector("#m-dur").value), timezone_label: root.querySelector("#m-tz").value,
+            ot_shutdowns: ot } });
           adminMsg(root, "Saved.");
         } catch (err) { adminMsg(root, esc(err.message), "error"); }
       });

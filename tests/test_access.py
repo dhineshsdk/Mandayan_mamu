@@ -51,6 +51,7 @@ SCREENS = {
     "admin_catalog": ("GET", "/api/admin/catalog", None),
     "admin_ownership": ("GET", "/api/admin/ownership", None),
     "approval_rules": ("GET", "/api/admin/approval-rules", None),
+    "maintenance": ("GET", "/api/admin/maintenance", None),
     "audit": ("GET", "/api/audit", None),
     "audit_csv": ("GET", "/api/audit.csv", None),
 }
@@ -65,6 +66,7 @@ ACTIONS = {
     "update_user": ("PATCH", "/api/admin/users/999999", {}),
     "set_licence": ("PATCH", "/api/admin/modules/M-RC", {}),
     "set_rules": ("PUT", "/api/admin/approval-rules", {}),
+    "set_maintenance": ("PUT", "/api/admin/maintenance", {}),
     "ownership_upload": ("POST", "/api/admin/ownership", None),
 }
 
@@ -76,13 +78,14 @@ EXPECTED = {
                    "datasets", "decide_job", "upload", "analyze", "demo"},
     "vertical_head": {"board", "board_pack", "root_causes", "receipts", "jobs", "decide_job"},
     "plant_engineer": {"portal"},
-    "ciso": {"board", "board_pack", "root_causes", "receipts", "jobs", "approval_rules", "set_rules"},
+    "ciso": {"board", "board_pack", "root_causes", "receipts", "jobs", "approval_rules", "set_rules", "maintenance",
+             "set_maintenance"},
     "compliance_officer": {"board", "board_pack", "audit", "audit_csv"},
     "executive": {"board", "board_pack"},
     "auditor": {"audit", "audit_csv"},
     "admin": {"uploads", "datasets", "admin_users", "admin_catalog", "admin_ownership", "approval_rules", "audit",
               "audit_csv", "upload", "analyze", "demo", "create_user", "update_user", "set_licence", "set_rules",
-              "ownership_upload"},
+              "ownership_upload", "maintenance", "set_maintenance"},
 }
 
 

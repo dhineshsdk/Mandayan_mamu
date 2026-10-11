@@ -63,8 +63,11 @@ Click a team for the hosts. The team portal shows the same numbers for that team
 - Sign in as the team account for *C&I - Unit 2* (power) or *Plant Engineering - Press* (manufacturing). It has
   only **Team portal** and **Patch jobs**. "The plant team sees only its own assets, with their Jira project and
   manager. Each person gets only the modules their role needs."
-- Click **Draft staged plan** on the HMI image. Show the draft: OEM approval pending, compensating control, shutdown
-  date, rollback. "For OT, nothing runs by itself. A plant engineer executes it at the shutdown."
+- Before the meeting, as the admin, set the thermal plant's next shutdown under **Administration → Maintenance
+  windows**; without it the plan honestly says the slot is not set.
+- Click **Draft staged plan** on the HMI image. Show the draft: OEM approval request, compensating control, the
+  shutdown slot, rollback, and the "Based on" line under each step. "For OT, nothing runs by itself. A plant engineer
+  executes it at the shutdown. Every step points back to the scan data it came from."
 - Show the route: manager, VM analyst, plant head. "The route comes from fixed rules, so a drafted job can never lower
   its own approval level."
 - In the other window, sign in as that team's manager: the **Patch jobs** badge shows one waiting. Approve with a

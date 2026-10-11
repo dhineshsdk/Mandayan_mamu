@@ -7,12 +7,14 @@ from sqlalchemy.orm import Session
 
 from .. import patch
 from ..pipeline import Result
+from . import drafting
 from .access import Principal
+from .drafting import DraftService
 from .models import Job, JobStep, OwnershipTeam, Setting, User, utcnow
 from .security import audit
 
 PJ = "M-PJ"
-OPEN = ("pending", "approved", "fixing-manually")
+OPEN = ("drafting", "pending", "approved", "fixing-manually")
 
 
 class Forbidden(Exception):
@@ -39,7 +41,7 @@ def job_visible(p: Principal, job: Job, res: Result | None) -> bool:
 
 
 def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mode: str, ticket: str,
-              dataset_id: int, ip: str) -> Job:
+              dataset_id: int, ip: str, drafts: DraftService | None = None) -> Job:
     if not p.team_allowed(team, PJ, "act"):
         raise Forbidden("You can raise jobs only for your own team.")
     rc = next((r for r in res.root_causes if r.rc_id == rc_id), None)
@@ -72,16 +74,21 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
         missing = [patch.ROLE_LABEL[s] for s in r["steps"] if s != "vm_analyst" and not who[s][0]]
         if missing:
             raise Conflict(f"The ownership chart has no {', '.join(missing).lower()} for {team}.")
-        job.status, job.route = "pending", r
-        job.draft = patch.draft_job(rc, hosts, mine, res.as_of)
+        inp = drafting.build_input(db, rc, hosts, mine)
+        job.status, job.route = "drafting", r
         job.steps = [JobStep(position=i, role=s, expected_email=who[s][0], expected_name=who[s][1],
-                             state="current" if i == 0 else "waiting") for i, s in enumerate(r["steps"])]
+                             state="waiting") for i, s in enumerate(r["steps"])]
     db.add(job)
     db.flush()
     job.jira_key = f"{(chart.jira_project if chart and chart.jira_project else 'SEC')}-{job.id}"
     audit(db, "job.raise" if mode == "patch" else "job.manual", p.user, "job", job.id, ip, rc=rc_id, team=team,
           route=job.route["reason"] if job.route else None, ticket=ticket or None)
+    drafts = drafts or drafting.DraftService(drafter=drafting.template_only())
+    if job.status == "drafting" and not drafts.background:
+        drafting.apply_draft(db, job, drafts.draft_now(inp))
     db.commit()
+    if job.status == "drafting":  # the first approval step opens when the draft is written
+        drafts.submit(job.id, inp)
     return job
 
 
