@@ -122,6 +122,18 @@ the next day it expires on its own (an hourly job, also run at start-up and afte
 or ask again. A team can still fix something it has accepted, and a rescan that shows the findings gone closes the
 acceptance early. Accepting risk does not stop the CEA fix clock.
 
+### Service levels and escalation
+
+Each customer sets its own targets under **Administration → Service levels**: how many hours each approval step may
+wait (default 48 for the manager and VM analyst, 72 for the vertical head and the CISO) and how many days a fix may
+take by SSVC decision (default Act 14, Attend 30, Track\* 90, Track 180). These are product defaults, not regulatory
+values; the CEA fix clock is tracked separately and never relaxed by them.
+
+A step that waits past its limit is escalated once to the next approver in the chain (the CISO after the last step):
+it appears under **Escalated to you** on their Patch jobs page and in the audit log. Escalation informs; it never lets
+anyone sign a step that is not theirs. A fix not proved by a rescan by its due date is recorded as an SLA breach and
+stays open. Both checks run hourly, at start-up and after each import.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's

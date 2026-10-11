@@ -63,7 +63,8 @@ def list_jobs(request: Request, p: Principal = Depends(require("M-PJ", "view")),
             if cur and J.can_sign(p, j, cur) is None:
                 waiting.append(j)
     return {"jobs": [J.job_json(db, j, p, res) for j in jobs],
-            "waiting_for_me": [J.job_json(db, j, p, res) for j in waiting]}
+            "waiting_for_me": [J.job_json(db, j, p, res) for j in waiting],
+            "escalated_to_me": [J.job_json(db, j, p, res) for j in jobs if J.escalated_to_me(p, j)]}
 
 
 @router.get("/{pk}")

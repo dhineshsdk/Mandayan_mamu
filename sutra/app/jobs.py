@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from .. import ingest, patch
 from ..pipeline import Result
-from . import drafting
+from . import drafting, sla
 from .access import Principal
 from .drafting import DraftService
 from .models import Job, JobStep, OwnershipTeam, Setting, User, utcnow
@@ -80,6 +80,8 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
               ticket=ticket, hosts=[h.asset_id for h in hosts], findings=[f.finding_id for f in mine],
               targets=sorted({(f.asset_id, ingest.fingerprint(f)[:400]) for f in mine}),
               raised_by=p.user.id)
+    if mode != "exception":
+        job.due_on = sla.due_on(db, rc.ssvc, drafting.today())
     if mode == "manual":
         job.status = "fixing-manually"
     elif mode == "exception":
@@ -93,7 +95,8 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
         job.status, job.route = "pending", r
         job.justification, job.compensating_control, job.expires_on = justification.strip(), control.strip(), expires_on
         job.steps = [JobStep(position=i, role=s, expected_email=who[s][0], expected_name=who[s][1],
-                             state="current" if i == 0 else "waiting") for i, s in enumerate(r["steps"])]
+                             state="current" if i == 0 else "waiting", opened_at=utcnow() if i == 0 else None)
+                     for i, s in enumerate(r["steps"])]
     else:
         if chart is None:
             raise Conflict(f"{team} is not in the ownership chart, so nobody can approve its jobs. "
@@ -129,6 +132,17 @@ def _approvers(chart: OwnershipTeam) -> dict[str, tuple[str, str]]:
             "vm_analyst": (chart.vm_analyst_email, chart.vm_analyst_name),
             "vertical_head": (chart.vertical_head_email, chart.vertical_head_name),
             "ciso": ("", "")}
+
+
+def escalated_to_me(p: Principal, job: Job) -> bool:
+    """The job's current step has stalled and this person is who it was escalated to (told, not given the step)."""
+    cur = next((s for s in job.steps if s.state == "current"), None)
+    if job.status != "pending" or cur is None or cur.escalated_at is None or cur.escalated_to not in p.role_keys:
+        return False
+    if cur.escalated_to in ("vm_analyst", "ciso"):
+        return True
+    named = next((s.expected_email for s in job.steps if s.role == cur.escalated_to), "")
+    return bool(named) and named.lower() == p.user.email.lower()
 
 
 def can_sign(p: Principal, job: Job, step: JobStep) -> str | None:
@@ -179,7 +193,7 @@ def decide(db: Session, p: Principal, job: Job, action: str, comment: str, ip: s
         step.state = "approved"
         nxt = next((s for s in job.steps if s.state == "waiting"), None)
         if nxt:
-            nxt.state = "current"
+            nxt.state, nxt.opened_at = "current", utcnow()
         else:
             job.status = "accepted" if job.mode == "exception" else "approved"
     elif action == "reject":
@@ -199,6 +213,7 @@ def job_json(db: Session, job: Job, p: Principal | None = None, res: Result | No
     users = {u.id: u for u in db.scalars(select(User).where(User.id.in_(
         {job.raised_by} | {s.decided_by for s in job.steps if s.decided_by})))}
     cur = next((s for s in job.steps if s.state == "current"), None)
+    cfg = sla.settings(db) if cur else None
     return {
         "id": f"J-{job.id:03d}", "pk": job.id, "rc_id": job.rc_id, "rc_title": job.rc_title, "team": job.team,
         "vertical": job.vertical, "mode": job.mode, "status": job.status, "ssvc": job.ssvc, "is_ot": job.is_ot,
@@ -207,12 +222,16 @@ def job_json(db: Session, job: Job, p: Principal | None = None, res: Result | No
         "raised_by": users[job.raised_by].display_name if job.raised_by in users else "",
         "steps": [{"role": s.role, "label": patch.ROLE_LABEL[s.role], "who": s.expected_name or s.expected_email,
                    "state": s.state, "comment": s.comment,
+                   "due": sla.step_due(job, s, cfg).isoformat(timespec="seconds") if s.state == "current" else None,
+                   "escalated_to": patch.ROLE_LABEL.get(s.escalated_to) if s.escalated_at else None,
                    "decided_by": users[s.decided_by].display_name if s.decided_by in users else None,
                    "at": s.decided_at.isoformat(timespec="seconds") if s.decided_at else None} for s in job.steps],
         "rc_current_id": next((r.rc_id for r in res.root_causes if r.key == job.rc_key), None) if res else None,
         "can_decide": bool(p and cur and can_sign(p, job, cur) is None),
         "waiting_reason": (can_sign(p, job, cur) if p and cur else None),
         "fixed_on": job.fixed_on.isoformat() if job.fixed_on else None,
+        "due_on": job.due_on.isoformat() if job.due_on else None,
+        "sla_breached": job.sla_breached_at is not None,
         "closed_at": job.closed_at.isoformat(timespec="seconds") if job.closed_at else None,
         "targets": len(job.targets),
         "exception": {"justification": job.justification, "control": job.compensating_control,

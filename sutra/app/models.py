@@ -219,6 +219,8 @@ class Job(Base):
     expires_on: Mapped[date | None] = mapped_column(Date, nullable=True)
     raised_by: Mapped[int] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    due_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # fix SLA by SSVC (sutra.app.sla)
+    sla_breached_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     fixed_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # scan date of the rescan that proved it
     closed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # when Sutra saw that rescan
     steps: Mapped[list[JobStep]] = relationship(cascade="all, delete-orphan", lazy="selectin",
@@ -237,6 +239,9 @@ class JobStep(Base):
     decided_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     decided_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     comment: Mapped[str] = mapped_column(Text, default="")
+    opened_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # when it became the current step
+    escalated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    escalated_to: Mapped[str] = mapped_column(String(20), default="")  # the role told the step has stalled
 
 
 class JobCheck(Base):
