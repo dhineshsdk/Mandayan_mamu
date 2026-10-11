@@ -1,0 +1,54 @@
+[
+  {
+    "asset": {
+      "uuid": "6b8e9c2a-6c1b-4a8e-9d7b-1f2a3b4c5d6e",
+      "hostname": "his-db01",
+      "fqdn": "his-db01.plant.example.in",
+      "ipv4": "10.20.1.15",
+      "netbios_name": "HIS-DB01",
+      "operating_system": ["Red Hat Enterprise Linux 8.6"],
+      "tracked": true
+    },
+    "output": "Remote package installed : openssl-1.1.1k-7.el8_6\nShould be                : openssl-1.1.1k-9.el8_7\n",
+    "plugin": {
+      "id": 170112,
+      "name": "RHEL 8 : openssl (RHSA-2023:0946)",
+      "cve": ["CVE-2023-0286", "CVE-2023-0215"],
+      "cvss3_base_score": 7.4,
+      "cvss_base_score": 7.1,
+      "solution": "Update the RHEL openssl package based on the guidance in RHSA-2023:0946.",
+      "family": "Red Hat Local Security Checks"
+    },
+    "port": {"port": 0, "protocol": "TCP"},
+    "severity": "high",
+    "severity_id": 3,
+    "state": "OPEN",
+    "first_found": "2026-03-02T09:14:11.000Z",
+    "last_found": "2026-10-09T22:01:47.512Z",
+    "indexed": 1791936107,
+    "finding_id": "0f3e2d1c-aaaa-4bbb-8ccc-000000000001",
+    "scan": {"uuid": "5d1f2c4e-0000-4000-8000-00000000abcd", "started_at": "2026-10-09T21:30:00.000Z"}
+  },
+  {
+    "asset": {
+      "uuid": "7c9f0d3b-7d2c-4b9f-8e8c-2a3b4c5d6e7f",
+      "hostname": "hmi-07",
+      "ipv4": "172.16.4.27",
+      "netbios_name": "HMI-07",
+      "operating_system": ["Microsoft Windows 7 Professional Service Pack 1"]
+    },
+    "output": "\nThe remote host supports SMBv1.\n",
+    "plugin": {
+      "id": 96982,
+      "name": "Server Message Block (SMB) Protocol Version 1 Enabled (uncredentialed check)",
+      "cve": [],
+      "cvss_base_score": 5.0,
+      "solution": "Disable SMBv1."
+    },
+    "port": {"port": 445, "protocol": "TCP", "service": "cifs"},
+    "severity": "medium",
+    "state": "REOPENED",
+    "first_found": "2025-11-20T04:00:00Z",
+    "last_found": "2026-10-08T04:00:00Z"
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "type": "regular",
+  "response": {
+    "totalRecords": "1",
+    "returnedRecords": 1,
+    "startOffset": "0",
+    "endOffset": "1",
+    "results": [
+      {
+        "ip": "10.30.2.11",
+        "uuid": "",
+        "dnsName": "gw01.corp.example.in",
+        "netbiosName": "CORP\\GW01",
+        "macAddress": "00:50:56:01:02:03",
+        "osCPE": "cpe:/o:citrix:netscaler",
+        "lastAuthRun": "",
+        "lastUnauthRun": "1791936107",
+        "score": "45",
+        "total": "3",
+        "severityCritical": "1",
+        "severityHigh": "1",
+        "severityMedium": "1",
+        "severityLow": "0",
+        "severityInfo": "12",
+        "repository": {"dataFormat": "IPv4", "description": "", "id": "1", "name": "Live"},
+        "hostUniqueness": "repositoryID,ip,dnsName",
+        "hostUUID": "02ebb260-30ed-4bf8-9e2c-92a8614cda1a"
+      }
+    ]
+  },
+  "error_code": 0,
+  "error_msg": "",
+  "warnings": []
+}

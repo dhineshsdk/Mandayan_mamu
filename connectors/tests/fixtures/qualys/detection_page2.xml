@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<HOST_LIST_VM_DETECTION_OUTPUT>
+  <RESPONSE>
+    <DATETIME>2026-10-11T11:26:10Z</DATETIME>
+    <HOST_LIST>
+      <HOST>
+        <ID>6506440</ID>
+        <IP>10.10.20.5</IP>
+        <TRACKING_METHOD>IP</TRACKING_METHOD>
+        <OS><![CDATA[Red Hat Enterprise Linux 8.6]]></OS>
+        <NETBIOS><![CDATA[MES-APP02]]></NETBIOS>
+        <DETECTION_LIST>
+          <DETECTION>
+            <UNIQUE_VULN_ID>60001</UNIQUE_VULN_ID>
+            <QID>376187</QID>
+            <TYPE>Potential</TYPE>
+            <SEVERITY>4</SEVERITY>
+            <RESULTS><![CDATA[7-Zip Version is 22.01]]></RESULTS>
+            <STATUS>Fixed</STATUS>
+            <FIRST_FOUND_DATETIME>2026-02-01T00:00:00Z</FIRST_FOUND_DATETIME>
+            <LAST_FOUND_DATETIME>2026-09-01T00:00:00Z</LAST_FOUND_DATETIME>
+            <LAST_FIXED_DATETIME>2026-10-05T10:00:00Z</LAST_FIXED_DATETIME>
+          </DETECTION>
+        </DETECTION_LIST>
+      </HOST>
+    </HOST_LIST>
+  </RESPONSE>
+</HOST_LIST_VM_DETECTION_OUTPUT>

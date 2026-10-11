@@ -1,0 +1,30 @@
+{
+  "type": "regular",
+  "response": {
+    "returnedRecords": 1,
+    "startOffset": "0",
+    "endOffset": "1",
+    "results": [
+      {
+        "pluginID": "156860",
+        "severity": {"id": "4", "name": "Critical", "description": "Critical Severity"},
+        "ip": "10.30.2.20",
+        "port": "443",
+        "protocol": "TCP",
+        "pluginName": "Citrix ADC and Citrix Gateway Multiple Vulnerabilities (CTX584986)",
+        "firstSeen": "1744728630",
+        "lastSeen": "1790000000",
+        "lastMitigated": "1791500000",
+        "cvssV3BaseScore": "9.8",
+        "cve": "CVE-2023-4966",
+        "pluginText": "",
+        "dnsName": "gw02.corp.example.in",
+        "hostUniqueness": "repositoryID,ip,dnsName",
+        "repository": {"id": "1", "name": "Live", "description": "", "dataFormat": "IPv4"}
+      }
+    ]
+  },
+  "error_code": 0,
+  "error_msg": "",
+  "warnings": []
+}

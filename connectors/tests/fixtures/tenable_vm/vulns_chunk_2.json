@@ -1,0 +1,26 @@
+[
+  {
+    "asset": {
+      "uuid": "6b8e9c2a-6c1b-4a8e-9d7b-1f2a3b4c5d6e",
+      "hostname": "his-db01",
+      "fqdn": "his-db01.plant.example.in",
+      "ipv4": "10.20.1.15",
+      "operating_system": ["Red Hat Enterprise Linux 8.6"]
+    },
+    "output": "Installed version : 7.88.1\nFixed version : 8.0.0",
+    "plugin": {
+      "id": 181279,
+      "name": "curl < 8.0.0 Multiple Vulnerabilities",
+      "cve": ["CVE-2023-27533"],
+      "cvss3_base_score": 8.8,
+      "solution": "Upgrade curl to version 8.0.0 or later."
+    },
+    "port": {"port": 0, "protocol": "TCP"},
+    "severity": "high",
+    "state": "FIXED",
+    "first_found": "2026-01-10T00:00:00Z",
+    "last_found": "2026-09-01T00:00:00Z",
+    "last_fixed": "2026-10-05T11:22:33Z",
+    "finding_id": "0f3e2d1c-aaaa-4bbb-8ccc-000000000003"
+  }
+]

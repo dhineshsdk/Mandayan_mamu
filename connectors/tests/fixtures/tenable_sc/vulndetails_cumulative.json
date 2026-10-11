@@ -1,0 +1,61 @@
+{
+  "type": "regular",
+  "response": {
+    "totalRecords": "2",
+    "returnedRecords": 2,
+    "startOffset": "0",
+    "endOffset": "2",
+    "matchingDataElementCount": "-1",
+    "results": [
+      {
+        "pluginID": "156860",
+        "severity": {"id": "4", "name": "Critical", "description": "Critical Severity"},
+        "hasBeenMitigated": "0",
+        "ip": "10.30.2.11",
+        "uuid": "",
+        "port": "443",
+        "protocol": "TCP",
+        "pluginName": "Citrix ADC and Citrix Gateway Multiple Vulnerabilities (CTX584986)",
+        "firstSeen": "1744728630",
+        "lastSeen": "1791936107",
+        "solution": "Upgrade to Citrix ADC 13.1-51.15 or later.",
+        "baseScore": "10.0",
+        "cvssV3BaseScore": "9.8",
+        "cve": "CVE-2023-4966,CVE-2023-4967",
+        "pluginText": "<plugin_output>\n  Installed version : 13.1-49.13\n  Fixed version     : 13.1-51.15\n</plugin_output>",
+        "dnsName": "gw01.corp.example.in",
+        "netbiosName": "",
+        "operatingSystem": "Citrix NetScaler",
+        "hostUniqueness": "repositoryID,ip,dnsName",
+        "hostUUID": "02ebb260-30ed-4bf8-9e2c-92a8614cda1a",
+        "repository": {"id": "1", "name": "Live", "description": "", "dataFormat": "IPv4"}
+      },
+      {
+        "pluginID": "26920",
+        "severity": {"id": "2", "name": "Medium", "description": "Medium Severity"},
+        "hasBeenMitigated": "1",
+        "ip": "10.30.5.40",
+        "port": "445",
+        "protocol": "TCP",
+        "pluginName": "Microsoft Windows SMB NULL Session Authentication",
+        "firstSeen": "1735689600",
+        "lastSeen": "1791849600",
+        "solution": "Apply the vendor's configuration guidance.",
+        "baseScore": "5.0",
+        "cvssV3BaseScore": "",
+        "cve": "CVE-1999-0519 CVE-1999-0520",
+        "pluginText": "It was possible to bind to the \\srvsvc pipe",
+        "dnsName": "",
+        "netbiosName": "PLANT\\ENG-WS04",
+        "operatingSystem": "Microsoft Windows 10 Pro",
+        "hostUniqueness": "repositoryID,ip",
+        "hostUUID": "",
+        "repository": {"id": "3", "name": "OT", "description": "", "dataFormat": "IPv4"}
+      }
+    ]
+  },
+  "error_code": 0,
+  "error_msg": "",
+  "warnings": [],
+  "timestamp": 1791936200
+}
