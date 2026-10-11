@@ -247,8 +247,19 @@ The analysis of the current import is held in memory and rebuilt at start-up, us
 | Qualys VM | Detection report CSV (the preamble lines are skipped) |
 | Tenable.sc, Tenable.io, Nessus | Vulnerability CSV export (column names from any of the three) |
 | Nessus / Tenable | `.nessus` XML (NessusClientData_v2). It has no first-seen date, so a finding's age comes from the earliest scan file that contains it. |
+| Trivy | JSON report, schema version 2 (`trivy image --format json`; also `fs`, `rootfs` and `vm`) |
+| Grype | JSON report (`grype <target> -o json`) |
 | Ownership chart | CSV with `team, jira_project, manager, manager_email, vertical, vertical_head, vertical_head_email, vm_analyst, vm_analyst_email` |
 | Asset register | CSV with `asset_id, hostname, ip, site, zone, os, owner, business_process, inr_per_hour, criticality, image, config_template, is_ot, safety_critical, personal_data` |
+
+Trivy and Grype scan one artifact, such as a container or VM image, rather than a host. Each report becomes one asset
+named after the artifact (its first repository tag when Trivy recorded one), with no IP address, and every
+vulnerability is a package finding with the installed and fixed versions the scanner reported. To give the image an
+owner, criticality and rupee value, add a CMDB row whose `hostname` is that name. Hosts whose CMDB `image` is the same
+name are grouped with it, so a flaw found both in the image and on the hosts built from it becomes one base-image root
+cause. Trivy `UNKNOWN` and Grype `Unknown` or `Negligible` severities count as low. A report has no first-seen
+date; the scan date (Trivy `CreatedAt`, Grype `descriptor.timestamp`) is the last-seen date, and age builds up across
+imports.
 
 ## What it does
 

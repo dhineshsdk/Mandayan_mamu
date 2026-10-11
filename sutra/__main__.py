@@ -19,7 +19,8 @@ def main(argv: list[str] | None = None) -> None:
     s.add_argument("--month", type=int, default=0, help="the same estate this many 30-day months later")
 
     a = sub.add_parser("analyze", help="group findings by root cause and write the board summary")
-    a.add_argument("files", type=Path, nargs="*", help="Qualys CSV, Tenable CSV or .nessus exports (auto-detected)")
+    a.add_argument("files", type=Path, nargs="*",
+                   help="Qualys CSV, Tenable CSV, .nessus, Trivy JSON or Grype JSON (auto-detected)")
     a.add_argument("--qualys", type=Path, action="append", default=[], help=argparse.SUPPRESS)
     a.add_argument("--tenable", type=Path, action="append", default=[], help=argparse.SUPPRESS)
     a.add_argument("--cmdb", type=Path, help="asset register CSV (optional but needed for rupee impact)")

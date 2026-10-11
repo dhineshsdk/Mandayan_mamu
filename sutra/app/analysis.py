@@ -43,7 +43,8 @@ class AnalysisStore:
         """Analyse a new import, load its ownership chart if it has one, store its snapshot and make it current."""
         scans = [Path(f["path"]) for f in files if f["format"] in ingest.LOADERS]
         if not scans:
-            raise ValueError("Include at least one Qualys CSV, Tenable CSV or .nessus file.")
+            raise ValueError("Include at least one scanner file: a Qualys CSV, Tenable CSV, .nessus file, or Trivy or "
+                             "Grype JSON report.")
         cmdb = next((Path(f["path"]) for f in files if f["format"] == "cmdb"), None)
         # Fails before anything is stored if the files are bad.
         res = pipeline.run(scans, cmdb, org=org, known_first_seen=history.first_seen_hints(db), intel=self.intel)

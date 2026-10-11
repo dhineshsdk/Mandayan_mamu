@@ -810,7 +810,7 @@ VIEWS.import = {
       ${connectionsHtml(d.conn)}
       ${intelHtml(d.intel)}
       ${act ? `<div class="card"><h2>Your exports</h2>
-        <p class="muted" style="margin-top:0">Supported: Qualys VM detection CSV, Tenable.sc or Tenable.io CSV, Nessus <code>.nessus</code> XML, an asset register CSV
+        <p class="muted" style="margin-top:0">Supported: Qualys VM detection CSV, Tenable.sc or Tenable.io CSV, Nessus <code>.nessus</code> XML, Trivy and Grype JSON image scans (<code>trivy image --format json</code>, <code>grype -o json</code>), an asset register CSV
           (<code>asset_id, hostname, ip, site, zone, os, owner, business_process, inr_per_hour, criticality, image, config_template, is_ot, safety_critical, personal_data</code>)
           and an ownership chart CSV (<code>team, jira_project, manager, manager_email, vertical, vertical_head, vertical_head_email, vm_analyst, vm_analyst_email</code>).</p>
         <label class="drop" id="drop" for="file">Drop files here or click to choose<input type="file" id="file" multiple hidden></label>
