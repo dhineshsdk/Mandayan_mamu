@@ -16,6 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 from sutra_patchdraft import DraftInput, InputError, MaintenancePolicy, PatchDrafter, from_sutra, template_only
 
+from . import notify
 from .models import Job, Setting, utcnow
 from .security import audit
 
@@ -63,6 +64,7 @@ def apply_draft(db: Session, job: Job, draft) -> None:
         s.opened_at = utcnow() if s.position == 0 else None
     audit(db, "job.drafted", None, "job", job.id, source=draft.source, model=draft.model,
           fallback_reason=draft.fallback_reason)
+    notify.step_opened(db, job)
 
 
 class DraftService:

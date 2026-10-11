@@ -205,7 +205,9 @@ class Job(Base):
     status: Mapped[str] = mapped_column(String(20))
     ssvc: Mapped[str] = mapped_column(String(8))
     is_ot: Mapped[bool] = mapped_column(Boolean, default=False)
-    jira_key: Mapped[str] = mapped_column(String(40), default="")
+    jira_key: Mapped[str] = mapped_column(String(40), default="")  # set only once Jira has created the issue
+    servicenow_number: Mapped[str] = mapped_column(String(40), default="")
+    servicenow_sys_id: Mapped[str] = mapped_column(String(32), default="")
     ticket: Mapped[str] = mapped_column(String(80), default="")
     hosts: Mapped[list] = mapped_column(JSON)
     findings: Mapped[list] = mapped_column(JSON)
@@ -259,6 +261,29 @@ class JobCheck(Base):
     not_rescanned: Mapped[int] = mapped_column(Integer, default=0)
     outcome: Mapped[str] = mapped_column(String(16))  # fixed | partly-fixed | not-fixed | not-rescanned | reopened
     still_open_items: Mapped[list] = mapped_column(JSON, default=list)  # [[asset_id, fingerprint]], capped
+
+
+class Outbox(Base):
+    """A message or ticket update waiting to go out, retried until it is sent or gives up.
+
+    kind: email | teams | jira.create | jira.comment | jira.done | servicenow.create | servicenow.note
+    status: queued | sent | failed (gave up) | skipped (that integration is not configured)
+    """
+
+    __tablename__ = "outbox"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    kind: Mapped[str] = mapped_column(String(24), index=True)
+    job_id: Mapped[int | None] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), nullable=True, index=True)
+    event: Mapped[str] = mapped_column(String(40), default="")
+    recipient: Mapped[str] = mapped_column(String(254), default="")
+    subject: Mapped[str] = mapped_column(String(300), default="")
+    body: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(10), default="queued", index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    next_attempt_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    last_error: Mapped[str] = mapped_column(Text, default="")
 
 
 class AuditEvent(Base):

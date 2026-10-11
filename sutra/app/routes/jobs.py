@@ -73,6 +73,10 @@ def get_job(pk: int, request: Request, p: Principal = Depends(require("M-PJ", "v
     job = _get(request, db, p, pk)
     out = J.job_json(db, job, p, request.app.state.analysis.result)
     out["checks"] = closure.checks_json(db, job)
+    s = request.app.state.settings
+    out["jira_url"] = f"{s.jira_url}/browse/{job.jira_key}" if job.jira_key and s.jira_url else None
+    out["servicenow_url"] = (f"{s.servicenow_url}/{s.servicenow_table}.do?sys_id={job.servicenow_sys_id}"
+                             if job.servicenow_sys_id and s.servicenow_url else None)
     events = db.scalars(select(AuditEvent).where(AuditEvent.target_type == "job", AuditEvent.target_id == str(job.id))
                         .order_by(AuditEvent.id))
     out["audit"] = [{"at": e.at.isoformat(timespec="seconds"), "actor": e.actor_email, "action": e.action,

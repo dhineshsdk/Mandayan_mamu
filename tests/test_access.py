@@ -53,6 +53,7 @@ SCREENS = {
     "approval_rules": ("GET", "/api/admin/approval-rules", None),
     "maintenance": ("GET", "/api/admin/maintenance", None),
     "sla": ("GET", "/api/admin/sla", None),
+    "integrations": ("GET", "/api/admin/integrations", None),
     "audit": ("GET", "/api/audit", None),
     "audit_csv": ("GET", "/api/audit.csv", None),
 }
@@ -69,6 +70,7 @@ ACTIONS = {
     "set_rules": ("PUT", "/api/admin/approval-rules", {}),
     "set_maintenance": ("PUT", "/api/admin/maintenance", {}),
     "set_sla": ("PUT", "/api/admin/sla", {}),
+    "outbox_retry": ("POST", "/api/admin/integrations/retry", {}),
     "ownership_upload": ("POST", "/api/admin/ownership", None),
 }
 
@@ -87,7 +89,8 @@ EXPECTED = {
     "auditor": {"audit", "audit_csv"},
     "admin": {"uploads", "datasets", "admin_users", "admin_catalog", "admin_ownership", "approval_rules", "audit",
               "audit_csv", "upload", "analyze", "demo", "create_user", "update_user", "set_licence", "set_rules",
-              "ownership_upload", "maintenance", "set_maintenance", "sla", "set_sla"},
+              "ownership_upload", "maintenance", "set_maintenance", "sla", "set_sla", "integrations",
+              "outbox_retry"},
 }
 
 

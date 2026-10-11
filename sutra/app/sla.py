@@ -16,6 +16,7 @@ from datetime import date, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from . import notify
 from .models import Job, Setting
 from .security import audit
 
@@ -60,6 +61,7 @@ def escalate_stalled(db: Session, now: datetime) -> int:
         step.escalated_at, step.escalated_to = now, escalate_to(job, step.position)
         audit(db, "job.step_escalated", None, "job", job.id, step=step.role, escalated_to=step.escalated_to,
               waited_hours=round((now - (step.opened_at or job.created_at)).total_seconds() / 3600, 1))
+        notify.escalated(db, job, step)
         n += 1
     return n
 
@@ -71,5 +73,6 @@ def record_breaches(db: Session, now: datetime, today: date) -> int:
                                             Job.due_on < today, Job.sla_breached_at.is_(None))):
         job.sla_breached_at = now
         audit(db, "job.sla_breached", None, "job", job.id, due_on=job.due_on.isoformat())
+        notify.breached(db, job)
         n += 1
     return n

@@ -134,6 +134,23 @@ it appears under **Escalated to you** on their Patch jobs page and in the audit 
 anyone sign a step that is not theirs. A fix not proved by a rescan by its due date is recorded as an SLA breach and
 stays open. Both checks run hourly, at start-up and after each import.
 
+### Notifications and tickets
+
+Job events are queued in the database together with the change that caused them, and a background dispatcher
+delivers them, retrying failures with growing waits (six tries). Each integration is off until its settings are in the
+server's environment; **Administration → Integrations** shows what is on (never the secrets), delivery counts and
+recent problems, with a button to retry.
+
+| Integration | Settings | What it does |
+| --- | --- | --- |
+| Email (SMTP) | `SUTRA_SMTP_HOST`, `SUTRA_SMTP_FROM`; optional `SUTRA_SMTP_PORT` (587; 465 for TLS), `SUTRA_SMTP_USER`, `SUTRA_SMTP_PASSWORD`, `SUTRA_SMTP_STARTTLS` | The next approver when a step needs them; the raiser when a job is approved, accepted, rejected or sent back; the escalation target; the manager when a fix date is missed; the raiser and manager when a rescan fixes or reopens a job or a risk acceptance expires |
+| Microsoft Teams | `SUTRA_TEAMS_WEBHOOK_URL` (a Workflows "Send webhook alerts to a channel" URL, or a legacy incoming webhook) | Escalations and missed fix dates, as an Adaptive Card |
+| Jira | `SUTRA_JIRA_URL`, `SUTRA_JIRA_TOKEN`; Cloud also `SUTRA_JIRA_USER` (account email); Data Center `SUTRA_JIRA_API=2`; optional `SUTRA_JIRA_ISSUE_TYPE` (Task), `SUTRA_JIRA_DONE_STATUS` | An issue per job in the team's Jira project from the ownership chart; decisions and rescans as comments; moved to the done status when a rescan proves the fix |
+| ServiceNow | `SUTRA_SERVICENOW_URL`, `SUTRA_SERVICENOW_USER`, `SUTRA_SERVICENOW_PASSWORD`; optional `SUTRA_SERVICENOW_TABLE` (change_request) | A record per job through the Table API; later events as work notes |
+
+`SUTRA_BASE_URL` (for example `https://sutra.example.in`) adds a link back to the job. A job shows a Jira key or
+ServiceNow number only once that system has issued it.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's
