@@ -222,6 +222,24 @@ administrators can collect by hand.
   fingerprint.
 - Not yet: routes, ARP tables from firewalls, and other vendors (see `connectors/docs/api-notes/network-devices.md`).
 
+### Compliance (CEA fix clock)
+
+The Compliance module (M-CMP) records each regulated entity (a plant, a substation, a load-despatch centre), its
+cyber security audits, the auditor's findings, compensating controls, fix dates scheduled for a named shutdown,
+recurring activities (policy reviews, drills, self-audits) and the evidence files behind them. Every state and deadline
+comes from the CEA rule pack in `./compliance` (`sutra_compliance`); Sutra computes no clock of its own.
+
+- A finding linked to a patch job is fixed only when the rescan that verified the job says so: its fix date is that
+  scan's date and the rescan is attached as fix evidence. A fix date typed in by hand is allowed only without a job.
+- A compensating control in place turns an overdue critical or high finding from a breach into "past deadline,
+  compensating control in place"; a scheduled shutdown fix is shown with the clock and flagged when it falls after
+  the deadline, but never stops it.
+- Evidence files are stored once under their SHA-256 in `<workspace>/evidence`, never changed or deleted, and every
+  upload, link, unlink and download is in the audit log.
+- The compliance officer and the CISO record (M-CMP act); the time-limited auditor account reads (M-CMP view).
+- The bundled rule pack has not been checked against the gazette text; every screen says so. Per-asset obligations
+  and incident reporting clocks are not recorded yet, and the entity page lists what is not checked.
+
 ### Entra ID directory sync
 
 Under **Administration → Entra ID sync** an administrator maps Entra ID groups to Sutra roles, for example a VM team
