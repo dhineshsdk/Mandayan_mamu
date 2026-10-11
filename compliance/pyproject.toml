@@ -28,5 +28,10 @@ line-length = 120
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP"]
-ignore = ["B905"]
+# Matches the root project's rule set (bandit included), plus pyupgrade.
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+ignore = ["B905", "S101"]
+
+[tool.ruff.lint.per-file-ignores]
+# Runs the README's own example to keep it correct.
+"tests/test_readme.py" = ["S102"]
