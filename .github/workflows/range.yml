@@ -1,0 +1,25 @@
+name: range
+
+on:
+  push:
+    branches: [main]
+    paths: ["range/**", "explain/**", "sutra/**", "docs/range/**", ".github/workflows/range.yml"]
+  pull_request:
+    paths: ["range/**", "explain/**", "sutra/**", "docs/range/**", ".github/workflows/range.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  range:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ./patchdraft -e ./explain -e ./range[test] -e . ruff
+      - run: ruff check range
+      - run: python -m pytest range -q
+      - name: Release gate (fails if any bad claim, lost finding or stale published score)
+        run: python -m sutra_range check

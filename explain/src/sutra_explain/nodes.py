@@ -41,7 +41,8 @@ PATTERN_FIELDS: dict[str, re.Pattern] = {
 NUMBER_FIELDS = frozenset({
     "hosts", "findings", "hosts_total", "findings_total", "hosts_shown", "findings_shown", "cea_overdue",
     "criticality", "cvss", "epss",
-    "cve_count", "cves_active", "cves_poc", "injection_suspects", "scanned_by_count", "root_causes", "top_n",
+    "cve_count", "cves_active", "cves_poc", "injection_suspects", "title_conflicts",
+    "scanned_by_count", "root_causes", "top_n",
     "top_findings_share", "top_risk_share", "ssvc_act", "ssvc_attend", "ssvc_track_star", "ssvc_track",
     "cea_overdue_closed_by_top", "cmdb_assets", "scanned_assets", "unscanned", "unknown", "inferred_images",
     "unowned", "rank", "range_percent"})

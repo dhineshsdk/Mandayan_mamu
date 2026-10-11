@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sutra-range"
+version = "0.1.0"
+description = "Sutra Range: planted-cause scenarios and prompt-injection tests, scored on every release"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["sutra", "sutra-explain"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+sutra-range = "sutra_range.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "S"]
+ignore = ["S101", "S311", "B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["sutra_range", "sutra"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106"]

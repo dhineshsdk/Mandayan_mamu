@@ -1,0 +1,24 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ./patchdraft -e ./explain -e ./range -e .
+      - name: Score the release (the job fails if the gate fails)
+        run: python -m sutra_range run --out dist/range
+      - name: Attach the Sutra Range score to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/range/score.json dist/range/SCORE.md --clobber

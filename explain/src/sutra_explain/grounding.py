@@ -41,7 +41,11 @@ WORD_NUMBERS = {"zero": "0", "one": "1", "two": "2", "three": "3", "four": "4", 
                 "seven": "7", "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
                 "thirteen": "13", "fourteen": "14", "fifteen": "15", "twenty": "20", "thirty": "30",
                 "fifty": "50", "hundred": "100", "thousand": "1000"}
-WORD_NUMBER = re.compile(r"\b(" + "|".join(WORD_NUMBERS) + r")\b", re.I)
+# "one" is usually an article ("one golden image"); it counts as a figure only when it counts things we hold
+# figures for.
+COUNTED = r"(?:host|finding|machine|asset|device|server|root cause|cve)s?\b"
+WORD_NUMBER = re.compile(r"\b(" + "|".join(w for w in WORD_NUMBERS if w != "one") + r")\b|\b(one)(?=\s+(?:of\s+\w+\s+)?"
+                         + COUNTED + ")", re.I)
 # Words that describe the real world need a cited node that says so (or, if negated, says the opposite).
 NEGATION = r"\b(no|not|without|none|never|isn't|aren't|neither)\b"
 
@@ -142,10 +146,10 @@ def check_claim(raw: Any, facts: FactSet, n: int = 1) -> tuple[Claim | None, lis
             errs.append(f"{label} names {c}, which no cited node carries")
     allowed = set().union(*(n.allowed_numbers() for n in nodes)) if nodes else set()
     bare_wo_cve = CVE.sub(" ", bare)
-    for num in numbers_in(bare_wo_cve):
+    for num in dict.fromkeys(numbers_in(bare_wo_cve)):
         if num not in allowed:
             errs.append(f"{label} states {num}, which no cited node carries")
-    for word in WORD_NUMBER.findall(bare_wo_cve):
+    for word in (a or b for a, b in WORD_NUMBER.findall(bare_wo_cve)):
         if normalise_number(WORD_NUMBERS[word.lower()]) not in allowed:
             errs.append(f"{label} states {word}, which no cited node carries")
     for rule in TERM_RULES:

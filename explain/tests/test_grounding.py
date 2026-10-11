@@ -43,6 +43,16 @@ def test_numbers_must_come_from_cited_nodes(facts):
     ok("It has 5 criticality.", ["A1"], facts)
 
 
+def test_one_is_a_figure_only_when_it_counts_things(facts):
+    ok("{R1} is one golden image that carries the flaw.", ["R1"], facts)
+    node = facts.nodes["R1"]
+    wrong = 1 if node.fields["hosts"] != 1 else 2
+    word = {1: "one", 2: "two"}[wrong]
+    if wrong not in node.allowed_numbers() and str(wrong) not in node.allowed_numbers():
+        bad(f"It affects {word} hosts.", ["R1"], facts, word)
+    bad("It affects nine hosts.", ["R1"], facts, "nine")
+
+
 def test_placeholders_must_be_cited_and_names_cannot_be_written(facts):
     bad("{A1} is exposed.", ["R1"], facts, "does not cite")
     bad("{R1 is open", ["R1"], facts, "stray brace")

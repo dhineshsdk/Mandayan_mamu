@@ -63,6 +63,10 @@ def root_cause_claims(facts: FactSet) -> list[Claim]:
         claims.append(Claim(f"{f['injection_suspects']} findings here contain text addressed to an AI model; Sutra "
                             f"did not act on it, and the machines stay in scope.", ("R1",), "uncertainty",
                             "notify"))
+    if f.get("title_conflicts"):
+        claims.append(Claim(f"{f['title_conflicts']} findings have titles that read like more than one kind of "
+                            f"problem, so their grouping here may be wrong and is worth checking.", ("R1",),
+                            "uncertainty", "notify"))
     return claims
 
 

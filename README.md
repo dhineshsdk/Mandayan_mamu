@@ -419,3 +419,8 @@ pytest
 other API returns 403; a manager cannot approve another team's job; nobody approves their own job.
 `tests/test_history.py` is the Milestone 2 exit check: two imports 30 days apart show what was fixed, new and still
 open per team, and the counts reconcile with both imports.
+
+## Sutra Range
+
+Every release is scored by Range: planted-cause scenarios, prompt-injection payloads and damaged model answers, with the
+result published in [`docs/range/SCORE.md`](docs/range/SCORE.md). See [`range/README.md`](range/README.md).
