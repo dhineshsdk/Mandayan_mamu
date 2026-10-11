@@ -25,7 +25,7 @@ router = APIRouter(prefix="/api/data")
 
 
 class ConnectionIn(BaseModel):
-    kind: Literal["qualys", "tenable_vm", "tenable_sc", "crowdstrike"]
+    kind: Literal["qualys", "tenable_vm", "tenable_sc", "crowdstrike", "aws_inspector"]
     name: str = Field(min_length=1, max_length=80)
     base_url: str = Field(default="", max_length=300)
     username: str = Field(min_length=1, max_length=200)
@@ -45,6 +45,15 @@ def _check_url(kind: str, url: str) -> str:
     if parts.scheme != "https" or not parts.hostname or parts.path not in ("", "/") or parts.query:
         raise ValueError("The address must be an https:// URL with no path, for example "
                          f"{scanpull.KINDS[kind]['url_hint']}.")
+    if kind == "aws_inspector":
+        from sutra_connectors.aws_inspector import region_of
+        from sutra_connectors.errors import ConfigurationError
+
+        try:
+            region_of(url)
+        except ConfigurationError as exc:
+            raise ValueError("The address must be Amazon Inspector's endpoint for your region, for example "
+                             f"{scanpull.KINDS[kind]['url_hint']}.") from exc
     return url
 
 

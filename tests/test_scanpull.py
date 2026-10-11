@@ -234,3 +234,44 @@ def test_crowdstrike_pull_through_the_real_connector(tmp_path):
     res = app.state.analysis.result
     kb = next(f for f in res.findings if f.fixed == "KB5053594")
     assert kb.package == "Microsoft Windows OS patch"
+
+
+def test_aws_inspector_pull_through_the_real_connector(tmp_path):
+    """An Amazon Inspector connection pulled with the real connector against the connector's own fake API (fixtures
+    from Elastic's AWS Inspector integration test data)."""
+    import sys
+    from pathlib import Path
+
+    import httpx
+
+    sys.path.insert(0, str(Path(__file__).parents[1] / "connectors" / "tests"))
+    try:
+        from test_aws_inspector import FakeInspector
+    finally:
+        sys.path.pop(0)
+    settings = Settings(workspace=tmp_path, database_url=f"sqlite:///{tmp_path / 'sutra.db'}")
+    passwords = {e: pw for e, pw, _ in cli.demo_users(settings, "power", months=0)}
+    app = create_app(settings, background=False)
+    app.state.puller.transport = httpx.MockTransport(FakeInspector())
+    with TestClient(app, base_url="https://testserver"):
+        env = (app, passwords)
+        admin = client(env, ADMIN)
+        bad = admin.post("/api/data/connections", json={
+            "kind": "aws_inspector", "name": "AWS", "base_url": "https://inspector.example.com",
+            "username": "AKIDEXAMPLE", "secret": "s3cret"})
+        assert bad.status_code == 400 and "Inspector's endpoint" in bad.json()["error"]
+        r = admin.post("/api/data/connections", json={
+            "kind": "aws_inspector", "name": "AWS Mumbai", "base_url": "", "username": "AKIDEXAMPLE",
+            "secret": "s3cret"})
+        assert r.status_code == 201 and r.json()["base_url"] == "https://inspector2.ap-south-1.amazonaws.com"
+        pull = client(env, VM).post("/api/data/pulls").json()["pull"]
+        _wait(app)
+        done = client(env, VM).get(f"/api/data/pulls/{pull}").json()
+    # 35 package findings, one of them closed; the coverage records were last scanned in 2025, so none is current.
+    assert done["status"] == "ok", done
+    assert done["results"][0]["findings"] == 34 and done["results"][0]["hosts"] == 0
+    res = app.state.analysis.result
+    # One Inspector finding names openssh, openssh-clients and openssh-server: one Sutra finding (they share the
+    # CVE on one host) that keeps all three as sources, with the epoch stripped from the fixed version.
+    (ssh,) = [f for f in res.findings if "CVE-2025-32728" in f.cves]
+    assert len(ssh.sources) == 3 and ssh.fixed == "7.4p1-22.amzn2.0.10"

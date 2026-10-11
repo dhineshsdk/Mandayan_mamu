@@ -174,10 +174,16 @@ view is not built: Sutra holds no cost data to base one on.
 ### Scanner API pulls
 
 Under **Import data → Scanner connections** an administrator adds read-only API connections to Qualys VMDR, Tenable
-Vulnerability Management, Tenable Security Center or CrowdStrike Falcon Spotlight (the `sutra_connectors` library in
-`connectors/`). For CrowdStrike, create an API client with read access to Vulnerabilities and Hosts and use your
-cloud's API address (for example `https://api.eu-1.crowdstrike.com`); hosts whose sensor has not reported for 30 days
-do not count as assessed. A pull reads
+Vulnerability Management, Tenable Security Center, CrowdStrike Falcon Spotlight or Amazon Inspector (the
+`sutra_connectors` library in `connectors/`). For CrowdStrike, create an API client with read access to
+Vulnerabilities and Hosts and use your cloud's API address (for example `https://api.eu-1.crowdstrike.com`); hosts
+whose sensor has not reported for 30 days do not count as assessed. For Amazon Inspector, create an access key for
+an IAM user whose policy allows only `inspector2:ListFindings` and `inspector2:ListCoverage`, and add one connection
+per region with that region's endpoint (for example `https://inspector2.ap-south-1.amazonaws.com`). Inspector's
+delegated administrator account should cover every account in an AWS Organization (to confirm on a live organization;
+see `connectors/docs/api-notes/aws-inspector.md`). Sutra reads package vulnerabilities
+on EC2 instances, ECR images and Lambda functions; an instance is named by its `Name` tag, else its instance ID, so
+give the asset register the same host names. A pull reads
 every enabled connection in full (all open detections, and every host the scanner has assessed) and imports the
 result like an export, carrying over the asset register from the latest import that had one. Pulls run by hand
 (VM analyst or admin) or once a day at a chosen hour, India time.

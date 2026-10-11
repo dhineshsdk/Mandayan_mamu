@@ -9,6 +9,7 @@ customers already run, so nobody has to export a file:
 | `TenableVMConnector` | Tenable Vulnerability Management (Tenable.io) | Vulnerability export `/vulns/export` | Asset export `/assets/export` |
 | `TenableSCConnector` | Tenable Security Center (Tenable.sc) | `/rest/analysis`, tool `vulndetails` | `/rest/analysis`, tool `sumip` |
 | `CrowdStrikeConnector` | CrowdStrike Falcon Spotlight | `/spotlight/combined/vulnerabilities/v1` | `/devices/queries/devices/v1` and `/devices/entities/devices/v2` |
+| `AwsInspectorConnector` | Amazon Inspector (one region) | `POST /findings/list` | `POST /coverage/list` |
 
 This is a plain Python library. Scheduling, credential storage and wiring into the Sutra app come with the app's
 database milestone; nothing here touches the app server, auth or database.
