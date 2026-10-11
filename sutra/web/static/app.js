@@ -1694,7 +1694,14 @@ const ADMIN_TABS = {
           <dt>Finding text is read by</dt><dd>${a.reader === "model" ? "the model (labels only)" : "fixed rules; no finding text is sent to a model"}</dd></dl>
         <p style="margin:12px 0 0">${esc(a.note)}</p>
         ${a.reason && a.provider === "off" ? `<p class="muted" style="margin:8px 0 0">${esc(a.reason)}.</p>` : ""}
-        <p class="muted" style="margin:8px 0 0">A model can only write explanations and drafts. It never changes a risk figure, a triage decision or who must approve, and anything it writes that does not cite the facts it was given is dropped. Settings are environment variables; see the README.</p></div>`;
+        <p class="muted" style="margin:8px 0 0">A model can only write explanations and drafts. It never changes a risk figure, a triage decision or who must approve, and anything it writes that does not cite the facts it was given is dropped. Settings are environment variables; see the README.</p></div>
+        ${a.egress ? `<div class="card mt"><h2>Outbound connections</h2>
+          <p style="margin-top:0"><b>${a.egress.policy === "allowlist" ? "Only listed hosts" : "Not restricted by Sutra"}</b></p>
+          <p class="muted">${esc(a.egress.note)}</p>
+          ${a.egress.policy === "allowlist" ? `<dl class="kv"><dt>Allowed</dt><dd class="mono">${a.egress.allow.length ? a.egress.allow.map(esc).join(", ") : "none (private network addresses only)"}</dd></dl>
+          <h3>Refused since the server started</h3>
+          ${a.egress.blocked.length ? `<div class="table-wrap"><table><thead><tr><th>Host</th><th>Times</th><th>Last</th></tr></thead><tbody>${a.egress.blocked.map((b) => `<tr><td class="mono">${esc(b.host)}</td><td>${b.count}</td><td class="mono">${esc(b.last)}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">Nothing has been refused.</p>'}
+          <p class="muted">To allow a host, add it to SUTRA_EGRESS_ALLOW and restart. This is a second lock; also block outbound traffic from this server at your firewall.</p>` : ""}</div>` : ""}`;
     },
     wire() {},
   },

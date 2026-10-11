@@ -37,10 +37,14 @@ from sutra_explain import (
 from sutra_explain.builders import read_findings
 from sutra_patchdraft import DrafterConfig, PatchDrafter
 
+from .egress import EgressGuard
 from .models import AiExplanation, utcnow
 from .security import audit
 
 KEEP_DAYS = 90
+
+
+ANTHROPIC_HOST = "api.anthropic.com"
 
 
 def drafter(cfg: ExplainConfig, env: Mapping[str, str] | None = None) -> PatchDrafter:
@@ -56,15 +60,27 @@ def drafter(cfg: ExplainConfig, env: Mapping[str, str] | None = None) -> PatchDr
     return PatchDrafter(config=DrafterConfig.from_env(env), env=env)
 
 
+def blocked_by_policy(cfg: ExplainConfig, guard: EgressGuard | None) -> ExplainConfig:
+    """Switch the model off, with the reason, when the outbound policy would refuse its endpoint."""
+    if guard is None or guard.policy == "open" or cfg.provider == "off":
+        return cfg
+    host = ANTHROPIC_HOST if cfg.provider == "anthropic" else (urlsplit(cfg.local_url).hostname or "")
+    if guard.host_allowed(host):
+        return cfg
+    return replace(cfg, provider="off", reason=f"{host} is not on this server's outbound allow-list "
+                                               f"(SUTRA_EGRESS_ALLOW), so no prompt can be sent there")
+
+
 def scope_key(asset_ids: set[str]) -> str:
     return hashlib.sha256("\n".join(sorted(asset_ids)).encode()).hexdigest()
 
 
 class AiService:
     def __init__(self, config: ExplainConfig | None = None, explainer: Explainer | None = None,
-                 env: Mapping[str, str] | None = None):
+                 env: Mapping[str, str] | None = None, guard: EgressGuard | None = None):
         env = os.environ if env is None else env
-        self.config = config or ExplainConfig.from_env(env)
+        self.guard = guard
+        self.config = blocked_by_policy(config or ExplainConfig.from_env(env), guard)
         self.explainer = explainer or Explainer.from_config(self.config)
         self.reader_mode = (env.get("SUTRA_AI_READER") or "rules").strip().lower()
         if self.reader_mode not in ("rules", "model"):
@@ -87,6 +103,7 @@ class AiService:
             "local_endpoint": host, "reader": self.reader_mode, "explanations_by_model": self.explainer.ai_available,
             "drafting_by_model": drafting_ai, "reason": c.reason or self.explainer.unavailable,
             "prompts_leave_the_network": c.provider == "anthropic",
+            "egress": self.guard.status() if self.guard else None,
             "note": ("Prompts go to the Anthropic API. For data that must stay inside the customer's network, set "
                      "SUTRA_AI_LOCAL_URL and SUTRA_AI_LOCAL_MODEL, or SUTRA_AI_PROVIDER=off."
                      if c.provider == "anthropic" else

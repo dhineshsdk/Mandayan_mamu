@@ -267,3 +267,17 @@ def upgrade_command(args) -> None:
                 "No automatic backup was taken; restore from your own backup.")
         sys.exit(f"Upgrade failed: {e}\n{hint}")
     print("Upgraded. Start the service again.")
+
+
+def doctor_command(args) -> None:
+    import json
+
+    from . import doctor
+
+    checks = doctor.run(workspace=args.workspace)
+    if args.json:
+        print(json.dumps([c.__dict__ for c in checks], indent=1))
+    else:
+        print(doctor.render(checks))
+    if any(c.level == "FAIL" for c in checks):
+        sys.exit(1)

@@ -64,6 +64,9 @@ class Settings:
     # Licence keys. With this on, no key means only Administration runs (the installer sets it). The vendor's public key
     # comes from the PEM file at SUTRA_LICENCE_PUBLIC_KEY, else the one built into the release.
     require_licence: bool = field(default_factory=lambda: _bool("SUTRA_REQUIRE_LICENCE", False))
+    # Outbound connections: "open" (no limit) or "allowlist" (only hosts in egress_allow; see egress.py).
+    egress_policy: str = field(default_factory=lambda: os.environ.get("SUTRA_EGRESS", "open").strip().lower())
+    egress_allow: str = field(default_factory=lambda: os.environ.get("SUTRA_EGRESS_ALLOW", ""))
     intel_refresh: bool = field(default_factory=lambda: _bool("SUTRA_INTEL_REFRESH", True))
 
     def __post_init__(self):

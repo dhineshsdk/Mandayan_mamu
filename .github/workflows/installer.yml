@@ -1,0 +1,57 @@
+name: installer
+
+on:
+  push:
+    branches: [main]
+    paths: ["packaging/**", "sutra/**", "docs/**", "pyproject.toml", ".github/workflows/installer.yml"]
+  pull_request:
+    paths: ["packaging/**", "sutra/**", "docs/**", "pyproject.toml", ".github/workflows/installer.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lint the scripts
+        run: shellcheck packaging/*.sh
+      - name: Build the offline bundle
+        run: packaging/build-bundle.sh "$RUNNER_TEMP/dist"
+      - name: Check the unit files
+        run: |
+          mkdir "$RUNNER_TEMP/units"
+          for u in sutra.service sutra-backup.service sutra-backup.timer; do
+            sed -e "s|@PREFIX@|/opt/sutra|g" -e "s|@DATA@|/var/lib/sutra|g" -e "s|@BACKUPS@|/var/backups/sutra|g" \
+                -e "s|@ETC@|/etc/sutra|g" -e "s|@USER@|root|g" "packaging/systemd/$u" > "$RUNNER_TEMP/units/$u"
+          done
+          # ExecStart paths do not exist on the runner; only the syntax and directives are checked here.
+          systemd-analyze verify "$RUNNER_TEMP"/units/*.service "$RUNNER_TEMP"/units/*.timer 2>&1 | grep -v "Command .* is not executable" || true
+      - name: Install from the bundle with no package index, then use it
+        run: |
+          set -euo pipefail
+          T="$RUNNER_TEMP/trial"
+          mkdir -p "$T"
+          tar -xzf "$RUNNER_TEMP"/dist/sutra-*.tar.gz -C "$T"
+          cd "$T"/sutra-*
+          # Break pip's access to any index: the installer must work from the wheelhouse alone.
+          export PIP_INDEX_URL=http://127.0.0.1:9/simple PIP_NO_INDEX=1
+          ./install.sh --prefix "$T/opt" --data "$T/data" --etc "$T/etc" --backups "$T/bk" --no-user --no-systemd
+          ./install.sh --prefix "$T/opt" --data "$T/data" --etc "$T/etc" --backups "$T/bk" --no-user --no-systemd | grep "Kept the existing"
+          set -a; . "$T/etc/sutra.env"; set +a
+          cd "$T/data"
+          "$T/opt/venv/bin/python" -c "from sutra.app import cli; from sutra.app.config import Settings; cli.create_admin(Settings(), 'root@plant.example.in', 'Root', password='a long enough password 1!')"
+          "$T/opt/venv/bin/python" -m sutra doctor | tee "$T/doctor.txt"
+          grep -q "0 failures" "$T/doctor.txt"
+          "$T/opt/venv/bin/python" -m sutra backup create --out "$T/bk" --passphrase-file "$T/etc/backup.pass"
+          "$T/opt/venv/bin/python" -m sutra backup verify "$T"/bk/*.enc --passphrase-file "$T/etc/backup.pass"
+          ("$T/opt/venv/bin/python" -m sutra serve --port 8801 > "$T/serve.log" 2>&1 & echo $! > "$T/pid")
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8801/api/auth/config >/dev/null && break; sleep 1; done
+          curl -si http://127.0.0.1:8801/api/auth/config | grep -i "strict-transport-security"
+          kill "$(cat "$T/pid")"
+          cd "$T"/sutra-*
+          ./upgrade.sh --prefix "$T/opt" --etc "$T/etc" --no-user --no-systemd | grep "Already up to date"

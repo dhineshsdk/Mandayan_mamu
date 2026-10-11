@@ -433,3 +433,8 @@ Modules are switched on per customer by an offline-checked signed key. See [`doc
 
 `python -m sutra backup create | verify | list | restore` and `python -m sutra upgrade` (backs up first, then migrates).
 See [`docs/operations.md`](docs/operations.md).
+
+## Installing on a server, hardening, data residency
+
+An offline install bundle, systemd units, `python -m sutra doctor`, and an outbound allow-list (`SUTRA_EGRESS`) are in
+[`docs/installation.md`](docs/installation.md) and [`docs/hardening.md`](docs/hardening.md).
