@@ -145,7 +145,7 @@ class PatchDrafter:
                 rejected, reason = [str(e)], f"The model's draft was unusable: {e}"
                 log.warning("%s attempt %d: %s", inp.root_cause.rc_id, attempt, e)
                 continue
-            except _api_errors() as e:
+            except (*_api_errors(), *getattr(self._client, "api_errors", ())) as e:
                 reason = f"The Claude API call failed ({type(e).__name__})"
                 log.warning("%s: %s: %s", inp.root_cause.rc_id, reason, e)
                 break

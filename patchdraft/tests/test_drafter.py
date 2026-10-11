@@ -201,3 +201,17 @@ def test_unexpected_errors_are_not_swallowed():
     d, _ = drafter(KeyError("bug"))
     with pytest.raises(KeyError):
         d.draft(rhel_glibc())
+
+
+def test_a_client_can_name_its_own_connection_errors():
+    """Local-model clients (sutra-explain's MessagesShim) are not the Anthropic SDK; they list their errors."""
+
+    class LocalDown(Exception):
+        pass
+
+    class Client:
+        api_errors = (LocalDown,)
+        messages = SimpleNamespace(create=lambda **kw: (_ for _ in ()).throw(LocalDown("no route")))
+
+    draft = PatchDrafter(config=replace(CONFIG, server_fallbacks=False), client=Client()).draft(rhel_glibc())
+    assert draft.source == "template" and "LocalDown" in draft.fallback_reason

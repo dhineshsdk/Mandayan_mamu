@@ -1,0 +1,29 @@
+name: explain
+
+on:
+  push:
+    branches: [main]
+    paths: ["explain/**", "patchdraft/**", ".github/workflows/explain.yml"]
+  pull_request:
+    paths: ["explain/**", "patchdraft/**", ".github/workflows/explain.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.13"]
+    defaults:
+      run:
+        working-directory: explain
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e "../patchdraft[ai,test]" -e ".[test]" ruff
+      - run: ruff check .
+      - run: python -m pytest -q
