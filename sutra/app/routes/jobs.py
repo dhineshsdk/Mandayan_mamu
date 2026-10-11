@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .. import closure
+from .. import closure, otplans
 from .. import jobs as J
 from ..access import Principal
 from ..deps import client_ip, get_db, require
@@ -73,6 +73,9 @@ def get_job(pk: int, request: Request, p: Principal = Depends(require("M-PJ", "v
     job = _get(request, db, p, pk)
     out = J.job_json(db, job, p, request.app.state.analysis.result)
     out["checks"] = closure.checks_json(db, job)
+    plan = otplans.plan_for(db, job, request.app.state.analysis.result)
+    out["ot_plan"] = otplans.plan_json(db, plan, job, p) if plan else None
+    db.commit()
     s = request.app.state.settings
     out["jira_url"] = f"{s.jira_url}/browse/{job.jira_key}" if job.jira_key and s.jira_url else None
     out["servicenow_url"] = (f"{s.servicenow_url}/{s.servicenow_table}.do?sys_id={job.servicenow_sys_id}"

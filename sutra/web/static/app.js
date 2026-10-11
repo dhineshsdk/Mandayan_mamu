@@ -71,6 +71,8 @@ const NAV = [
   { view: "assets", label: "Assets and coverage", module: "M-AST" },
   { view: "portal", label: "Team portal", module: "M-TP" },
   { view: "jobs", label: "Patch jobs", module: "M-PJ" },
+  { view: "ot", label: "OT plans", module: "M-OT" },
+  { view: "scorecards", label: "Scorecards", module: "M-CSO" },
   { view: "changes", label: "What changed", test: () => can("M-RC") || can("M-TP") || can("M-BRD") },
   { view: "headline", label: "Headline check", module: "M-HC" },
   { view: "import", label: "Import data", module: "M-DAT" },
@@ -78,7 +80,7 @@ const NAV = [
   { view: "admin", label: "Administration", test: () => can("M-ADM", "admin") || can("M-ADM", "act") },
 ];
 const allowed = (n) => (n.test ? n.test() : can(n.module));
-const OWNER_VIEW = { rc: "queue", job: "jobs" };
+const OWNER_VIEW = { rc: "queue", job: "jobs", otplan: "ot" };
 function buildNav() {
   const items = NAV.filter(allowed);
   document.getElementById("nav").innerHTML = items.map((n) =>
@@ -524,6 +526,7 @@ VIEWS.job = {
         <dt>Compensating control</dt><dd>${esc(j.exception.control)}</dd><dt>Accepted until</dt><dd>${esc(fmtDate(j.exception.expires_on))}${j.status === "expired" ? ' <span class="badge warn">expired</span>' : ""}</dd></dl>
         <p class="muted" style="margin-bottom:0">Accepting the risk does not stop the CEA fix clock. A rescan that shows the findings fixed closes this early.</p></div>` : ""}
       ${j.mode === "manual" ? `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team ${j.status === "verified-fixed" ? "fixed" : "is fixing"} this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}.${j.status === "verified-fixed" ? "" : " The findings close only when a rescan proves the fix."}</p></div>` : ""}
+      ${j.ot_plan ? otPlanHtml(j.ot_plan, j, false) : ""}
       ${rescanHtml(j)}
       ${j.status === "drafting" ? '<div class="card mt"><h2>Drafting</h2><p style="margin:0">Sutra is writing the draft. The first approval step opens when it is ready. <a href="">Refresh</a></p></div>' : ""}
       ${j.status === "draft-failed" ? '<div class="card mt"><h2>Draft failed</h2><p style="margin:0">Sutra could not write a draft for this job, so it was closed without approvals. Raise it again; if it fails again, tell your Sutra administrator.</p></div>' : ""}
@@ -553,6 +556,115 @@ VIEWS.job = {
       } catch (err) { alert(err.message); b.disabled = false; }
     }));
   },
+};
+
+// ---------- scorecards and the CISO dashboard ----------
+const orDash = (v, suffix = "") => (v === null || v === undefined ? '<span class="muted">–</span>' : `${esc(num(v))}${suffix}`);
+function scoreRows(rows, key, label) {
+  if (!rows.length) return '<p class="muted">Nothing in your scope.</p>';
+  return `<div class="table-wrap"><table><thead><tr><th style="min-width:160px">${label}</th><th class="n">Open findings</th><th class="n">No job</th><th class="n">Oldest (days)</th>
+    <th class="n">Jobs open</th><th class="n">Overdue</th><th class="n">SLA breaches</th><th class="n">Fixed</th><th class="n">Days to fix (median)</th><th class="n">On time</th><th class="n">Accepted</th></tr></thead>
+    <tbody>${rows.map((r) => `<tr><td><b>${esc(r[key])}</b>${r.vertical ? `<div class="fix">${esc(r.vertical)}${r.manager ? ` · ${esc(r.manager)}` : ""}</div>` : ""}</td>
+      <td class="n">${num(r.open_findings)}${r.by_ssvc.Act ? `<div class="fix">${num(r.by_ssvc.Act)} Act</div>` : ""}</td><td class="n">${num(r.without_job)}</td><td class="n">${orDash(r.oldest_days)}</td>
+      <td class="n">${num(r.jobs_open)}${r.awaiting_approval ? `<div class="fix">${num(r.awaiting_approval)} awaiting approval</div>` : ""}</td><td class="n">${r.overdue ? `<b class="warn-ink">${num(r.overdue)}</b>` : 0}</td><td class="n">${num(r.breaches)}</td>
+      <td class="n">${num(r.fixed)}</td><td class="n">${orDash(r.median_days_to_fix)}</td><td class="n">${orDash(r.on_time_pct, "%")}</td><td class="n">${num(r.accepted)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+VIEWS.scorecards = {
+  load: () => api("/api/scorecards"),
+  html(d) {
+    const t = d.totals;
+    const max = Math.max(...d.trend.map((x) => x.open_findings), 1);
+    return `<h1>${d.org_wide ? "CISO dashboard" : "Team scorecards"}</h1>
+      <p class="sub">Counted from the import of ${esc(fmtDate(d.as_of))} and from patch jobs. Time to fix is the median number of days from the scanner first reporting a job's findings to the scan that proved them gone. A job is on time when that scan came by its fix due date.</p>
+      <div class="grid kpis">
+        <div class="card kpi"><div class="label">Open findings</div><div class="value">${num(t.open_findings)}</div><div class="note">${num(t.by_ssvc.Act)} Act, ${num(t.by_ssvc.Attend)} Attend. ${num(t.without_job)} have no job and no risk acceptance.</div></div>
+        <div class="card kpi"><div class="label">Jobs in progress</div><div class="value">${num(t.jobs_open)}</div><div class="note">${num(t.awaiting_approval)} awaiting approval, ${num(t.overdue)} past their fix date</div></div>
+        <div class="card kpi"><div class="label">Proved fixed</div><div class="value">${num(t.fixed)}</div><div class="note">Median ${t.median_days_to_fix === null ? "–" : `${num(t.median_days_to_fix)} days`} to fix; ${t.on_time_pct === null ? "–" : `${t.on_time_pct}%`} on time</div></div>
+        <div class="card kpi"><div class="label">SLA breaches</div><div class="value">${num(t.breaches)}</div><div class="note">Jobs that missed their fix date without a rescan proving the fix. Oldest open finding: ${t.oldest_days === null ? "–" : `${num(t.oldest_days)} days`}.</div></div>
+      </div>
+      ${d.trend.length > 1 ? `<div class="card mt"><h2>Open findings at each import</h2>${bars(d.trend.map((x) => ({ name: fmtDate(x.as_of), ale: x.open_findings, label: num(x.open_findings) })), max)}</div>` : ""}
+      <div class="card mt"><h2>By team</h2>${scoreRows(d.teams, "team", "Team")}</div>
+      <div class="card mt"><h2>By plant or site</h2><p class="muted" style="margin-top:0">A job counts at every site its hosts are at.</p>${scoreRows(d.plants, "site", "Site")}</div>`;
+  },
+};
+
+// ---------- OT plans: what the plant engineer records ----------
+const OT_STAGE = { approvals: "Waiting for approvals", oem: "Needs OEM approval", "oem-refused": "OEM refused", slot: "Needs a shutdown slot", ready: "Ready for the shutdown", executed: "Carried out: waiting for a rescan", fixed: "Fixed (proved by rescan)", closed: "Closed without a fix" };
+const otStage = (k) => `<span class="status st-ot-${esc(k)}">${esc(OT_STAGE[k] || k)}</span>`;
+const OEM_LABEL = { "not-requested": "Not requested", requested: "Requested", approved: "Approved", refused: "Refused" };
+const todayIso = (n = 0) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+function otPlanHtml(p, j, editable) {
+  const o = p.oem, c = p.control, s = p.slot;
+  const named = Object.entries(p.named_shutdowns).map(([site, on]) => `${esc(site)}: ${esc(fmtDate(on))}`).join("; ");
+  const execRows = p.executions.map((e) => `<tr><td>${esc(fmtDate(e.on))}</td><td>${esc(e.result_label)}</td><td class="n">${e.hosts.length}</td><td>${esc(e.note)}</td><td>${esc(e.by)}</td></tr>`).join("");
+  const oemText = o.state === "not-requested" ? "Not requested yet." :
+    `${esc(OEM_LABEL[o.state])}${o.state === "requested" ? ` on ${esc(fmtDate(o.requested_on))}` : ` on ${esc(fmtDate(o.decided_on))}`}${o.reference ? `, reference <b class="mono">${esc(o.reference)}</b>` : ""}${o.note ? `. ${esc(o.note)}` : ""}`;
+  const form = (name, inner, btn) => editable ? `<form class="stack-form" data-ot="${name}" style="margin-top:10px">${inner}<div class="toolbar"><button class="btn primary">${btn}</button></div></form>` : "";
+  const hostChecks = j.hosts.map((h) => `<label class="check"><input type="checkbox" name="hosts" value="${esc(h)}" checked> ${esc(h)}</label>`).join(" ");
+  return `<div class="card mt"><h2>OT plan ${otStage(p.stage)}</h2>
+    <p class="muted" style="margin-top:0">Plant${p.sites.length === 1 ? "" : "s"}: ${p.sites.map(esc).join(", ") || "not recorded"}. The plant engineer carries the staged plan out by hand and records each stage here. Recording the work does not close the job: the next rescan does.${editable || !p.why_not || !can("M-OT", "act") ? "" : ` ${esc(p.why_not)}`}</p>
+    <div class="grid two">
+      <div><h3>1. OEM approval</h3><p>${oemText}</p>
+        ${form("oem", `<label>State <select name="state">${[["requested", "Requested from the OEM"], ["approved", "Approved by the OEM"], ["refused", "Refused by the OEM"]].map(([v, l]) => `<option value="${v}"${v === (o.state === "requested" ? "approved" : o.state) ? " selected" : ""}>${l}</option>`).join("")}</select></label>
+          <label>Date <input type="date" name="on" max="${todayIso()}" value="${todayIso()}" required></label>
+          <label>OEM reference (case number or letter) <input name="reference" maxlength="120" value="${esc(o.reference)}"></label>
+          <label>Note <textarea name="note" maxlength="1000" placeholder="Conditions, approved firmware version, or why it was refused"></textarea></label>`, "Record OEM status")}</div>
+      <div><h3>2. Compensating control until the shutdown</h3><p>${c.text ? `${esc(c.text)} <span class="muted">(in place since ${esc(fmtDate(c.on))})</span>` : "None recorded yet."}</p>
+        ${form("control", `<label>Control in place <textarea name="control" maxlength="1000" required placeholder="For example: engineering VLAN ACL limits RDP to the jump host">${esc(c.text)}</textarea></label>
+          <label>In place since <input type="date" name="on" max="${todayIso()}" value="${esc(c.on || todayIso())}" required></label>`, "Record control")}</div>
+      <div><h3>3. Shutdown slot</h3><p>${s.on ? `${esc(fmtDate(s.on))} from ${esc(s.start)} for ${s.hours} h, confirmed with ${esc(s.with)}.` : "Not confirmed yet."}${named ? ` <span class="muted">Planned shutdown in the maintenance policy: ${named}.</span>` : ""}</p>
+        ${form("slot", `<label>Date <input type="date" name="on" min="${todayIso()}" value="${esc(s.on || Object.values(p.named_shutdowns)[0] || "")}" required></label>
+          <label>Start (plant time) <input type="time" name="start" value="${esc(s.start || "06:00")}" required></label>
+          <label>Hours <input type="number" name="hours" min="1" max="240" value="${s.hours || 8}" required></label>
+          <label>Confirmed with (operations) <input name="confirmed_with" maxlength="120" value="${esc(s.with)}" required></label>`, s.on ? "Move the slot" : "Confirm slot")}</div>
+      <div><h3>4. Carried out</h3>${execRows ? `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Result</th><th class="n">Hosts</th><th>Note</th><th>By</th></tr></thead><tbody>${execRows}</tbody></table></div>` : "<p>Nothing recorded yet.</p>"}
+        ${editable && ["approved", "reopened"].includes(j.status) && o.state === "approved" && s.on ? form("execution", `<label>Date <input type="date" name="on" max="${todayIso()}" value="${todayIso()}" required></label>
+          <label>Result <select name="result"><option value="applied">Applied on the hosts below</option><option value="partly-applied">Partly applied</option><option value="rolled-back">Applied, then rolled back</option><option value="not-applied">Not applied</option></select></label>
+          <fieldset><legend>Hosts</legend>${hostChecks}</fieldset>
+          <label>Note <textarea name="note" maxlength="2000" placeholder="Required unless fully applied"></textarea></label>`, "Record execution") :
+          editable ? '<p class="muted">Execution can be recorded once the job is approved, the OEM has approved and a shutdown slot is confirmed.</p>' : ""}</div>
+    </div></div>`;
+}
+function wireOtForms(root, j) {
+  root.querySelectorAll("form[data-ot]").forEach((f) => f.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const kind = f.dataset.ot, fd = new FormData(f), body = {};
+    for (const [k, v] of fd.entries()) if (k !== "hosts") body[k] = v;
+    if (kind === "slot") body.hours = Number(body.hours);
+    if (kind === "execution") body.hosts = fd.getAll("hosts");
+    const btn = f.querySelector("button"); btn.disabled = true;
+    try { await post(`/api/ot/${j.pk}/${kind}`, body); render(); } catch (err) { alert(err.message); btn.disabled = false; }
+  }));
+}
+
+VIEWS.ot = {
+  load: () => api("/api/ot"),
+  html(d) {
+    const rows = d.plans.map((p) => `<tr class="click" data-otplan="${p.pk}"><td class="id"><b>${esc(p.id)}</b></td><td><div class="t">${esc(p.rc_title)}</div><div class="fix">${p.hosts} hosts · ${esc(p.team)}</div></td>
+      <td>${p.sites.map(esc).join(", ")}</td><td>${ssvc(p.ssvc)}</td><td>${otStage(p.stage)}</td><td>${esc(OEM_LABEL[p.oem])}</td><td>${p.slot_on ? esc(fmtDate(p.slot_on)) : '<span class="muted">–</span>'}</td>
+      <td>${p.due_on ? `${esc(fmtDate(p.due_on))}${p.sla_breached ? ' <span class="badge warn">missed</span>' : ""}` : '<span class="muted">–</span>'}</td></tr>`).join("");
+    return `<h1>OT plans</h1>
+      <p class="sub">Fixes on OT assets at your plant. Nothing is pushed to a controller: you carry the staged plan out by hand and record the OEM's approval, the control held until the shutdown, the confirmed shutdown slot and what happened.</p>
+      <div class="card">${rows ? `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Plant</th><th>SSVC</th><th>Stage</th><th>OEM</th><th>Shutdown slot</th><th>Fix due</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted" style="margin:0">No OT jobs at your plant yet. A team raises one from its portal; it appears here as soon as it is raised.</p>'}</div>`;
+  },
+  wire(root) { root.querySelectorAll("[data-otplan]").forEach((r) => r.addEventListener("click", () => { location.hash = `#/otplan/${r.dataset.otplan}`; })); },
+};
+
+VIEWS.otplan = {
+  load: (id) => api(`/api/ot/${encodeURIComponent(id)}`),
+  html(j) {
+    const d = j.draft;
+    return `<div class="crumb"><a href="#/ot">← OT plans</a></div>
+      <h1>${esc(j.id)}: ${esc(j.rc_title)}</h1>
+      <div class="chips">${jobStatus(j)} ${ssvc(j.ssvc)} ${otBadge(true)} <span class="badge">${esc(j.team)}</span>${j.due_on ? ` <span class="badge ${j.sla_breached ? "warn" : ""}">Fix due ${esc(fmtDate(j.due_on))}${j.sla_breached ? ": missed" : ""}</span>` : ""}${j.jira ? ` <span class="badge mono">Jira ${esc(j.jira)}</span>` : ""}</div>
+      ${otPlanHtml(j.plan, j, j.plan.can_act)}
+      ${rescanHtml(j)}
+      ${d && d.lane ? draftHtml(j, d) : ""}
+      <div class="card mt"><h2>Audit trail</h2><div class="table-wrap"><table>
+        <thead><tr><th>When</th><th>Who</th><th>What</th><th>Comment</th></tr></thead>
+        <tbody>${j.audit.map((a) => `<tr><td class="mono">${esc(fmtTime(a.at))}</td><td>${esc(a.actor || "Sutra")}</td><td>${esc(a.action)}</td><td>${esc(a.comment)}</td></tr>`).join("")}</tbody></table></div></div>`;
+  },
+  wire: wireOtForms,
 };
 
 const OUTCOME = { fixed: "Fixed", "partly-fixed": "Partly fixed", "not-fixed": "Not fixed", "not-rescanned": "Not rescanned", reopened: "Findings back: reopened" };
@@ -1124,7 +1236,7 @@ VIEWS.account = {
 };
 
 // ---------- router ----------
-const NEEDS_DATA = new Set(["board", "queue", "rc", "assets", "portal", "headline"]);
+const NEEDS_DATA = new Set(["board", "queue", "rc", "assets", "portal", "headline", "scorecards"]);
 let renderSeq = 0;
 async function render() {
   if (!ME) return;

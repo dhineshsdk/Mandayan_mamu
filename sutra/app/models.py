@@ -246,6 +246,30 @@ class JobStep(Base):
     escalated_to: Mapped[str] = mapped_column(String(20), default="")  # the role told the step has stalled
 
 
+class OtPlan(Base):
+    """What the plant engineer records for an OT job: OEM approval, the compensating control held until the
+    shutdown, the confirmed shutdown slot, and each attempt to apply the fix. Closure still comes only from a rescan."""
+
+    __tablename__ = "ot_plans"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), unique=True)
+    sites: Mapped[list] = mapped_column(JSON, default=list)  # plants of the job's OT hosts; who may act on it
+    oem_state: Mapped[str] = mapped_column(String(16), default="not-requested")  # requested | approved | refused
+    oem_reference: Mapped[str] = mapped_column(String(120), default="")  # the OEM's case or letter reference
+    oem_requested_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    oem_decided_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    oem_note: Mapped[str] = mapped_column(Text, default="")
+    control: Mapped[str] = mapped_column(Text, default="")  # compensating control confirmed in place
+    control_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    slot_on: Mapped[date | None] = mapped_column(Date, nullable=True)  # confirmed shutdown date
+    slot_start: Mapped[str] = mapped_column(String(5), default="")  # HH:MM, plant local time
+    slot_hours: Mapped[int] = mapped_column(Integer, default=0)
+    slot_with: Mapped[str] = mapped_column(String(120), default="")  # who in operations confirmed it
+    # [{"on", "result", "hosts", "note", "by", "at"}], newest last
+    executions: Mapped[list] = mapped_column(JSON, default=list)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class JobCheck(Base):
     """What one import showed for one job's targets."""
 

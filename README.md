@@ -62,18 +62,18 @@ the session, never from the request. The roles and modules are data in
 | Role | Modules (actions) | Scope |
 | --- | --- | --- |
 | Team member | Team portal (view, act), Patch jobs (view, act) | Their team |
-| Team manager | Team portal (view), Patch jobs (view, approve) | Their team |
+| Team manager | Team portal (view), Patch jobs (view, approve), Scorecards (view) | Their team |
 | VM analyst | Root causes, Assets, Import data (view, act), Headline check, Patch jobs (view, approve), Board (view) | Organisation |
-| Vertical head | Patch jobs (view, approve), Board, Root causes (view) | Their vertical |
-| Plant engineer | Team portal (view); OT plans when built | Their site |
-| CISO | Board, Root causes, Patch jobs (view), approval thresholds | Organisation |
+| Vertical head | Patch jobs (view, approve), Board, Root causes, Scorecards (view) | Their vertical |
+| Plant engineer | Team portal (view), OT plans (view, act) | Their site |
+| CISO | Board, Root causes, Patch jobs (view), CISO dashboard, approval thresholds | Organisation |
 | Compliance officer | Board, Audit log (view); Compliance when built | Organisation |
 | Executive | Board (view) | Organisation |
 | Auditor | Audit log (view); Compliance when built. The account must have an end date | Organisation |
 | Administrator | Administration, Import data | Organisation |
 
 - An admin can add or remove a single module action for one person, with a reason that goes in the audit log.
-- Modules that are not built yet (CISO dashboard, OT plans, Compliance) grant nothing, and an admin can switch a
+- Modules that are not built yet (Compliance) grant nothing, and an admin can switch a
   module's licence off for everyone.
 - Every screen is cut to the person's scope: a vertical head's board shows the rupee risk of their vertical only, and a
   team sees only its own assets.
@@ -150,6 +150,26 @@ recent problems, with a button to retry.
 
 `SUTRA_BASE_URL` (for example `https://sutra.example.in`) adds a link back to the job. A job shows a Jira key or
 ServiceNow number only once that system has issued it.
+
+### OT plans
+
+An OT job is approved like any other, but nothing is pushed to a controller. The plant engineer of the job's plant
+opens it under **OT plans** and records, with dates: the OEM's approval (requested, approved or refused, with the
+OEM's own reference), the compensating control held until the shutdown, the shutdown slot confirmed with operations
+(the plant's planned shutdown from the maintenance policy is offered as a suggestion), and each attempt to apply the
+fix with its result. Execution can be recorded only once the job is approved, the OEM has approved and a slot is
+confirmed; a partial or rolled-back attempt needs a note. Recording an execution never closes the job: the next
+rescan does. An engineer can record only on plans whose OT hosts are all at their own plant. Each record goes to the
+audit log, to whoever raised the job and the team's manager, and to the job's Jira issue and ServiceNow record.
+
+### Scorecards and the CISO dashboard
+
+**Scorecards** shows, for each team and each plant in the person's scope (a manager their teams, a vertical head
+their vertical, the CISO everything): open findings in the current import and how many have no job and no risk
+acceptance, the oldest open finding, jobs open and overdue, SLA breaches, jobs proved fixed, the median time to fix
+and the share fixed on time, plus open findings at each import. Time to fix is counted from the scanner first
+reporting a job's findings to the scan that proved them gone, so it measures exposure, not approval speed. A budget
+view is not built: Sutra holds no cost data to base one on.
 
 ### Import history
 

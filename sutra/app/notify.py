@@ -11,7 +11,8 @@ Events and recipients:
 - approved, accepted, rejected or sent back: whoever raised the job;
 - a step escalated: the person it was escalated to, plus the Teams channel;
 - fix SLA missed: the team's manager, plus the Teams channel;
-- fixed or reopened by a rescan, and risk acceptance expired: whoever raised it and the team's manager;
+- fixed or reopened by a rescan, risk acceptance expired, and each OT plan record (OEM approval, control, shutdown
+  slot, execution): whoever raised it and the team's manager;
 - a job raised: a Jira issue in the team's project and a ServiceNow record, if those are configured. Later events
   are added to them as comments or work notes, and a proved fix moves the Jira issue to the configured status.
 """
@@ -47,6 +48,7 @@ TEXT = {
     "reopened": ("Reopened: {id} {title}", "The scan of {as_of} reports the findings of {id} again. It is open."),
     "expired": ("Risk acceptance expired: {id} {title}",
                 "The risk acceptance {id} for {team} ended on {expires}. Fix it or ask again."),
+    "ot": ("OT plan: {id} {title}", "{what}"),
 }
 
 
@@ -134,6 +136,11 @@ def rescan(db: Session, job: Job, outcome: str, as_of) -> None:
     if outcome in ("fixed", "reopened"):
         job_event(db, job, outcome, to=_people(db, job, "raiser") + _people(db, job, "manager"),
                   as_of=as_of.isoformat() if as_of else "")
+
+
+def ot(db: Session, job: Job, what: str) -> None:
+    """A plant engineer recorded something on the job's OT plan."""
+    job_event(db, job, "ot", to=_people(db, job, "raiser") + _people(db, job, "manager"), what=what)
 
 
 def expired(db: Session, job: Job) -> None:
