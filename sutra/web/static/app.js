@@ -794,12 +794,13 @@ VIEWS.headline = {
 };
 
 VIEWS.import = {
-  async load() { const [u, ds] = await Promise.all([api("/api/data/uploads"), api("/api/data/datasets")]); return { ...u, datasets: ds }; },
+  async load() { const [u, ds, c] = await Promise.all([api("/api/data/uploads"), api("/api/data/datasets"), api("/api/data/connections")]); return { ...u, datasets: ds, conn: c }; },
   html(d) {
     const act = can("M-DAT", "act");
     return `
       <h1>Import data</h1>
-      <p class="sub">Import scanner exports, an asset register and an ownership chart. Analysing them replaces the current data for everyone.</p>
+      <p class="sub">Pull from your scanners' APIs, or import their exports, an asset register and an ownership chart. Each import replaces the current data for everyone.</p>
+      ${connectionsHtml(d.conn)}
       ${act ? `<div class="card"><h2>Your exports</h2>
         <p class="muted" style="margin-top:0">Supported: Qualys VM detection CSV, Tenable.sc or Tenable.io CSV, Nessus <code>.nessus</code> XML, an asset register CSV
           (<code>asset_id, hostname, ip, site, zone, os, owner, business_process, inr_per_hour, criticality, image, config_template, is_ot, safety_critical, personal_data</code>)
@@ -817,10 +818,11 @@ VIEWS.import = {
           ${Object.entries(d.profiles).map(([k, v]) => `<button class="btn" data-demo="${esc(k)}">Load ${esc(v)}</button>`).join("")}</div>
         <p class="muted" style="margin-bottom:0">Load the base scan first, then a later month, to see what changed between imports.</p></div>` : ""}
       <div class="card mt"><h2>Import history</h2>${d.datasets.length ? `<div class="table-wrap"><table><thead><tr><th>Scans as of</th><th>Imported</th><th>Organisation</th><th>Kind</th><th class="n">Findings</th><th>Files</th><th>By</th></tr></thead><tbody>
-        ${d.datasets.map((x) => `<tr><td>${esc(fmtDate(x.as_of))}</td><td class="mono">${esc(fmtTime(x.at))}</td><td>${esc(x.org || "–")} ${x.current ? '<span class="badge">current</span>' : ""}</td><td>${x.kind === "demo" ? '<span class="badge warn">synthetic</span>' : "upload"}</td><td class="n">${x.summary.findings ?? "–"}</td>
+        ${d.datasets.map((x) => `<tr><td>${esc(fmtDate(x.as_of))}</td><td class="mono">${esc(fmtTime(x.at))}</td><td>${esc(x.org || "–")} ${x.current ? '<span class="badge">current</span>' : ""}</td><td>${x.kind === "demo" ? '<span class="badge warn">synthetic</span>' : x.kind === "api" ? "scanner API" : "upload"}</td><td class="n">${x.summary.findings ?? "–"}</td>
           <td>${x.files.map((f) => esc(f.name)).join("<br>")}</td><td>${esc(x.by)}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">Nothing imported yet.</p>'}</div>`;
   },
-  wire(root) {
+  wire(root, d) {
+    wireConnections(root, d.conn);
     if (!can("M-DAT", "act")) return;
     const msg = root.querySelector("#imp-msg");
     const fail = (e) => (msg.innerHTML = `<div class="error" style="margin-top:10px">${esc(e.message)}</div>`);
@@ -850,6 +852,89 @@ VIEWS.import = {
     root.querySelector("#clear").addEventListener("click", async () => { await api("/api/data/uploads", { method: "DELETE" }); render(); });
   },
 };
+
+// ---------- scanner API connections (Data and connectors) ----------
+const PULL_STATUS = { running: "Running", ok: "Imported", failed: "Failed: nothing imported" };
+function connectionForm(kinds, c) {
+  const k = c ? c.kind : "qualys";
+  return `<form class="form-grid" data-conn="${c ? c.id : ""}" style="margin-top:10px">
+    <label>Scanner <select name="kind" ${c ? "disabled" : ""}>${Object.entries(kinds).map(([key, v]) => `<option value="${key}"${key === k ? " selected" : ""}>${esc(v.label)}</option>`).join("")}</select></label>
+    <label>Name <input name="name" maxlength="80" required value="${esc(c ? c.name : "")}" placeholder="For example Qualys corporate"></label>
+    <label>API address <input name="base_url" maxlength="300" value="${esc(c ? c.base_url : "")}" placeholder="${esc(kinds[k].url_hint)}"></label>
+    <label><span data-user-label>${esc(kinds[k].user)}</span> <input name="username" maxlength="200" required value="${esc(c ? c.username : "")}" autocomplete="off"></label>
+    <label><span data-secret-label>${esc(kinds[k].secret)}</span> <input name="secret" type="password" maxlength="500" ${c ? 'placeholder="Unchanged"' : "required"} autocomplete="new-password"></label>
+    <label>CA bundle path (internal CA only) <input name="ca_bundle" maxlength="500" value="${esc(c ? c.ca_bundle : "")}" placeholder="Leave empty for public certificates"></label>
+    <label class="check"><input type="checkbox" name="enabled" ${!c || c.enabled ? "checked" : ""}> Included in pulls</label>
+    <div class="toolbar"><button class="btn primary">${c ? "Save" : "Add connection"}</button>${c ? '<button type="button" class="btn" data-cancel>Cancel</button>' : ""}</div></form>`;
+}
+function connectionsHtml(d) {
+  const admin = can("M-DAT", "admin"), act = can("M-DAT", "act");
+  const running = d.pulls.find((x) => x.status === "running");
+  const rows = d.connections.map((c) => `<tr><td><b>${esc(c.name)}</b><div class="fix">${esc(c.kind_label)}</div></td><td class="mono">${esc(c.base_url)}</td><td class="mono">${esc(c.username)}</td>
+    <td>${c.enabled ? "Yes" : '<span class="muted">No</span>'}</td>${admin ? `<td style="white-space:nowrap"><button class="btn small" data-edit="${c.id}">Edit</button> <button class="btn small" data-del="${c.id}">Remove</button></td>` : ""}</tr>`).join("");
+  const pulls = d.pulls.map((x) => `<tr><td class="mono">${esc(fmtTime(x.started))}</td><td>${x.trigger === "schedule" ? "Daily schedule" : "By hand"}</td>
+    <td><span class="status ${x.status === "failed" ? "st-rejected" : x.status === "ok" ? "st-approved" : "st-pending"}">${esc(PULL_STATUS[x.status])}</span>${x.error ? `<div class="fix">${esc(x.error)}</div>` : ""}</td>
+    <td>${x.results.map((r) => `${esc(r.name)}: ${r.error ? `<span class="warn-ink">${esc(r.error)}</span>` : `${num(r.findings)} findings, ${num(r.hosts)} hosts`}`).join("<br>")}</td></tr>`).join("");
+  return `<div class="card"><h2>Scanner connections</h2>
+    <p class="muted" style="margin-top:0">Sutra reads open findings and hosts from these APIs, read-only, and imports them like an export. If any connection fails, nothing is imported, so a scanner that did not answer can never make findings look fixed. Credentials are stored encrypted and are never shown again.</p>
+    ${rows ? `<div class="table-wrap"><table><thead><tr><th>Connection</th><th>API address</th><th>User or access key</th><th>In pulls</th>${admin ? "<th></th>" : ""}</tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No scanner connections yet.</p>'}
+    <div id="conn-edit"></div>
+    ${admin ? `<details style="margin-top:10px"><summary>Add a connection</summary>${connectionForm(d.kinds, null)}</details>` : ""}
+    <div class="toolbar" style="margin-top:12px">${act ? `<button class="btn primary" id="pull-now" ${running || !d.connections.some((c) => c.enabled) ? "disabled" : ""}>${running ? "Pulling…" : "Pull now"}</button>` : ""}
+      ${admin ? `<label class="check"><input type="checkbox" id="sched-on" ${d.schedule.enabled ? "checked" : ""}> Pull every day at</label>
+        <select id="sched-hour">${[...Array(24).keys()].map((h) => `<option value="${h}"${h === d.schedule.hour ? " selected" : ""}>${String(h).padStart(2, "0")}:00 IST</option>`).join("")}</select>
+        <button class="btn" id="sched-save">Save schedule</button>` : `<span class="muted">${d.schedule.enabled ? `Pulled every day at ${String(d.schedule.hour).padStart(2, "0")}:00 IST.` : "No daily pull is scheduled."}</span>`}</div>
+    <div id="conn-msg"></div>
+    ${pulls ? `<h3>Recent pulls</h3><div class="table-wrap"><table><thead><tr><th>Started</th><th>How</th><th>Result</th><th>Per connection</th></tr></thead><tbody>${pulls}</tbody></table></div>` : ""}</div>`;
+}
+function wireConnections(root, d) {
+  const msg = root.querySelector("#conn-msg");
+  const fail = (e) => (msg.innerHTML = `<div class="error" style="margin-top:10px">${esc(e.message)}</div>`);
+  const wireForm = (f) => {
+    const kindSel = f.querySelector("select[name=kind]");
+    kindSel.addEventListener("change", () => {
+      const k = d.kinds[kindSel.value];
+      f.querySelector("[data-user-label]").textContent = k.user; f.querySelector("[data-secret-label]").textContent = k.secret;
+      f.querySelector("input[name=base_url]").placeholder = k.url_hint;
+    });
+    const cancel = f.querySelector("[data-cancel]");
+    if (cancel) cancel.addEventListener("click", () => { root.querySelector("#conn-edit").innerHTML = ""; });
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const body = { kind: kindSel.value, name: f.name.value, base_url: f.base_url.value, username: f.username.value, secret: f.secret.value, ca_bundle: f.ca_bundle.value, enabled: f.enabled.checked };
+      try {
+        if (f.dataset.conn) await api(`/api/data/connections/${f.dataset.conn}`, { method: "PUT", json: body });
+        else await post("/api/data/connections", body);
+        render();
+      } catch (err) { fail(err); }
+    });
+  };
+  root.querySelectorAll("form[data-conn]").forEach(wireForm);
+  root.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => {
+    const c = d.connections.find((x) => String(x.id) === b.dataset.edit);
+    const box = root.querySelector("#conn-edit");
+    box.innerHTML = `<h3>Edit ${esc(c.name)}</h3>${connectionForm(d.kinds, c)}`;
+    wireForm(box.querySelector("form"));
+  }));
+  root.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+    if (!confirm("Remove this connection? Its stored credentials are deleted.")) return;
+    try { await api(`/api/data/connections/${b.dataset.del}`, { method: "DELETE" }); render(); } catch (err) { fail(err); }
+  }));
+  const save = root.querySelector("#sched-save");
+  if (save) save.addEventListener("click", async () => {
+    try { await api("/api/data/connections-schedule", { method: "PUT", json: { enabled: root.querySelector("#sched-on").checked, hour: Number(root.querySelector("#sched-hour").value) } }); render(); } catch (err) { fail(err); }
+  });
+  const now = root.querySelector("#pull-now");
+  if (now) now.addEventListener("click", async () => {
+    now.disabled = true; now.textContent = "Pulling…";
+    try { await post("/api/data/pulls", {}); } catch (err) { fail(err); now.disabled = false; now.textContent = "Pull now"; return; }
+    render();
+  });
+  if (d.pulls.some((x) => x.status === "running")) {
+    const seq = renderSeq;
+    setTimeout(async () => { if (seq === renderSeq) { await refreshStatus(); render(); } }, 3000);
+  }
+}
 
 VIEWS.audit = {
   load: () => api("/api/audit?limit=200"),

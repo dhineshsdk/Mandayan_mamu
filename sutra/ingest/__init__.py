@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import json
 from datetime import date, datetime
 from pathlib import Path
 
@@ -148,9 +149,51 @@ def load_nessus(path: Path) -> list[dict]:
     return out
 
 
+ROWS_HEADER = "sutra-rows"
+ROW_KEYS = ("scanner", "ref", "file", "row", "ip", "host", "os", "title", "severity", "cvss", "cves", "port",
+            "evidence", "solution", "first", "last", "package", "installed", "fixed", "control",
+            "credential_fp", "kind")
+
+
+def write_rows(path: Path, source: str, rows) -> int:
+    """Store rows pulled from a scanner API (``sutra_connectors.sutra_rows``) as JSON lines, after a header line."""
+    n = 0
+    with path.open("w", encoding="utf-8") as fh:
+        fh.write(json.dumps({"format": ROWS_HEADER, "version": 1, "source": source}) + "\n")
+        for r in rows:
+            out = {k: r.get(k) for k in ROW_KEYS}
+            out["first"] = r["first"].isoformat() if r.get("first") else None
+            out["last"] = r["last"].isoformat() if r.get("last") else None
+            fh.write(json.dumps(out) + "\n")
+            n += 1
+    return n
+
+
+def load_rows(path: Path) -> list[dict]:
+    """Rows written by :func:`write_rows`: the same dicts the file loaders build."""
+    out = []
+    with path.open(encoding="utf-8") as fh:
+        header = json.loads(fh.readline())
+        if header.get("format") != ROWS_HEADER or header.get("version") != 1:
+            raise ValueError(f"{path.name}: not a Sutra rows file")
+        for line in fh:
+            if not line.strip():
+                continue
+            r = json.loads(line)
+            missing = [k for k in ROW_KEYS if k not in r]
+            if missing:
+                raise ValueError(f"{path.name}: row without {', '.join(missing)}")
+            r["first"] = date.fromisoformat(r["first"]) if r["first"] else None
+            r["last"] = date.fromisoformat(r["last"]) if r["last"] else None
+            out.append(r)
+    return out
+
+
 def detect_format(path: Path) -> str:
-    """qualys | tenable | nessus | cmdb | teams, from the file's first bytes."""
+    """qualys | tenable | nessus | rows | cmdb | teams, from the file's first bytes."""
     head = path.read_bytes()[:20000].decode("utf-8", "ignore")
+    if head.startswith('{"format": "%s"' % ROWS_HEADER):
+        return "rows"
     if "NessusClientData_v2" in head:
         return "nessus"
     first_lines = head.splitlines()[:30]
@@ -167,7 +210,7 @@ def detect_format(path: Path) -> str:
     raise ValueError(f"{path.name}: not a Qualys CSV, Tenable CSV, .nessus file or CMDB CSV")
 
 
-LOADERS = {"qualys": load_qualys, "tenable": load_tenable, "nessus": load_nessus}
+LOADERS = {"qualys": load_qualys, "tenable": load_tenable, "nessus": load_nessus, "rows": load_rows}
 
 
 def resolve_assets(cmdb: list[Asset], raws: list[dict]) -> dict[str, Asset]:

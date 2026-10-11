@@ -13,14 +13,14 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import drafting, migrate, notify, sweeper
+from . import drafting, migrate, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
 from .db import make_engine, make_sessionmaker
 from .integrations import Senders
 from .jobs import Conflict, Forbidden
-from .routes import admin, auth, data, history, jobs, ot, views
+from .routes import admin, auth, data, history, jobs, ot, scanners, views
 
 STATIC = Path(__file__).resolve().parent.parent / "web" / "static"
 
@@ -42,10 +42,15 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
             app.state.analysis.load_current(db)
         drafting.resume(app.state.drafts, app.state.analysis.result)
         sweeper.sweep(app.state.sessionmaker)
+        with app.state.sessionmaker() as db:
+            scanpull.fail_interrupted(db)
+            db.commit()
         if background:
             app.state.sweeper.start()
             app.state.dispatcher.start()
+            app.state.puller.start_schedule()
         yield
+        app.state.puller.stop()
         app.state.dispatcher.stop()
         app.state.sweeper.stop()
         app.state.drafts.shutdown()
@@ -60,6 +65,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.sweeper = sweeper.Sweeper(app.state.sessionmaker)
     app.state.senders = Senders(settings)
     app.state.dispatcher = notify.Dispatcher(app.state.sessionmaker, app.state.senders)
+    app.state.puller = scanpull.Puller(app)
 
     @app.middleware("http")
     async def guard(request: Request, call_next):
@@ -108,8 +114,8 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
         return JSONResponse({"error": f"{field}: {first.get('msg', 'invalid')}" if field else "Invalid request."},
                             status_code=422)
 
-    for router in (auth.router, views.router, jobs.router, ot.router, data.router, history.router, admin.router,
-                   admin.audit_router):
+    for router in (auth.router, views.router, jobs.router, ot.router, data.router, scanners.router, history.router,
+                   admin.router, admin.audit_router):
         app.include_router(router)
 
     @app.api_route("/api/{rest:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"], include_in_schema=False)

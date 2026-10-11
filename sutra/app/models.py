@@ -310,6 +310,39 @@ class Outbox(Base):
     last_error: Mapped[str] = mapped_column(Text, default="")
 
 
+class ScannerConnection(Base):
+    """A scanner API Sutra pulls from (``sutra_connectors``). The secret is encrypted (``sutra.app.vault``)."""
+
+    __tablename__ = "scanner_connections"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16))  # qualys | tenable_vm | tenable_sc
+    name: Mapped[str] = mapped_column(String(80))
+    base_url: Mapped[str] = mapped_column(String(300))
+    username: Mapped[str] = mapped_column(String(200), default="")  # Qualys user name or Tenable access key
+    secret: Mapped[str] = mapped_column(Text, default="")  # encrypted password or secret key
+    ca_bundle: Mapped[str] = mapped_column(String(500), default="")  # path to a CA bundle for an internal CA
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class ScanPull(Base):
+    """One scheduled or manual refresh from every enabled scanner API, and what it produced."""
+
+    __tablename__ = "scan_pulls"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    trigger: Mapped[str] = mapped_column(String(16))  # schedule | manual
+    started_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    status: Mapped[str] = mapped_column(String(12), default="running")  # running | ok | failed
+    # [{"connection", "name", "findings", "hosts", "error"}] per scanner connection
+    results: Mapped[list] = mapped_column(JSON, default=list)
+    error: Mapped[str] = mapped_column(Text, default="")
+    dataset_id: Mapped[int | None] = mapped_column(ForeignKey("datasets.id", ondelete="SET NULL"), nullable=True)
+
+
 class AuditEvent(Base):
     __tablename__ = "audit_events"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
