@@ -149,6 +149,26 @@ class Setting(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
+class AiExplanation(Base):
+    """A finished AI (or rule-written) explanation, kept so a screen does not call the model on every view.
+
+    It is reused only while the facts it was written from, the person's scope and the model configuration are
+    unchanged; any change to those makes a new row.
+    """
+
+    __tablename__ = "ai_explanations"
+    __table_args__ = (UniqueConstraint("kind", "subject", "scope_key", "facts_hash", "config_key"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16))  # root_cause | briefing
+    subject: Mapped[str] = mapped_column(String(120))
+    scope_key: Mapped[str] = mapped_column(String(64))
+    facts_hash: Mapped[str] = mapped_column(String(64))
+    config_key: Mapped[str] = mapped_column(String(160))
+    source: Mapped[str] = mapped_column(String(16))
+    result: Mapped[dict] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
+
+
 class Dataset(Base):
     """One import: the files, when the scans happened (as_of) and when Sutra saw them (created_at).
 

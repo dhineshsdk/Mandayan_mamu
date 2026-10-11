@@ -109,3 +109,11 @@ def test_an_injected_finding_makes_the_explanation_louder_not_quieter():
 def test_output_is_json_safe():
     facts = rc_facts()
     json.dumps(Explainer(None).explain_root_cause(facts).to_dict(facts))
+
+
+def test_a_model_reader_picks_categories_but_never_the_suspicion_flag():
+    from sutra_explain import ModelReader
+    reader = ModelReader(FakeClient({"labels": [{"n": 0, "category": "denial-of-service"}]}))
+    facts = root_cause_facts(payload(), "RC-002", reader=reader)
+    assert facts.nodes["F1"].fields["category"] == "denial-of-service"
+    assert facts.nodes["R1"].fields["injection_suspects"] == 1

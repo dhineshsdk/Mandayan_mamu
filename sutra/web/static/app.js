@@ -253,6 +253,36 @@ const jobsIfAllowed = async () => (can("M-PJ") ? (await api("/api/jobs")).jobs :
 // ---------- screens: load() fetches what the screen needs, html() draws it, wire() adds behaviour ----------
 const VIEWS = {};
 
+// ---------- AI explanations (every sentence cites the facts it rests on) ----------
+const AI_ROLE = { supports: ["", "Supports"], contradicts: ["warn", "Evidence against"], uncertainty: ["warn", "Uncertain"], next_check: ["", "Next check"] };
+const AI_ACTION = { open_ticket: "open a ticket", open_pull_request: "open a pull request", stage_change: "stage a change", notify: "notify the owner", request_rescan: "request a rescan" };
+function aiClaim(c) {
+  const [cls, label] = AI_ROLE[c.role] || ["", c.role];
+  const chips = c.cites.map((x) => `<span class="badge" title="${esc(x.type)} ${esc(x.id)}: ${esc(x.label)}">${esc(x.ref)}</span>`).join(" ");
+  return `<li><span class="badge ${cls}">${esc(label)}</span> ${esc(c.text)} <span class="cites">${chips}</span>${c.action !== "none" ? ` <span class="muted">Suggested: ${esc(AI_ACTION[c.action] || c.action)}. Nothing is done until a person does it.</span>` : ""}</li>`;
+}
+function aiByline(x) {
+  const by = x.source === "ai" ? `Written by an AI model (${esc(x.model || "")}) and checked by Sutra. Only sentences that cite the facts below are shown.` : "Written from fixed rules, with no AI model.";
+  const why = x.source !== "ai" && x.fallback_reason ? ` <span class="muted">(${esc(x.fallback_reason)})</span>` : "";
+  return `<p class="muted" style="margin:0 0 8px">${by}${why}</p>`;
+}
+function aiCiteKey(x) {
+  const seen = new Map();
+  const all = (x.claims || x.sections.flatMap((s) => s.claims)).flatMap((c) => c.cites);
+  all.forEach((c) => seen.set(c.ref, c));
+  return `<details style="margin-top:8px"><summary>What the letters mean</summary><ul>${[...seen.values()].map((c) => `<li><span class="badge">${esc(c.ref)}</span> ${esc(c.type.replace("_", " "))} ${esc(c.id)}${c.label && c.label !== c.id ? `: ${esc(c.label)}` : ""}</li>`).join("")}</ul></details>`;
+}
+function explanationHtml(x) {
+  return `${aiByline(x)}<ul class="ai">${x.claims.map(aiClaim).join("")}</ul>${aiCiteKey(x)}`;
+}
+function briefingHtml(x) {
+  return `${aiByline(x)}${x.sections.map((s) => `<h3 style="margin:12px 0 4px">${esc(s.title)}</h3><ul class="ai">${s.claims.map(aiClaim).join("")}</ul>`).join("")}${aiCiteKey(x)}`;
+}
+async function loadAi(box, path, render) {
+  try { box.innerHTML = render(await api(path)); }
+  catch (err) { box.innerHTML = `<p class="muted" style="margin:0">Could not write this explanation: ${esc(err.message)}</p>`; }
+}
+
 VIEWS.board = {
   load: () => api("/api/board"),
   html(d) {
@@ -298,9 +328,21 @@ VIEWS.board = {
         <div class="toolbar" style="justify-content:space-between"><h2 style="margin:0">Top ${h.top_n} root causes, ranked by rupee risk</h2>
           <a class="btn" href="/api/board/pack" target="_blank" rel="noopener">Open board pack (prints to one page)</a></div>
         ${rcTable(d.root_causes.slice(0, h.top_n), { compact: true })}
-      </div>`;
+      </div>
+      <div class="card mt"><div class="toolbar" style="justify-content:space-between;margin:0"><h2 style="margin:0">Quarterly briefing</h2>
+        <div><button class="btn" id="brief-go">Write the briefing</button>
+          <a class="btn" href="/api/board/pack?briefing=1" target="_blank" rel="noopener">Board pack with briefing</a></div></div>
+        <div id="brief-box"><p class="muted" style="margin:8px 0 0">Plain-language sections for directors. Every sentence cites the figures it rests on.</p></div></div>`;
   },
-  wire: wireRows,
+  wire(root) {
+    wireRows(root);
+    root.querySelector("#brief-go").addEventListener("click", (e) => {
+      e.target.disabled = true;
+      const box = root.querySelector("#brief-box");
+      box.innerHTML = '<p class="muted" style="margin:8px 0 0">Writing…</p>';
+      loadAi(box, "/api/board/briefing", briefingHtml).finally(() => { e.target.disabled = false; });
+    });
+  },
 };
 
 VIEWS.queue = {
@@ -371,6 +413,7 @@ VIEWS.rc = {
           <dt>Outage hours</dt><dd>${ri.outage_hours_pert.join(" – ")}</dd>
           <dt>Processes</dt><dd>${esc(ri.processes.join(", "))}</dd></dl></div>
       </div>
+      <div class="card mt"><h2>Explanation</h2><div id="ai-expl"><p class="muted" style="margin:0">Writing…</p></div></div>
       ${can("M-PJ") || myTeams.length ? `<div class="card mt"><div class="toolbar" style="justify-content:space-between;margin:0"><h2 style="margin:0">Patch jobs</h2>
         <div>${raiseButtons(r, myTeams, d.jobs)}</div></div>
         ${jobs.length ? jobTable(jobs) : `<p class="muted" style="margin-bottom:0">No jobs yet. Owning teams: ${esc(r.owners.join(", ") || "none mapped")}.</p>`}</div>` : ""}
@@ -393,7 +436,11 @@ VIEWS.rc = {
           <td>${fmtDate(f.first_seen)}</td><td>${dueLabel(f.due)}</td>
           <td class="mono" style="font-size:11.5px">${f.sources.map((s) => `${esc(s.scanner)} ${esc(s.scanner_ref)}<br><span class="muted">${esc(s.source_file)}:${esc(s.source_row)}</span>`).join("<br>")}</td></tr>`).join("")}</tbody></table></div></div>`;
   },
-  wire(root) { wireRaise(root); wireRows(root); },
+  wire(root, d) {
+    wireRaise(root); wireRows(root);
+    const box = root.querySelector("#ai-expl");
+    if (box && d.root_causes.some((x) => x.id === d.rcId)) loadAi(box, `/api/root-causes/${encodeURIComponent(d.rcId)}/explanation`, explanationHtml);
+  },
 };
 
 VIEWS.assets = {
@@ -723,7 +770,7 @@ function cites(list) {
   return `<div class="fix" title="${esc(full)}">Based on: ${parts.join("; ")}</div>`;
 }
 function draftHtml(j, d) {
-  const by = d.source === "ai" ? `Drafted by Claude${d.model ? ` (${esc(d.model)})` : ""} and checked by Sutra against the scan data.` :
+  const by = d.source === "ai" ? `Drafted by an AI model${d.model ? ` (${esc(d.model)})` : ""} and checked by Sutra against the scan data.` :
     `Drafted from Sutra's templates.${d.fallback_reason ? ` ${esc(d.fallback_reason)}.` : ""}`;
   return `<div class="grid two" style="margin-top:14px">
     <div class="card"><h2>${d.lane === "ot" ? "Staged plan" : "Patch job"}</h2>
@@ -1468,7 +1515,7 @@ function auditRows(events) {
 VIEWS.admin = {
   async load(tab) {
     const full = can("M-ADM", "admin");
-    tab = full ? tab || "people" : ["rules", "maintenance", "sla"].includes(tab) ? tab : "rules";
+    tab = full ? tab || "people" : ["rules", "maintenance", "sla", "ai"].includes(tab) ? tab : "rules";
     const d = { tab, full };
     if (full) d.catalog = await api("/api/admin/catalog");
     if (tab === "people") d.users = await api("/api/admin/users");
@@ -1476,12 +1523,13 @@ VIEWS.admin = {
     if (tab === "rules") d.rules = await api("/api/admin/approval-rules");
     if (tab === "maintenance") d.maint = await api("/api/admin/maintenance");
     if (tab === "sla") d.sla = await api("/api/admin/sla");
+    if (tab === "ai") d.ai = await api("/api/admin/ai");
     if (tab === "integrations") d.integ = await api("/api/admin/integrations");
     if (tab === "directory") d.dir = await api("/api/admin/directory");
     return d;
   },
   html(d) {
-    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["integrations", "Integrations"], ["directory", "Entra ID sync"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"]];
+    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["ai", "AI"], ["integrations", "Integrations"], ["directory", "Entra ID sync"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["ai", "AI"]];
     return `<h1>Administration</h1>
       <div class="tabs">${tabs.map(([k, l]) => `<a href="#/admin/${k}" class="${k === d.tab ? "active" : ""}">${esc(l)}</a>`).join("")}</div>
       <div id="admin-msg"></div>
@@ -1617,7 +1665,7 @@ const ADMIN_TABS = {
             : '<p class="muted">No OT sites in the current import.</p>'}
           <div><button class="btn primary">Save</button></div>
         </form>
-        <p class="muted" style="margin-bottom:0">Drafts are written by ${d.maint.ai_drafting ? "Claude, checked against the scan data, with the templates as fallback" : "rule-based templates (no Anthropic API key is set)"}. New settings apply to jobs raised after saving.</p></div>`;
+        <p class="muted" style="margin-bottom:0">Drafts are written by ${d.maint.ai_drafting ? "an AI model, checked against the scan data, with the templates as fallback" : "rule-based templates (no AI model is set up; see the AI tab)"}. New settings apply to jobs raised after saving.</p></div>`;
     },
     wire(root) {
       root.querySelector("#maint").addEventListener("submit", async (e) => {
@@ -1633,6 +1681,21 @@ const ADMIN_TABS = {
         } catch (err) { adminMsg(root, esc(err.message), "error"); }
       });
     },
+  },
+  ai: {
+    html(d) {
+      const a = d.ai;
+      const yn = (v) => (v ? "an AI model" : "fixed rules");
+      return `<div class="card"><h2>AI</h2>
+        <dl class="kv"><dt>Model</dt><dd>${a.provider === "off" ? "None" : esc(a.provider === "local" ? `${a.model} on ${a.local_endpoint} (inside your network)` : `${a.model} through the Anthropic API`)}</dd>
+          <dt>Explanations and briefing</dt><dd>${yn(a.explanations_by_model)}</dd>
+          <dt>Patch-job drafts</dt><dd>${yn(a.drafting_by_model)}</dd>
+          <dt>Finding text is read by</dt><dd>${a.reader === "model" ? "the model (labels only)" : "fixed rules; no finding text is sent to a model"}</dd></dl>
+        <p style="margin:12px 0 0">${esc(a.note)}</p>
+        ${a.reason && a.provider === "off" ? `<p class="muted" style="margin:8px 0 0">${esc(a.reason)}.</p>` : ""}
+        <p class="muted" style="margin:8px 0 0">A model can only write explanations and drafts. It never changes a risk figure, a triage decision or who must approve, and anything it writes that does not cite the facts it was given is dropped. Settings are environment variables; see the README.</p></div>`;
+    },
+    wire() {},
   },
   sla: {
     html(d) {

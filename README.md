@@ -10,7 +10,7 @@ Python 3.11 or later.
 
 ```
 python3 -m venv .venv && . .venv/bin/activate
-pip install -e ./patchdraft -e ./connectors -e ./compliance -e .  # add "./patchdraft[ai]" for Claude drafting
+pip install -e ./patchdraft -e ./connectors -e ./compliance -e ./explain -e .  # add "./patchdraft[ai]" for Claude drafting
 sutra db-upgrade                                   # creates workspace/sutra.db (SQLite)
 sutra create-admin --email you@company.com --name "Your Name"
 sutra serve                                        # http://127.0.0.1:8765
@@ -103,6 +103,35 @@ and compensating controls. Every step cites the root cause, hosts, changes and f
   22:00 to 02:00 IST), counted from the day the job is raised. OT plans use the next planned shutdown an
   administrator names for the site; without one, the plan says the slot is not set rather than guessing.
 - Who approves is decided by the routing rules, never by the draft.
+
+### AI explanations and the board briefing
+
+Root-cause pages carry an **Explanation**, and the Board has a **Quarterly briefing** (also available inside the
+printable board pack with `?briefing=1`). They come from `sutra_explain` in `explain/` (see its README) and are
+designed so that hostile scanner text cannot steer them:
+
+- The model never sees a scanner title, hostname, banner or ticket comment. It sees typed facts (numbers, fixed
+  vocabularies, CVE IDs, rupee labels) with short refs like `R1` and `A2`. Names are filled in by Sutra afterwards.
+- Every sentence cites the refs it rests on. A sentence is dropped, and the whole answer replaced by a rule-written
+  one, unless its refs exist, its numbers come from the cited facts, and strong words (exploited, internet, safety,
+  plant, overdue) are backed by a cited field. Wording about ignoring, closing, lowering or accepting is refused.
+- A model can only suggest ticket, pull request, stage, notify or rescan; a policy gate checks it (plant systems stop
+  at ticket, stage and notify) and nothing is done until a person does it. It never changes a risk figure, a triage
+  decision or an approval level.
+- Text that looks aimed at an AI is counted and shown as a reason for concern. It is never obeyed.
+- Explanations run with the asker's own scope, are kept until the facts change, and each one generated is audited.
+
+| Variable | Meaning |
+| --- | --- |
+| `SUTRA_AI_PROVIDER` | `auto` (default), `anthropic`, `local` or `off`. `auto`: a local model if `SUTRA_AI_LOCAL_URL` is set, else Claude if `ANTHROPIC_API_KEY` is set, else rules only. |
+| `SUTRA_AI_LOCAL_URL`, `SUTRA_AI_LOCAL_MODEL`, `SUTRA_AI_LOCAL_KEY` | An OpenAI-compatible chat endpoint inside the customer's network (vLLM, llama.cpp, Ollama, LM Studio). Used for explanations and patch-job drafts; no prompt leaves the box. It must support JSON-schema constrained output. |
+| `SUTRA_AI_EXPLAIN_MODEL`, `SUTRA_AI_EXPLAIN_EFFORT` | Claude model (default `claude-sonnet-5-5`) and effort for explanations. Patch drafts keep `SUTRA_AI_MODEL`. |
+| `SUTRA_AI_READER` | `rules` (default) or `model`. With `model`, finding titles are sent to the model to be labelled with one word from a fixed list; leave it on `rules` if finding text must not leave the box. |
+| `SUTRA_AI_EXPLAIN=off` | Rule-written explanations only. |
+
+**Administration → AI** shows what is in use. With the Anthropic API selected, prompts leave the customer's network; for
+data that must stay in India or on the box, use a local model or `SUTRA_AI_PROVIDER=off`. Install
+`./explain[ai]` for the Anthropic client.
 
 ### Verified closure
 
@@ -381,7 +410,7 @@ checking against the gazette text.
 ## Tests
 
 ```
-pip install -e ./patchdraft -e ./connectors -e ./compliance -e .[dev]
+pip install -e ./patchdraft -e ./connectors -e ./compliance -e ./explain -e .[dev]
 ruff check .
 pytest
 ```

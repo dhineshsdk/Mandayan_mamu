@@ -40,7 +40,23 @@ def headline(res: Result) -> dict:
     }
 
 
-def render_board_html(res: Result) -> str:
+def briefing_html(b: dict) -> str:
+    """The quarterly briefing as a section of the board pack. ``b`` is an AI service result: every claim has already
+    passed the citation checks, and the cited nodes are listed so a reader can follow each one."""
+    by = (f"Written by an AI model ({_e(b['model'])}) and checked by Sutra against the figures above"
+          if b["source"] == "ai" else "Written from fixed rules, with no AI model")
+    parts = []
+    for sec in b["sections"]:
+        items = "".join(f"<li>{_e(c['text'])} <span class=\"cites\">[{_e(', '.join(x['ref'] for x in c['cites']))}]</span></li>"
+                        for c in sec["claims"])
+        parts.append(f"<h3>{_e(sec['title'])}</h3><ul>{items}</ul>")
+    note = f" Model fallback: {_e(b['fallback_reason'])}." if b.get("fallback_reason") else ""
+    return (f'<section class="briefing"><h2>Quarterly briefing</h2><div class="by">{by}.{note} Bracketed letters name the '
+            f'figures a sentence rests on (B1 portfolio, K1 coverage, R root causes, S sites, P processes).</div>'
+            f'{"".join(parts)}</section>')
+
+
+def render_board_html(res: Result, briefing: dict | None = None) -> str:
     h = headline(res)
     cov = res.coverage
     top = res.root_causes[:TOP_N]
@@ -124,6 +140,7 @@ def render_board_html(res: Result) -> str:
   td.money {{ font-weight:600; }}
   td.who {{ font-size:9.5px; color:var(--muted); width:92px; }}
   ul {{ margin:4px 0 0; padding-left:16px; }}
+  .briefing h3 {{ font-size:11px; margin:8px 0 2px; }} .briefing .by, .cites {{ color:var(--muted); font-size:9.5px; }}
   li {{ margin-bottom:3px; }}
   footer {{ margin-top:8px; border-top:1px solid var(--line); padding-top:5px; color:var(--muted); font-size:8.8px; }}
   @media (max-width: 640px) {{
@@ -167,6 +184,7 @@ def render_board_html(res: Result) -> str:
 
 <h2>What we ask of the board</h2>
 <ul>{''.join(f'<li>{a}</li>' for a in asks)}</ul>
+{briefing_html(briefing) if briefing else ''}
 
 <footer>
   <b>Every number has a receipt.</b> Each ID above lists its findings, hosts, scanner references (QID or plugin) and

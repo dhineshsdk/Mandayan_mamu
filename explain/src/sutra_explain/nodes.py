@@ -39,11 +39,12 @@ PATTERN_FIELDS: dict[str, re.Pattern] = {
     "ale_p90_label": re.compile(r"₹[0-9][0-9,.]*( lakh| crore)?"),
 }
 NUMBER_FIELDS = frozenset({
-    "hosts", "findings", "hosts_total", "findings_total", "cea_overdue", "criticality", "cvss", "epss",
+    "hosts", "findings", "hosts_total", "findings_total", "hosts_shown", "findings_shown", "cea_overdue",
+    "criticality", "cvss", "epss",
     "cve_count", "cves_active", "cves_poc", "injection_suspects", "scanned_by_count", "root_causes", "top_n",
     "top_findings_share", "top_risk_share", "ssvc_act", "ssvc_attend", "ssvc_track_star", "ssvc_track",
     "cea_overdue_closed_by_top", "cmdb_assets", "scanned_assets", "unscanned", "unknown", "inferred_images",
-    "unowned", "rank"})
+    "unowned", "rank", "range_percent"})
 BOOL_FIELDS = frozenset({"is_ot", "safety_critical", "in_cmdb"})
 NODE_KINDS = frozenset({"root_cause", "asset", "finding", "cve", "portfolio", "coverage", "site", "process"})
 REF = re.compile(r"[A-Z][0-9]{1,3}")

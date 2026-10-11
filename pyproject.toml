@@ -22,11 +22,12 @@ dependencies = [
     "sutra-patchdraft",  # ./patchdraft in this repository; install it first (see README)
     "sutra-connectors",  # ./connectors in this repository; install it first (see README)
     "sutra-compliance",  # ./compliance in this repository; install it first (see README)
+    "sutra-explain",  # ./explain in this repository; install it first (see README)
 ]
 
 [project.optional-dependencies]
 postgres = ["psycopg[binary]>=3.1"]
-ai = ["sutra-patchdraft[ai]"]  # Claude drafting for patch jobs
+ai = ["sutra-patchdraft[ai]", "sutra-explain[ai]"]  # Claude drafting and explanations
 dev = ["pytest>=8", "ruff>=0.6"]
 
 [project.scripts]

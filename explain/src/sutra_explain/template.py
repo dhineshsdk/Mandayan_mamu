@@ -40,8 +40,8 @@ def root_cause_claims(facts: FactSet) -> list[Claim]:
         Claim(f"It is rated {f['ssvc']} because the weakness {EXPLOIT_PHRASE[f['exploitation']]} and the machines "
               f"are {EXPOSURE_PHRASE[f['exposure']]}; the impact on people and operations is {f['human_impact']}.",
               ("R1",), "supports"),
-        Claim(f"Expected yearly loss is {f['ale_label']} (likely range {f['ale_p10_label']} to {f['ale_p90_label']}).",
-              ("R1",), "supports"),
+        Claim(f"Expected yearly loss is {f['ale_label']} ({f['range_percent']}% range {f['ale_p10_label']} to "
+              f"{f['ale_p90_label']}).", ("R1",), "supports"),
     ]
     if f["cea_overdue"]:
         due = f" The earliest due date was {f['earliest_due']}." if "earliest_due" in f else ""
@@ -51,10 +51,9 @@ def root_cause_claims(facts: FactSet) -> list[Claim]:
     if f["is_ot"]:
         claims.append(Claim("It touches plant systems, so the fix is a staged plan carried out by a plant engineer "
                             "with OEM approval, not an automatic change.", ("R1",), "next_check", "stage_change"))
-    covered_h = f["hosts_total"]
-    shown_h = len(facts.refs("asset"))
-    if shown_h < covered_h:
-        claims.append(Claim(f"Only {shown_h} of {covered_h} hosts are itemised here; the rest follow the same cause.",
+    if f["hosts_shown"] < f["hosts_total"]:
+        claims.append(Claim(f"Only {f['hosts_shown']} of {f['hosts_total']} hosts are itemised here; the rest follow "
+                            f"the same cause.",
                             ("R1",), "uncertainty"))
     hostless = [ref for ref in facts.refs("asset") if not facts.nodes[ref].fields["in_cmdb"]]
     if hostless:
@@ -72,8 +71,8 @@ def briefing_claims(facts: FactSet) -> dict[str, list[Claim]]:
     k = facts.nodes["K1"].fields
     out: dict[str, list[Claim]] = {key: [] for key in BRIEFING_SECTIONS}
     out["headline"] = [
-        Claim(f"Expected yearly loss from open vulnerabilities is {b['ale_label']} (likely range {b['ale_p10_label']} "
-              f"to {b['ale_p90_label']}).", ("B1",), "supports"),
+        Claim(f"Expected yearly loss from open vulnerabilities is {b['ale_label']} ({b['range_percent']}% range "
+              f"{b['ale_p10_label']} to {b['ale_p90_label']}).", ("B1",), "supports"),
         Claim(f"{b['findings']} findings reduce to {b['root_causes']} root causes; the top {b['top_n']} account for "
               f"{b['top_risk_share']}% of the risk and {b['top_findings_share']}% of the findings.", ("B1",),
               "supports"),

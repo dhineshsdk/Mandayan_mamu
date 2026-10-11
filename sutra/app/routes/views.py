@@ -15,6 +15,7 @@ from ... import report
 from ... import views as shapes
 from .. import scorecard
 from ..access import Principal
+from ..ai import scope_key
 from ..deps import client_ip, current_principal, get_db, require
 from ..models import Dataset, OwnershipTeam
 from ..security import audit
@@ -30,6 +31,14 @@ def scoped(request: Request, p: Principal, module: str):
     if store.result is None:
         raise LookupError("No data has been imported yet.")
     return store.scoped(p.asset_ids(store.result.assets, module, "view"))
+
+
+def scope_of(request: Request, p: Principal, module: str) -> str:
+    """A stable key for the set of assets this person may see in ``module`` (explanations are cached per scope)."""
+    store = request.app.state.analysis
+    if store.result is None:
+        raise LookupError("No data has been imported yet.")
+    return scope_key(p.asset_ids(store.result.assets, module, "view"))
 
 
 RC_SUMMARY = ("id", "kind", "title", "fix", "is_ot", "hosts", "findings", "max_severity", "ssvc", "ale", "ale_p10",
@@ -76,11 +85,17 @@ def board(request: Request, p: Principal = Depends(require("M-BRD", "view")), db
 
 
 @router.get("/board/pack")
-def board_pack(request: Request, p: Principal = Depends(require("M-BRD", "view")), db: Session = Depends(get_db)):
-    res, _ = scoped(request, p, "M-BRD")
-    audit(db, "board.pack", p.user, "board", res.org, client_ip(request))
+def board_pack(request: Request, briefing: bool = False, p: Principal = Depends(require("M-BRD", "view")),
+               db: Session = Depends(get_db)):
+    """The one-page board pack. With ``?briefing=1`` it carries the cited quarterly briefing."""
+    res, payload = scoped(request, p, "M-BRD")
+    b = None
+    if briefing:
+        b = request.app.state.ai.briefing(db, payload, len(unowned(db, res)), scope_of(request, p, "M-BRD"), p.user,
+                                          client_ip(request))
+    audit(db, "board.pack", p.user, "board", res.org, client_ip(request), briefing=bool(b))
     db.commit()
-    return HTMLResponse(report.render_board_html(res), headers={"Content-Security-Policy": BOARD_CSP})
+    return HTMLResponse(report.render_board_html(res, b), headers={"Content-Security-Policy": BOARD_CSP})
 
 
 @router.get("/root-causes")

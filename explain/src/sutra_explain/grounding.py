@@ -96,8 +96,9 @@ class Claim:
     action: str = "none"
 
 
-def check_claim(raw: Any, facts: FactSet) -> tuple[Claim | None, list[str]]:
-    """Validate one claim. Returns the claim and no errors, or None and the reasons."""
+def check_claim(raw: Any, facts: FactSet, n: int = 1) -> tuple[Claim | None, list[str]]:
+    """Validate one claim (``n`` is its position, used in messages so rejected text is never echoed back).
+    Returns the claim and no errors, or None and the reasons."""
     if not isinstance(raw, dict):
         return None, ["a claim is not an object"]
     text, cites = raw.get("text"), raw.get("cites")
@@ -105,48 +106,48 @@ def check_claim(raw: Any, facts: FactSet) -> tuple[Claim | None, list[str]]:
     errs: list[str] = []
     if not isinstance(text, str) or not text.strip():
         return None, ["a claim has no text"]
-    label = text[:50]
+    label = f"claim {n}"
     if not isinstance(cites, list) or not cites or not all(isinstance(c, str) for c in cites):
-        return None, [f"claim {label!r} cites nothing"]
+        return None, [f"{label} cites nothing"]
     if len(cites) > MAX_CITES:
-        errs.append(f"claim {label!r} cites more than {MAX_CITES} nodes")
+        errs.append(f"{label} cites more than {MAX_CITES} nodes")
     unknown = [c for c in cites if c not in facts]
     if unknown:
-        errs.append(f"claim {label!r} cites {', '.join(unknown[:3])}, which are not in the facts")
+        errs.append(f"{label} cites {', '.join(unknown[:3])}, which are not in the facts")
         return None, errs
     if len(text) > MAX_TEXT:
-        errs.append(f"claim {label!r} is longer than {MAX_TEXT} characters")
+        errs.append(f"{label} is longer than {MAX_TEXT} characters")
     if role not in ROLES:
-        errs.append(f"claim {label!r} has role {role!r}")
+        errs.append(f"{label} has role {role!r}")
     if action != "none" and action not in ALL_PROPOSABLE:
-        errs.append(f"claim {label!r} proposes {action!r}, which is not an allowed action")
+        errs.append(f"{label} proposes {action!r}, which is not an allowed action")
     nodes = [facts.nodes[c] for c in dict.fromkeys(cites)]
 
     for ph in PLACEHOLDER.findall(text):
         if ph not in cites:
-            errs.append(f"claim {label!r} uses {{{ph}}}, which it does not cite")
+            errs.append(f"{label} uses {{{ph}}}, which it does not cite")
     if "{" in PLACEHOLDER.sub("", text) or "}" in PLACEHOLDER.sub("", text):
-        errs.append(f"claim {label!r} has a stray brace")
+        errs.append(f"{label} has a stray brace")
     bare = PLACEHOLDER.sub(" ", text)
     for n in nodes:  # a literal ID or ref is fine (it is a citation); strip so its digits are not read as figures
         for token in (n.ref, n.node_id):
             bare = re.sub(rf"(?<![\w-]){re.escape(token)}(?![\w-])", " ", bare)
 
     if FORBIDDEN.search(bare):
-        errs.append(f"claim {label!r} contains wording or markup that explanations may not use "
+        errs.append(f"{label} contains wording or markup that explanations may not use "
                     f"({FORBIDDEN.search(bare).group(0)!r})")
     allowed_cves = {n.fields["cve"].upper() for n in nodes if "cve" in n.fields}
     for c in CVE.findall(bare):
         if c.upper() not in allowed_cves:
-            errs.append(f"claim {label!r} names {c}, which no cited node carries")
+            errs.append(f"{label} names {c}, which no cited node carries")
     allowed = set().union(*(n.allowed_numbers() for n in nodes)) if nodes else set()
     bare_wo_cve = CVE.sub(" ", bare)
     for num in numbers_in(bare_wo_cve):
         if num not in allowed:
-            errs.append(f"claim {label!r} states {num}, which no cited node carries")
+            errs.append(f"{label} states {num}, which no cited node carries")
     for word in WORD_NUMBER.findall(bare_wo_cve):
         if normalise_number(WORD_NUMBERS[word.lower()]) not in allowed:
-            errs.append(f"claim {label!r} states {word}, which no cited node carries")
+            errs.append(f"{label} states {word}, which no cited node carries")
     for rule in TERM_RULES:
         m = rule.pattern.search(bare)
         if not m:
@@ -154,7 +155,7 @@ def check_claim(raw: Any, facts: FactSet) -> tuple[Claim | None, list[str]]:
         negated = re.search(NEGATION + r"[^.;]{0,40}(?:" + rule.pattern.pattern + ")", bare, re.I) is not None
         ok = rule.negative(nodes) if negated else rule.positive(nodes)
         if not ok:
-            errs.append(f"claim {label!r} says {m.group(0)!r} ({rule.name}) but its cited nodes do not support that")
+            errs.append(f"{label} says {m.group(0)!r} ({rule.name}) but its cited nodes do not support that")
     if errs:
         return None, errs
     return Claim(text.strip(), tuple(dict.fromkeys(cites)), role, action), []
@@ -165,8 +166,8 @@ def check_claims(raw: Any, facts: FactSet, minimum: int = 1) -> tuple[list[Claim
     if not isinstance(raw, list):
         return [], ["claims is not a list"]
     claims: list[Claim] = []
-    for item in raw:
-        claim, e = check_claim(item, facts)
+    for n, item in enumerate(raw, 1):
+        claim, e = check_claim(item, facts, n)
         if claim:
             claims.append(claim)
         errs += e
