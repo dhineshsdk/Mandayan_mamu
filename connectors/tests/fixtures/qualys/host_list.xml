@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<HOST_LIST_OUTPUT>
+  <RESPONSE>
+    <DATETIME>2026-10-11T11:30:00Z</DATETIME>
+    <HOST_LIST>
+      <HOST>
+        <ID>6506432</ID>
+        <ASSET_ID>11223344</ASSET_ID>
+        <IP>10.10.10.11</IP>
+        <TRACKING_METHOD>IP</TRACKING_METHOD>
+        <DNS><![CDATA[scada-hist01.plant.example.in]]></DNS>
+        <DNS_DATA>
+          <HOSTNAME><![CDATA[scada-hist01]]></HOSTNAME>
+          <DOMAIN><![CDATA[plant.example.in]]></DOMAIN>
+          <FQDN><![CDATA[scada-hist01.plant.example.in]]></FQDN>
+        </DNS_DATA>
+        <NETBIOS><![CDATA[SCADA-HIST01]]></NETBIOS>
+        <OS><![CDATA[Windows 2019 Standard]]></OS>
+        <QG_HOSTID><![CDATA[a1b2c3d4-0000-4000-8000-000000000001]]></QG_HOSTID>
+        <FIRST_FOUND_DATE>2025-06-01T10:00:00Z</FIRST_FOUND_DATE>
+        <LAST_VULN_SCAN_DATETIME>2026-10-09T03:49:05Z</LAST_VULN_SCAN_DATETIME>
+        <LAST_VM_SCANNED_DATE>2026-10-09T03:48:50Z</LAST_VM_SCANNED_DATE>
+      </HOST>
+    </HOST_LIST>
+  </RESPONSE>
+</HOST_LIST_OUTPUT>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE KNOWLEDGE_BASE_VULN_LIST_OUTPUT SYSTEM "https://qualysapi.qg1.apps.qualys.in/api/4.0/fo/knowledge_base/vuln/knowledge_base_vuln_list_output.dtd">
+<KNOWLEDGE_BASE_VULN_LIST_OUTPUT>
+  <RESPONSE>
+    <DATETIME>2026-10-11T11:26:30Z</DATETIME>
+    <VULN_LIST>
+      <VULN>
+        <QID>38170</QID>
+        <VULN_TYPE>Vulnerability</VULN_TYPE>
+        <SEVERITY_LEVEL>2</SEVERITY_LEVEL>
+        <TITLE><![CDATA[SSL Certificate - Self-Signed Certificate]]></TITLE>
+        <CATEGORY>General remote services</CATEGORY>
+        <PATCHABLE>0</PATCHABLE>
+        <DIAGNOSIS><![CDATA[The server's TLS/SSL certificate is self-signed.]]></DIAGNOSIS>
+        <SOLUTION><![CDATA[Please install a server certificate signed by a trusted third-party Certificate Authority.]]></SOLUTION>
+        <CVSS>
+          <BASE source="service">9.4</BASE>
+          <TEMPORAL>6.8</TEMPORAL>
+        </CVSS>
+        <CVSS_V3>
+          <BASE>6.5</BASE>
+          <TEMPORAL>5.7</TEMPORAL>
+          <VECTOR_STRING>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N</VECTOR_STRING>
+        </CVSS_V3>
+      </VULN>
+      <VULN>
+        <QID>376187</QID>
+        <VULN_TYPE>Vulnerability</VULN_TYPE>
+        <SEVERITY_LEVEL>4</SEVERITY_LEVEL>
+        <TITLE><![CDATA[7-Zip Prior to 23.01 Multiple Vulnerabilities]]></TITLE>
+        <CVE_LIST>
+          <CVE>
+            <ID><![CDATA[CVE-2023-31102]]></ID>
+            <URL><![CDATA[https://nvd.nist.gov/vuln/detail/CVE-2023-31102]]></URL>
+          </CVE>
+          <CVE>
+            <ID><![CDATA[CVE-2023-40481]]></ID>
+            <URL><![CDATA[https://nvd.nist.gov/vuln/detail/CVE-2023-40481]]></URL>
+          </CVE>
+        </CVE_LIST>
+        <SOLUTION><![CDATA[Customers are advised to upgrade to <A HREF="https://www.7-zip.org/" TARGET="_blank">7-Zip 23.01</A> or later.<BR>Patch:<BR>Following are links for downloading patches to fix the vulnerabilities:<P> &amp; more]]></SOLUTION>
+        <CVSS>
+          <BASE>6.8</BASE>
+        </CVSS>
+        <CVSS_V3>
+          <BASE>7.8</BASE>
+        </CVSS_V3>
+      </VULN>
+    </VULN_LIST>
+  </RESPONSE>
+</KNOWLEDGE_BASE_VULN_LIST_OUTPUT>

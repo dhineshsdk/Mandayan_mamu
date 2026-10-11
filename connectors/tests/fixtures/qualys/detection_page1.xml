@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE HOST_LIST_VM_DETECTION_OUTPUT SYSTEM "https://qualysapi.qg1.apps.qualys.in/api/6.0/fo/asset/host/vm/detection/dtd/output.dtd">
+<HOST_LIST_VM_DETECTION_OUTPUT>
+  <RESPONSE>
+    <DATETIME>2026-10-11T11:25:58Z</DATETIME>
+    <HOST_LIST>
+      <HOST>
+        <ID>6506432</ID>
+        <IP>10.10.10.11</IP>
+        <TRACKING_METHOD>IP</TRACKING_METHOD>
+        <OS><![CDATA[Windows 2019 Standard]]></OS>
+        <DNS><![CDATA[scada-hist01.plant.example.in]]></DNS>
+        <DNS_DATA>
+          <HOSTNAME><![CDATA[scada-hist01]]></HOSTNAME>
+          <DOMAIN><![CDATA[plant.example.in]]></DOMAIN>
+          <FQDN><![CDATA[scada-hist01.plant.example.in]]></FQDN>
+        </DNS_DATA>
+        <NETBIOS><![CDATA[SCADA-HIST01]]></NETBIOS>
+        <LAST_SCAN_DATETIME>2026-10-09T03:49:05Z</LAST_SCAN_DATETIME>
+        <LAST_VM_SCANNED_DATE>2026-10-09T03:48:50Z</LAST_VM_SCANNED_DATE>
+        <LAST_VM_SCANNED_DURATION>352</LAST_VM_SCANNED_DURATION>
+        <DETECTION_LIST>
+          <DETECTION>
+            <UNIQUE_VULN_ID>52664</UNIQUE_VULN_ID>
+            <QID>376187</QID>
+            <TYPE>Confirmed</TYPE>
+            <SEVERITY>4</SEVERITY>
+            <SSL>0</SSL>
+            <RESULTS><![CDATA[7-Zip Version is 22.01]]></RESULTS>
+            <STATUS>Active</STATUS>
+            <FIRST_FOUND_DATETIME>2026-01-26T04:45:50Z</FIRST_FOUND_DATETIME>
+            <LAST_FOUND_DATETIME>2026-10-09T03:48:50Z</LAST_FOUND_DATETIME>
+            <TIMES_FOUND>111</TIMES_FOUND>
+            <LAST_TEST_DATETIME>2026-10-09T03:48:50Z</LAST_TEST_DATETIME>
+            <LAST_UPDATE_DATETIME>2026-10-09T03:49:05Z</LAST_UPDATE_DATETIME>
+            <IS_IGNORED>0</IS_IGNORED>
+            <IS_DISABLED>0</IS_DISABLED>
+            <LAST_PROCESSED_DATETIME>2026-10-09T03:49:05Z</LAST_PROCESSED_DATETIME>
+          </DETECTION>
+          <DETECTION>
+            <UNIQUE_VULN_ID>52665</UNIQUE_VULN_ID>
+            <QID>38170</QID>
+            <TYPE>Confirmed</TYPE>
+            <SEVERITY>2</SEVERITY>
+            <PORT>3389</PORT>
+            <PROTOCOL>tcp</PROTOCOL>
+            <SSL>1</SSL>
+            <RESULTS><![CDATA[Certificate #0 CN=scada-hist01 is self-signed]]></RESULTS>
+            <STATUS>Re-Opened</STATUS>
+            <FIRST_FOUND_DATETIME>2025-12-01T00:00:00Z</FIRST_FOUND_DATETIME>
+            <LAST_FOUND_DATETIME>2026-10-09T03:48:50Z</LAST_FOUND_DATETIME>
+            <TIMES_FOUND>20</TIMES_FOUND>
+          </DETECTION>
+        </DETECTION_LIST>
+      </HOST>
+    </HOST_LIST>
+    <WARNING>
+      <CODE>1980</CODE>
+      <TEXT>1 record limit exceeded. Use URL to get next batch of results.</TEXT>
+      <URL><![CDATA[https://qualysapi.qg1.apps.qualys.in/api/6.0/fo/asset/host/vm/detection/?action=list&truncation_limit=1&id_min=6506433]]></URL>
+    </WARNING>
+  </RESPONSE>
+</HOST_LIST_VM_DETECTION_OUTPUT>
