@@ -27,4 +27,6 @@ line-length = 120
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP"]
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+# Same security rules as the app; asserts are how pytest checks, and jitter needs no crypto-grade randomness.
+ignore = ["S101", "S311"]
