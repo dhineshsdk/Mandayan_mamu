@@ -74,3 +74,22 @@ def test_receipts_point_at_the_api_source():
     row = to_sutra_row(CASES[0])
     assert (row["file"], row["row"]) == ("tenable-vm:cloud.tenable.com", "f-1")
     assert Path(row["file"]).name == row["file"]  # a plain label, safe where file names are expected
+
+
+def test_agent_findings_use_the_package_they_name():
+    base = dict(scanner="CrowdStrike", scanner_ref="Spotlight CVE-2025-26465",
+                source="crowdstrike-api:api.crowdstrike.com", record_id="a_b", ip="10.1.1.9",
+                hostname="ub24-50-10-154", os="Ubuntu 24.04", title="CVE-2025-26465 in openssh 1:9.6p1-3ubuntu13.4",
+                severity="medium", cvss=6.8, cves=("CVE-2025-26465",), port="", protocol="",
+                evidence="Installed: openssh 1:9.6p1-3ubuntu13.4", solution="", state="open", first_seen=T1,
+                last_seen=T2)
+    row = to_sutra_row(ScannerFinding(**base, package="openssh", installed="1:9.6p1-3ubuntu13.4",
+                                      fixed_version="1:9.6p1-3ubuntu13.8"))
+    assert (row["kind"], row["package"], row["installed"], row["fixed"]) == (
+        "package", "openssh", "9.6p1-3ubuntu13.4", "9.6p1-3ubuntu13.8")
+    kb = to_sutra_row(ScannerFinding(**{**base, "title": "CVE-2022-21897 in Windows Server 2016 1607"},
+                                     package="Windows Server 2016", installed="1607", fixed_version="KB5053594"))
+    # Grouped like a missing KB from a Qualys file.
+    assert (kb["package"], kb["installed"], kb["fixed"]) == ("Microsoft Windows OS patch", "missing", "KB5053594")
+    ingest.resolve_assets([], [row, kb])
+    assert {f.kind for f in ingest.dedupe([row, kb])} == {"package"}

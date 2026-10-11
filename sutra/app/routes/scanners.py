@@ -25,7 +25,7 @@ router = APIRouter(prefix="/api/data")
 
 
 class ConnectionIn(BaseModel):
-    kind: Literal["qualys", "tenable_vm", "tenable_sc"]
+    kind: Literal["qualys", "tenable_vm", "tenable_sc", "crowdstrike"]
     name: str = Field(min_length=1, max_length=80)
     base_url: str = Field(default="", max_length=300)
     username: str = Field(min_length=1, max_length=200)

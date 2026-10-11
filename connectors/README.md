@@ -1,13 +1,14 @@
 # sutra-connectors
 
-Read-only API connectors that pull vulnerability findings and host data from the scanners Sutra's customers already
-run, so nobody has to export a file:
+Read-only API connectors that pull vulnerability findings and host data from the scanners and endpoint agents Sutra's
+customers already run, so nobody has to export a file:
 
 | Connector | Product | Findings from | Hosts from |
 | --- | --- | --- | --- |
 | `QualysConnector` | Qualys VMDR | Host List Detection `/api/6.0/fo/asset/host/vm/detection/`, enriched from the KnowledgeBase `/api/4.0/fo/knowledge_base/vuln/` | Host List `/api/6.0/fo/asset/host/` |
 | `TenableVMConnector` | Tenable Vulnerability Management (Tenable.io) | Vulnerability export `/vulns/export` | Asset export `/assets/export` |
 | `TenableSCConnector` | Tenable Security Center (Tenable.sc) | `/rest/analysis`, tool `vulndetails` | `/rest/analysis`, tool `sumip` |
+| `CrowdStrikeConnector` | CrowdStrike Falcon Spotlight | `/spotlight/combined/vulnerabilities/v1` | `/devices/queries/devices/v1` and `/devices/entities/devices/v2` |
 
 This is a plain Python library. Scheduling, credential storage and wiring into the Sutra app come with the app's
 database milestone; nothing here touches the app server, auth or database.

@@ -174,7 +174,10 @@ view is not built: Sutra holds no cost data to base one on.
 ### Scanner API pulls
 
 Under **Import data → Scanner connections** an administrator adds read-only API connections to Qualys VMDR, Tenable
-Vulnerability Management or Tenable Security Center (the `sutra_connectors` library in `connectors/`). A pull reads
+Vulnerability Management, Tenable Security Center or CrowdStrike Falcon Spotlight (the `sutra_connectors` library in
+`connectors/`). For CrowdStrike, create an API client with read access to Vulnerabilities and Hosts and use your
+cloud's API address (for example `https://api.eu-1.crowdstrike.com`); hosts whose sensor has not reported for 30 days
+do not count as assessed. A pull reads
 every enabled connection in full (all open detections, and every host the scanner has assessed) and imports the
 result like an export, carrying over the asset register from the latest import that had one. Pulls run by hand
 (VM analyst or admin) or once a day at a chosen hour, India time.

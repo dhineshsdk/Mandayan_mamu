@@ -201,3 +201,36 @@ def test_vault_refuses_a_different_server_key():
     assert vault.open_("key-one", sealed) == "s3cret"
     with pytest.raises(vault.CannotDecrypt):
         vault.open_("key-two", sealed)
+
+
+def test_crowdstrike_pull_through_the_real_connector(tmp_path):
+    """A CrowdStrike connection pulled with the real connector against a fake Falcon API (the connector's own test
+    double and fixtures, which come from Elastic's CrowdStrike integration test data)."""
+    import sys
+    from pathlib import Path
+
+    import httpx
+
+    sys.path.insert(0, str(Path(__file__).parents[1] / "connectors" / "tests"))
+    try:
+        from test_crowdstrike import FakeFalcon
+    finally:
+        sys.path.pop(0)
+    settings = Settings(workspace=tmp_path, database_url=f"sqlite:///{tmp_path / 'sutra.db'}")
+    passwords = {e: pw for e, pw, _ in cli.demo_users(settings, "power", months=0)}
+    app = create_app(settings, background=False)
+    app.state.puller.transport = httpx.MockTransport(FakeFalcon())
+    with TestClient(app, base_url="https://testserver"):
+        env = (app, passwords)
+        r = client(env, ADMIN).post("/api/data/connections", json={
+            "kind": "crowdstrike", "name": "Falcon", "base_url": "", "username": "client-id", "secret": "s3cret"})
+        assert r.status_code == 201 and r.json()["base_url"] == "https://api.crowdstrike.com"
+        pull = client(env, VM).post("/api/data/pulls").json()["pull"]
+        _wait(app)
+        done = client(env, VM).get(f"/api/data/pulls/{pull}").json()
+    # Both fixture hosts last reported in 2025 or earlier, more than 30 days ago, so neither counts as assessed now.
+    assert done["status"] == "ok", done
+    assert done["results"][0]["findings"] == 3 and done["results"][0]["hosts"] == 0
+    res = app.state.analysis.result
+    kb = next(f for f in res.findings if f.fixed == "KB5053594")
+    assert kb.package == "Microsoft Windows OS patch"
