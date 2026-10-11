@@ -1,0 +1,242 @@
+asset_id,hostname,ip,site,zone,os,owner,business_process,inr_per_hour,criticality,image,config_template,is_ot,safety_critical,personal_data
+AST-0001,pun-app-rhel-001,10.10.20.1,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0002,pun-app-rhel-002,10.10.20.2,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0003,pun-app-rhel-003,10.10.20.3,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0004,pun-app-rhel-004,10.10.20.4,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0005,pun-app-rhel-005,10.10.20.5,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0006,pun-app-rhel-006,10.10.20.6,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0007,pun-app-rhel-007,10.10.20.7,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0008,pun-app-rhel-008,10.10.20.8,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0009,pun-app-rhel-009,10.10.20.9,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0010,pun-app-rhel-010,10.10.20.10,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0011,pun-app-rhel-011,10.10.20.11,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0012,pun-app-rhel-012,10.10.20.12,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0013,pun-app-rhel-013,10.10.20.13,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0014,pun-app-rhel-014,10.10.20.14,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0015,pun-app-rhel-015,10.10.20.15,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0016,pun-app-rhel-016,10.10.20.16,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0017,pun-app-rhel-017,10.10.20.17,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0018,pun-app-rhel-018,10.10.20.18,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0019,pun-app-rhel-019,10.10.20.19,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0020,pun-app-rhel-020,10.10.20.20,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0021,pun-app-rhel-021,10.10.20.21,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0022,pun-app-rhel-022,10.10.20.22,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0023,pun-app-rhel-023,10.10.20.23,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0024,pun-app-rhel-024,10.10.20.24,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0025,pun-app-rhel-025,10.10.20.25,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0026,pun-app-rhel-026,10.10.20.26,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0027,pun-app-rhel-027,10.10.20.27,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0028,pun-app-rhel-028,10.10.20.28,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0029,pun-app-rhel-029,10.10.20.29,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0030,pun-app-rhel-030,10.10.20.30,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0031,pun-app-rhel-031,10.10.20.31,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0032,pun-app-rhel-032,10.10.20.32,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0033,pun-app-rhel-033,10.10.20.33,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0034,pun-app-rhel-034,10.10.20.34,HQ Pune,corp,Red Hat Enterprise Linux 8.6,IT Infra - Linux,SAP ERP and finance,400000,4,rhel8-base-v3,,0,0,1
+AST-0035,dmz-web-01,172.16.10.1,HQ Pune,dmz,Red Hat Enterprise Linux 8.6,Digital - Portal,Customer billing portal,250000,4,rhel8-base-v3,ansible-role-nginx-v2,0,0,1
+AST-0036,dmz-web-02,172.16.10.2,HQ Pune,dmz,Red Hat Enterprise Linux 8.6,Digital - Portal,Customer billing portal,250000,4,rhel8-base-v3,ansible-role-nginx-v2,0,0,1
+AST-0037,dmz-web-03,172.16.10.3,HQ Pune,dmz,Red Hat Enterprise Linux 8.6,Digital - Portal,Customer billing portal,250000,4,rhel8-base-v3,ansible-role-nginx-v2,0,0,1
+AST-0038,dmz-web-04,172.16.10.4,HQ Pune,dmz,Red Hat Enterprise Linux 8.6,Digital - Portal,Customer billing portal,250000,4,rhel8-base-v3,ansible-role-nginx-v2,0,0,1
+AST-0039,dmz-web-05,172.16.10.5,HQ Pune,dmz,Red Hat Enterprise Linux 8.6,Digital - Portal,Customer billing portal,250000,4,rhel8-base-v3,ansible-role-nginx-v2,0,0,1
+AST-0040,dmz-web-06,172.16.10.6,HQ Pune,dmz,Red Hat Enterprise Linux 8.6,Digital - Portal,Customer billing portal,250000,4,rhel8-base-v3,ansible-role-nginx-v2,0,0,1
+AST-0041,pun-k8s-node-01,10.10.30.1,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0042,pun-k8s-node-02,10.10.30.2,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0043,pun-k8s-node-03,10.10.30.3,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0044,pun-k8s-node-04,10.10.30.4,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0045,pun-k8s-node-05,10.10.30.5,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0046,pun-k8s-node-06,10.10.30.6,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0047,pun-k8s-node-07,10.10.30.7,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0048,pun-k8s-node-08,10.10.30.8,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0049,pun-k8s-node-09,10.10.30.9,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0050,pun-k8s-node-10,10.10.30.10,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0051,pun-k8s-node-11,10.10.30.11,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0052,pun-k8s-node-12,10.10.30.12,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0053,pun-k8s-node-13,10.10.30.13,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0054,pun-k8s-node-14,10.10.30.14,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0055,pun-k8s-node-15,10.10.30.15,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0056,pun-k8s-node-16,10.10.30.16,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0057,pun-k8s-node-17,10.10.30.17,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0058,pun-k8s-node-18,10.10.30.18,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0059,pun-k8s-node-19,10.10.30.19,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0060,pun-k8s-node-20,10.10.30.20,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0061,pun-k8s-node-21,10.10.30.21,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0062,pun-k8s-node-22,10.10.30.22,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0063,pun-k8s-node-23,10.10.30.23,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0064,pun-k8s-node-24,10.10.30.24,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0065,pun-k8s-node-25,10.10.30.25,HQ Pune,corp,Ubuntu 20.04.6 LTS,Platform Engineering,Internal apps on Kubernetes,150000,3,ubuntu2004-k8s-node-v7,,0,0,0
+AST-0066,pun-win-srv-01,10.10.40.1,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0067,pun-win-srv-02,10.10.40.2,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0068,pun-win-srv-03,10.10.40.3,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0069,pun-win-srv-04,10.10.40.4,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0070,pun-win-srv-05,10.10.40.5,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0071,pun-win-srv-06,10.10.40.6,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0072,pun-win-srv-07,10.10.40.7,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0073,pun-win-srv-08,10.10.40.8,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0074,pun-win-srv-09,10.10.40.9,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0075,pun-win-srv-10,10.10.40.10,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0076,pun-win-srv-11,10.10.40.11,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0077,pun-win-srv-12,10.10.40.12,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0078,pun-win-srv-13,10.10.40.13,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0079,pun-win-srv-14,10.10.40.14,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,File and print services,40000,3,win2019-std-tmpl-2023,GPO-Legacy-FileServers,0,0,0
+AST-0080,pun-win-srv-15,10.10.40.15,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0081,pun-win-srv-16,10.10.40.16,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0082,pun-win-srv-17,10.10.40.17,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0083,pun-win-srv-18,10.10.40.18,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0084,pun-win-srv-19,10.10.40.19,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0085,pun-win-srv-20,10.10.40.20,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0086,pun-win-srv-21,10.10.40.21,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0087,pun-win-srv-22,10.10.40.22,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0088,pun-win-srv-23,10.10.40.23,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0089,pun-win-srv-24,10.10.40.24,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0090,pun-win-srv-25,10.10.40.25,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0091,pun-win-srv-26,10.10.40.26,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0092,pun-win-srv-27,10.10.40.27,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0093,pun-win-srv-28,10.10.40.28,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0094,pun-win-srv-29,10.10.40.29,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0095,pun-win-srv-30,10.10.40.30,HQ Pune,corp,Windows Server 2019 Standard,IT Infra - Windows,SAP ERP and finance,400000,3,win2019-std-tmpl-2023,,0,0,0
+AST-0096,lt-pun-0001,10.20.0.2,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0097,lt-pun-0002,10.20.0.3,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0098,lt-pun-0003,10.20.0.4,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0099,lt-pun-0004,10.20.0.5,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0100,lt-pun-0005,10.20.0.6,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0101,lt-pun-0006,10.20.0.7,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0102,lt-pun-0007,10.20.0.8,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0103,lt-pun-0008,10.20.0.9,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0104,lt-pun-0009,10.20.0.10,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0105,lt-pun-0010,10.20.0.11,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0106,lt-pun-0011,10.20.0.12,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0107,lt-pun-0012,10.20.0.13,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0108,lt-pun-0013,10.20.0.14,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0109,lt-pun-0014,10.20.0.15,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0110,lt-pun-0015,10.20.0.16,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0111,lt-pun-0016,10.20.0.17,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0112,lt-pun-0017,10.20.0.18,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0113,lt-pun-0018,10.20.0.19,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0114,lt-pun-0019,10.20.0.20,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0115,lt-pun-0020,10.20.0.21,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0116,lt-pun-0021,10.20.0.22,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0117,lt-pun-0022,10.20.0.23,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0118,lt-pun-0023,10.20.0.24,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0119,lt-pun-0024,10.20.0.25,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0120,lt-pun-0025,10.20.0.26,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0121,lt-pun-0026,10.20.0.27,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0122,lt-pun-0027,10.20.0.28,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0123,lt-pun-0028,10.20.0.29,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0124,lt-pun-0029,10.20.0.30,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0125,lt-pun-0030,10.20.0.31,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0126,lt-pun-0031,10.20.0.32,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0127,lt-pun-0032,10.20.0.33,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0128,lt-pun-0033,10.20.0.34,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0129,lt-pun-0034,10.20.0.35,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0130,lt-pun-0035,10.20.0.36,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0131,lt-pun-0036,10.20.0.37,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0132,lt-pun-0037,10.20.0.38,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0133,lt-pun-0038,10.20.0.39,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0134,lt-pun-0039,10.20.0.40,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0135,lt-pun-0040,10.20.0.41,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0136,lt-pun-0041,10.20.0.42,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0137,lt-pun-0042,10.20.0.43,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0138,lt-pun-0043,10.20.0.44,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0139,lt-pun-0044,10.20.0.45,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0140,lt-pun-0045,10.20.0.46,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0141,lt-pun-0046,10.20.0.47,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0142,lt-pun-0047,10.20.0.48,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0143,lt-pun-0048,10.20.0.49,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0144,lt-pun-0049,10.20.0.50,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0145,lt-pun-0050,10.20.0.51,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0146,lt-pun-0051,10.20.0.52,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0147,lt-pun-0052,10.20.0.53,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0148,lt-pun-0053,10.20.0.54,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0149,lt-pun-0054,10.20.0.55,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0150,lt-pun-0055,10.20.0.56,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0151,lt-pun-0056,10.20.0.57,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0152,lt-pun-0057,10.20.0.58,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0153,lt-pun-0058,10.20.0.59,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0154,lt-pun-0059,10.20.0.60,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0155,lt-pun-0060,10.20.0.61,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0156,lt-pun-0061,10.20.0.62,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0157,lt-pun-0062,10.20.0.63,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0158,lt-pun-0063,10.20.0.64,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0159,lt-pun-0064,10.20.0.65,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0160,lt-pun-0065,10.20.0.66,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0161,lt-pun-0066,10.20.0.67,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0162,lt-pun-0067,10.20.0.68,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0163,lt-pun-0068,10.20.0.69,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0164,lt-pun-0069,10.20.0.70,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0165,lt-pun-0070,10.20.0.71,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0166,lt-pun-0071,10.20.0.72,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0167,lt-pun-0072,10.20.0.73,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0168,lt-pun-0073,10.20.0.74,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0169,lt-pun-0074,10.20.0.75,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0170,lt-pun-0075,10.20.0.76,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0171,lt-pun-0076,10.20.0.77,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0172,lt-pun-0077,10.20.0.78,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0173,lt-pun-0078,10.20.0.79,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0174,lt-pun-0079,10.20.0.80,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0175,lt-pun-0080,10.20.0.81,HQ Pune,corp,Windows 11 Enterprise 23H2,End-user Computing,Corporate office productivity,50000,1,win11-corp-2024q2,,0,0,0
+AST-0176,pun-web-01,10.10.50.1,HQ Pune,corp,Ubuntu 22.04.4 LTS,Digital - Portal,Customer billing portal,250000,3,,ansible-role-nginx-v2,0,0,0
+AST-0177,pun-web-02,10.10.50.2,HQ Pune,corp,Ubuntu 22.04.4 LTS,Digital - Portal,Customer billing portal,250000,3,,ansible-role-nginx-v2,0,0,0
+AST-0178,pun-web-03,10.10.50.3,HQ Pune,corp,Ubuntu 22.04.4 LTS,Digital - Portal,Customer billing portal,250000,3,,ansible-role-nginx-v2,0,0,0
+AST-0179,pun-web-04,10.10.50.4,HQ Pune,corp,Ubuntu 22.04.4 LTS,Digital - Portal,Customer billing portal,250000,3,,ansible-role-nginx-v2,0,0,0
+AST-0180,pun-web-05,10.10.50.5,HQ Pune,corp,Ubuntu 22.04.4 LTS,Digital - Portal,Customer billing portal,250000,3,,ansible-role-nginx-v2,0,0,0
+AST-0181,pun-web-06,10.10.50.6,HQ Pune,corp,Ubuntu 22.04.4 LTS,Digital - Portal,Customer billing portal,250000,3,,ansible-role-nginx-v2,0,0,0
+AST-0182,edge-adc-01,203.0.113.1,HQ Pune,internet,Citrix NetScaler ADC 13.1,Network Security,Remote access for staff and vendors,120000,4,,,0,0,0
+AST-0183,edge-adc-02,203.0.113.2,HQ Pune,internet,Citrix NetScaler ADC 13.1,Network Security,Remote access for staff and vendors,120000,4,,,0,0,0
+AST-0184,sw-pun-01,10.10.0.1,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0185,sw-pun-02,10.10.0.2,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0186,sw-pun-03,10.10.0.3,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0187,sw-pun-04,10.10.0.4,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0188,sw-pun-05,10.10.0.5,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0189,sw-pun-06,10.10.0.6,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0190,sw-pun-07,10.10.0.7,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0191,sw-pun-08,10.10.0.8,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0192,sw-pun-09,10.10.0.9,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0193,sw-pun-10,10.10.0.10,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0194,sw-pun-11,10.10.0.11,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0195,sw-pun-12,10.10.0.12,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0196,sw-pun-13,10.10.0.13,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0197,sw-pun-14,10.10.0.14,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0198,sw-pun-15,10.10.0.15,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0199,sw-pun-16,10.10.0.16,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0200,sw-pun-17,10.10.0.17,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0201,sw-pun-18,10.10.0.18,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0202,sw-pun-19,10.10.0.19,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0203,sw-pun-20,10.10.0.20,HQ Pune,corp,Cisco IOS 15.2(7)E,Network Operations,Corporate network,200000,3,,switch-baseline-2019,0,0,0
+AST-0204,vtp-hmi-01,192.168.50.1,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0205,vtp-hmi-02,192.168.50.2,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0206,vtp-hmi-03,192.168.50.3,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0207,vtp-hmi-04,192.168.50.4,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0208,vtp-hmi-05,192.168.50.5,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0209,vtp-hmi-06,192.168.50.6,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0210,vtp-hmi-07,192.168.50.7,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0211,vtp-hmi-08,192.168.50.8,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0212,vtp-hmi-09,192.168.50.9,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0213,vtp-hmi-10,192.168.50.10,Vindhya Thermal Plant,ot-l2,Windows 7 Embedded SP1,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,hmi-win7e-vendor-2016,,1,1,0
+AST-0214,vtp-ews-01,192.168.40.1,Vindhya Thermal Plant,ot-l3,Windows 10 Enterprise LTSC 2019,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0215,vtp-ews-02,192.168.40.2,Vindhya Thermal Plant,ot-l3,Windows 10 Enterprise LTSC 2019,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0216,vtp-ews-03,192.168.40.3,Vindhya Thermal Plant,ot-l3,Windows 10 Enterprise LTSC 2019,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0217,vtp-ews-04,192.168.40.4,Vindhya Thermal Plant,ot-l3,Windows 10 Enterprise LTSC 2019,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0218,vtp-plc-01,192.168.60.1,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0219,vtp-plc-02,192.168.60.2,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0220,vtp-plc-03,192.168.60.3,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0221,vtp-plc-04,192.168.60.4,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0222,vtp-plc-05,192.168.60.5,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0223,vtp-plc-06,192.168.60.6,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Unit 2,Unit-2 generation (250 MW),1000000,5,,,1,1,0
+AST-0224,vtp-plc-07,192.168.60.7,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Coal Handling,Coal handling plant,300000,5,,,1,1,0
+AST-0225,vtp-plc-08,192.168.60.8,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Coal Handling,Coal handling plant,300000,5,,,1,1,0
+AST-0226,vtp-plc-09,192.168.60.9,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Coal Handling,Coal handling plant,300000,5,,,1,1,0
+AST-0227,vtp-plc-10,192.168.60.10,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Coal Handling,Coal handling plant,300000,5,,,1,1,0
+AST-0228,vtp-plc-11,192.168.60.11,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Coal Handling,Coal handling plant,300000,5,,,1,1,0
+AST-0229,vtp-plc-12,192.168.60.12,Vindhya Thermal Plant,ot-l1,Siemens SIMATIC S7-1500 CPU 1516-3 PN/DP,C&I - Coal Handling,Coal handling plant,300000,5,,,1,1,0
+AST-0239,jdh-rtu-01,192.168.80.1,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0240,jdh-rtu-02,192.168.80.2,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0241,jdh-rtu-03,192.168.80.3,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0242,jdh-rtu-04,192.168.80.4,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0243,jdh-rtu-05,192.168.80.5,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0244,jdh-rtu-06,192.168.80.6,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0245,jdh-rtu-07,192.168.80.7,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0246,jdh-rtu-08,192.168.80.8,Solar Park Jodhpur,ot-l2,RTU firmware 4.2,Solar O&M,Solar park SCADA (40 MW),160000,4,,,1,1,0
+AST-0247,pun-db-ora-01,10.10.25.1,HQ Pune,corp,Oracle Linux 7.9,DBA team,SAP ERP and finance,400000,5,,,0,0,1
+AST-0248,pun-db-ora-02,10.10.25.2,HQ Pune,corp,Oracle Linux 7.9,DBA team,SAP ERP and finance,400000,5,,,0,0,1
+AST-0249,pun-db-ora-03,10.10.25.3,HQ Pune,corp,Oracle Linux 7.9,DBA team,SAP ERP and finance,400000,5,,,0,0,1
+AST-0250,pun-db-ora-04,10.10.25.4,HQ Pune,corp,Oracle Linux 7.9,DBA team,SAP ERP and finance,400000,5,,,0,0,1

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board Cyber Summary</title>
+<style>
+  :root { --ink:#1b1f24; --muted:#5b6470; --line:#dde1e6; --panel:#f5f7f9; --accent:#0b5cad;
+          --act:#b42318; --attend:#b54708; --trackstar:#7a5af8; --track:#475467; }
+  @page { size: A4; margin: 11mm; }
+  * { box-sizing: border-box; }
+  body { font: 10.5px/1.38 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink);
+         background:#fff; margin: 0 auto; max-width: 820px; padding: 18px 16px; }
+  header { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid var(--ink);
+           padding-bottom:6px; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size:19px; margin:0; letter-spacing:-.01em; }
+  .meta { color:var(--muted); font-size:10px; text-align:right; }
+  .synthetic { display:inline-block; background:#fef3f2; color:var(--act); border:1px solid #fecdca;
+               border-radius:3px; padding:1px 6px; font-weight:600; font-size:9.5px; }
+  .kpis { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin:10px 0 8px; }
+  .kpi { background:var(--panel); border-radius:6px; padding:8px 10px; }
+  .kpi .label { color:var(--muted); font-size:9.5px; text-transform:uppercase; letter-spacing:.04em; }
+  .kpi .value { font-size:20px; font-weight:700; margin:2px 0 1px; font-variant-numeric: tabular-nums; }
+  .kpi .sub { color:var(--muted); font-size:9.5px; }
+  .strip { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:2px 0 8px; color:var(--muted); }
+  .ssvc { display:inline-block; border-radius:3px; padding:0 5px; font-weight:600; font-size:9.5px; color:#fff;
+          white-space:nowrap; }
+  .s-Act { background:var(--act); } .s-Attend { background:var(--attend); }
+  .s-Trackstar { background:var(--trackstar); } .s-Track { background:var(--track); }
+  h2 { font-size:12px; margin:10px 0 4px; }
+  table { width:100%; border-collapse:collapse; }
+  th { text-align:left; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;
+       border-bottom:1px solid var(--ink); padding:3px 4px; }
+  td { border-bottom:1px solid var(--line); padding:4px; vertical-align:top; }
+  td.n, th.n { text-align:right; font-variant-numeric: tabular-nums; white-space:nowrap; }
+  td.id { color:var(--muted); white-space:nowrap; }
+  td .t { font-weight:600; }
+  td .fix { color:var(--muted); font-size:9.5px; }
+  td.money { font-weight:600; }
+  td.who { font-size:9.5px; color:var(--muted); width:92px; }
+  ul { margin:4px 0 0; padding-left:16px; }
+  li { margin-bottom:3px; }
+  footer { margin-top:8px; border-top:1px solid var(--line); padding-top:5px; color:var(--muted); font-size:8.8px; }
+  @media (max-width: 640px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .tablewrap { overflow-x:auto; }
+    table { min-width: 640px; }
+  }
+  @media print { body { padding:0; max-width:none; font-size:9.4px; } .kpi .value { font-size:17px; }
+                  td { padding:2px 4px; } footer { font-size:8px; }
+                  body { line-height:1.3; } .kpis { margin:6px 0; } .kpi { padding:5px 8px; }
+                  h2 { margin:6px 0 3px; } li { margin-bottom:1px; } }
+</style></head>
+<body>
+<header>
+  <div><h1>Cyber risk: board summary</h1>
+    <div>Demo Vindhya Power Ltd (SYNTHETIC) <span class="synthetic">SYNTHETIC DATA · DEMO ONLY</span></div></div>
+  <div class="meta">Data as of 05 Oct 2026<br>Sources: qualys_vm_export.csv (531 detections) · tenable_sc_export.csv (435 detections)</div>
+</header>
+
+<section class="kpis">
+  <div class="kpi"><div class="label">Expected annual loss</div><div class="value">₹14.2 crore</div>
+    <div class="sub">80% range ₹10.0 crore to ₹19.2 crore</div></div>
+  <div class="kpi"><div class="label">Work to do</div><div class="value">19 fixes</div>
+    <div class="sub">966 scanner rows → 577 unique findings → 19 root causes</div></div>
+  <div class="kpi"><div class="label">Top 10 fixes close</div>
+    <div class="value">98% of ₹ risk</div>
+    <div class="sub">and 79% of all findings</div></div>
+  <div class="kpi"><div class="label">CEA fix clock</div><div class="value">569 past window</div>
+    <div class="sub">open longer than the 1-month (critical, high) or 3-month window that applies from 1 Apr 2027; the top 10 clear 446</div></div>
+</section>
+
+<div class="strip"><span>Triage (CISA SSVC):</span> <span class="ssvc s-Act">Act: 2</span><span class="ssvc s-Attend">Attend: 6</span><span class="ssvc s-Trackstar">Track*: 3</span><span class="ssvc s-Track">Track: 8</span>
+  <span>Coverage: 238 assets scanned, 12 registered but unscanned, 9 found but not in the CMDB</span></div>
+
+<h2>Top 10 root causes, ranked by rupee risk</h2>
+<div class="tablewrap"><table>
+  <thead><tr><th>ID</th><th>Root cause and fix</th><th>Type</th><th class="n">Hosts</th><th class="n">Findings</th>
+  <th>SSVC</th><th class="n">₹ risk / yr</th><th class="n">Past CEA window</th><th>Who fixes</th></tr></thead>
+  <tbody>
+        <tr>
+          <td class="id">RC-001</td>
+          <td><div class="t">Golden image rhel8-base-v3 needs fixes: glibc, openssh, openssl, sudo</div><div class="fix">Patch the image once, rebuild, and redeploy or patch the 46 hosts built from it.</div></td>
+          <td>Base image</td>
+          <td class="n">46</td>
+          <td class="n">173</td>
+          <td><span class="ssvc s-Attend">Attend</span></td>
+          <td class="n money">₹5.3 crore</td>
+          <td class="n">172</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-002</td>
+          <td><div class="t">Golden image hmi-win7e-vendor-2016 needs fixes: Windows updates (KB4012212, KB4499175)</div><div class="fix">Staged plan: get OEM approval, apply at the next planned outage, and keep a compensating control in place until then.</div></td>
+          <td>Base image</td>
+          <td class="n">10</td>
+          <td class="n">20</td>
+          <td><span class="ssvc s-Act">Act</span></td>
+          <td class="n money">₹2.1 crore</td>
+          <td class="n">20</td>
+          <td class="who">OT: human-run, OEM approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-003</td>
+          <td><div class="t">Apache Tomcat below 9.0.83 on 5 hosts</div><div class="fix">Upgrade Apache Tomcat to version 9.0.83 or later.</div></td>
+          <td>Package</td>
+          <td class="n">5</td>
+          <td class="n">5</td>
+          <td><span class="ssvc s-Attend">Attend</span></td>
+          <td class="n money">₹1.8 crore</td>
+          <td class="n">5</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-004</td>
+          <td><div class="t">Apache Log4j below 2.17.1 on 6 hosts</div><div class="fix">Upgrade Apache Log4j to version 2.17.1 or later.</div></td>
+          <td>Package</td>
+          <td class="n">6</td>
+          <td class="n">6</td>
+          <td><span class="ssvc s-Attend">Attend</span></td>
+          <td class="n money">₹1.7 crore</td>
+          <td class="n">6</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-005</td>
+          <td><div class="t">Citrix NetScaler ADC below 13.1-49.15 on 2 hosts</div><div class="fix">Upgrade Citrix NetScaler ADC to version 13.1-49.15 or later.</div></td>
+          <td>Package</td>
+          <td class="n">2</td>
+          <td class="n">2</td>
+          <td><span class="ssvc s-Act">Act</span></td>
+          <td class="n money">₹1.0 crore</td>
+          <td class="n">–</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-006</td>
+          <td><div class="t">One shared credential (account &#x27;engineer&#x27;) logs in to 14 hosts</div><div class="fix">Change the vendor default account on every HMI and engineering workstation.</div></td>
+          <td>Shared credential</td>
+          <td class="n">14</td>
+          <td class="n">14</td>
+          <td><span class="ssvc s-Attend">Attend</span></td>
+          <td class="n money">₹79.5 lakh</td>
+          <td class="n">14</td>
+          <td class="who">OT: human-run, OEM approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-007</td>
+          <td><div class="t">jQuery below 3.5.0 on 6 hosts</div><div class="fix">Upgrade jQuery to version 3.5.0 or later.</div></td>
+          <td>Package</td>
+          <td class="n">6</td>
+          <td class="n">6</td>
+          <td><span class="ssvc s-Attend">Attend</span></td>
+          <td class="n money">₹46.5 lakh</td>
+          <td class="n">4</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-008</td>
+          <td><div class="t">One shared credential (account &#x27;Administrator&#x27;) logs in to 22 hosts</div><div class="fix">Deploy Windows LAPS so every host gets a unique admin password.</div></td>
+          <td>Shared credential</td>
+          <td class="n">22</td>
+          <td class="n">22</td>
+          <td><span class="ssvc s-Trackstar">Track*</span></td>
+          <td class="n money">₹30.8 lakh</td>
+          <td class="n">22</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-009</td>
+          <td><div class="t">Golden image win11-corp-2024q2 needs fixes: Adobe Acrobat Reader DC, Google Chrome</div><div class="fix">Patch the image once, rebuild, and redeploy or patch the 79 hosts built from it.</div></td>
+          <td>Base image</td>
+          <td class="n">79</td>
+          <td class="n">142</td>
+          <td><span class="ssvc s-Attend">Attend</span></td>
+          <td class="n money">₹27.6 lakh</td>
+          <td class="n">142</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr>
+        <tr>
+          <td class="id">RC-010</td>
+          <td><div class="t">Golden image ubuntu2004-k8s-node-v7 needs fixes: containerd, linux-image-generic, runc</div><div class="fix">Patch the image once, rebuild, and redeploy or patch the 25 hosts built from it.</div></td>
+          <td>Base image</td>
+          <td class="n">25</td>
+          <td class="n">63</td>
+          <td><span class="ssvc s-Trackstar">Track*</span></td>
+          <td class="n money">₹13.0 lakh</td>
+          <td class="n">61</td>
+          <td class="who">IT: automatable after approval</td>
+        </tr></tbody>
+</table></div>
+
+<h2>What we ask of the board</h2>
+<ul><li><b>Approve emergency changes</b> for the 2 root causes rated Act (RC-002, RC-005): actively exploited and exposed or safety-relevant. Together ₹3.1 crore a year of expected loss.</li><li><b>Back the plant schedule</b>: 2 of the top 10 fixes are on OT and need OEM approval and a planned outage. Compensating controls (virtual patch, segmentation) hold the risk until then, and the CEA clock should show that state, not a red mark.</li><li><b>Close the blind spots</b>: 12 registered assets are never scanned, including 4 crown-jewel systems and 8 OT devices. Their risk is not in the figure above.</li></ul>
+
+<footer>
+  <b>Every number has a receipt.</b> Each ID above lists its findings, hosts, scanner references (QID or plugin) and
+  source-file rows in <code>receipts.json</code>; <code>findings.csv</code> and <code>root_causes.csv</code> hold the
+  full detail. Duplicates across Qualys and Tenable are merged (389 findings seen by both).
+  Rupee risk follows FAIR (loss event frequency × loss magnitude) with 3,000 Monte Carlo runs; frequency
+  uses exploitation state and network zone, magnitude uses each business process's ₹ per hour of downtime from the
+  CMDB plus response, data-breach and OT costs. Every assumption is in <code>sutra/risk.py</code> and is a hypothesis,
+  not calibrated loss data. SSVC is a simplified deployer tree. CEA windows come from a vendor summary and must be
+  checked against the gazette text.
+</footer>
+</body></html>
