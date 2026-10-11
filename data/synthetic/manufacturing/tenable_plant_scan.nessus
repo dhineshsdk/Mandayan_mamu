@@ -1,0 +1,1453 @@
+<?xml version='1.0' encoding='utf-8'?>
+<NessusClientData_v2>
+  <Policy>
+    <policyName>OT - credentialed audit, safe checks only</policyName>
+  </Policy>
+  <Report name="Demo Shakti Auto Components Ltd (SYNTHETIC) plant scan 2026-10-05">
+    <ReportHost name="192.168.150.1">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:07:02 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.1</tag>
+        <tag name="host-fqdn">spb-hmi-01.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-01</tag>
+        <tag name="HOST_START">Mon Oct 05 02:07:02 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.2">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:59:58 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.2</tag>
+        <tag name="host-fqdn">spb-hmi-02.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-02</tag>
+        <tag name="HOST_START">Mon Oct 05 02:59:58 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.3">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:43:15 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.3</tag>
+        <tag name="host-fqdn">spb-hmi-03.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-03</tag>
+        <tag name="HOST_START">Mon Oct 05 02:43:15 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.4">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:16:22 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.4</tag>
+        <tag name="host-fqdn">spb-hmi-04.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-04</tag>
+        <tag name="HOST_START">Mon Oct 05 02:16:22 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.5">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:12:44 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.5</tag>
+        <tag name="host-fqdn">spb-hmi-05.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-05</tag>
+        <tag name="HOST_START">Mon Oct 05 02:12:44 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.6">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:28:01 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.6</tag>
+        <tag name="host-fqdn">spb-hmi-06.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-06</tag>
+        <tag name="HOST_START">Mon Oct 05 02:28:01 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.7">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:53:37 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.7</tag>
+        <tag name="host-fqdn">spb-hmi-07.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-07</tag>
+        <tag name="HOST_START">Mon Oct 05 02:53:37 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.8">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:28:07 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.8</tag>
+        <tag name="host-fqdn">spb-hmi-08.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-08</tag>
+        <tag name="HOST_START">Mon Oct 05 02:28:07 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.9">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:50:01 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.9</tag>
+        <tag name="host-fqdn">spb-hmi-09.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-09</tag>
+        <tag name="HOST_START">Mon Oct 05 02:50:01 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.10">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:31:07 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.10</tag>
+        <tag name="host-fqdn">spb-hmi-10.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-10</tag>
+        <tag name="HOST_START">Mon Oct 05 02:31:07 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.11">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:04:51 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.11</tag>
+        <tag name="host-fqdn">spb-hmi-11.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-11</tag>
+        <tag name="HOST_START">Mon Oct 05 02:04:51 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.12">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:16:11 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.12</tag>
+        <tag name="host-fqdn">spb-hmi-12.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-12</tag>
+        <tag name="HOST_START">Mon Oct 05 02:16:11 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.13">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:09:35 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.13</tag>
+        <tag name="host-fqdn">spb-hmi-13.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-13</tag>
+        <tag name="HOST_START">Mon Oct 05 02:09:35 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.14">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:59:18 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.14</tag>
+        <tag name="host-fqdn">spb-hmi-14.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-14</tag>
+        <tag name="HOST_START">Mon Oct 05 02:59:18 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.15">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:55:43 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.15</tag>
+        <tag name="host-fqdn">spb-hmi-15.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-15</tag>
+        <tag name="HOST_START">Mon Oct 05 02:55:43 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.150.16">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:42:24 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSB 2016</tag>
+        <tag name="host-ip">192.168.150.16</tag>
+        <tag name="host-fqdn">spb-hmi-16.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-HMI-16</tag>
+        <tag name="HOST_START">Mon Oct 05 02:42:24 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="445" svc_name="general" protocol="tcp" severity="4" pluginID="97833" pluginName="Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)" pluginFamily="Windows">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Microsoft Windows SMB Server Remote Code Execution Vulnerability (MS17-010) (KB4012212) (uncredentialed check)</synopsis>
+        <solution>Install Microsoft security update KB4012212.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2017-0144</cve>
+        <cve>CVE-2017-0145</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+The remote host is missing one of the following security updates :
+  - KB4012212
+</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="3" pluginID="186712" pluginName="Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass" pluginFamily="SCADA">
+        <risk_factor>High</risk_factor>
+        <synopsis>Rockwell FactoryTalk Services Platform &lt; 6.40 Authentication Bypass</synopsis>
+        <solution>Upgrade Rockwell FactoryTalk Services Platform to version 6.40 or later.</solution>
+        <cvss3_base_score>8.1</cvss3_base_score>
+        <cve>CVE-2023-46290</cve>
+        <exploit_available>false</exploit_available>
+        <plugin_output>
+  Path              : C:\Program Files (x86)\Rockwell Software\FactoryTalk
+  Installed version : 6.31
+  Fixed version     : 6.40
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.140.1">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:53:09 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.140.1</tag>
+        <tag name="host-fqdn">spb-ews-01.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-EWS-01</tag>
+        <tag name="HOST_START">Mon Oct 05 02:53:09 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.140.2">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:37:56 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.140.2</tag>
+        <tag name="host-fqdn">spb-ews-02.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-EWS-02</tag>
+        <tag name="HOST_START">Mon Oct 05 02:37:56 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.140.3">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:16:34 2026</tag>
+        <tag name="operating-system">Windows 10 Enterprise LTSC 2019</tag>
+        <tag name="host-ip">192.168.140.3</tag>
+        <tag name="host-fqdn">spb-ews-03.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-EWS-03</tag>
+        <tag name="HOST_START">Mon Oct 05 02:16:34 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="443" svc_name="general" protocol="tcp" severity="4" pluginID="502911" pluginName="Default Password 'engineer' for HMI Web Interface" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Default Password 'engineer' for HMI Web Interface</synopsis>
+        <solution>Change the vendor default account on every HMI and engineering workstation.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+It was possible to log in with the following credentials :
+  Account : engineer
+  Credential fingerprint : vendor-default:engineer
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.1">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:44:48 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.1</tag>
+        <tag name="host-fqdn">spb-plc-01.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-01</tag>
+        <tag name="HOST_START">Mon Oct 05 02:44:48 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.2">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:51:17 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.2</tag>
+        <tag name="host-fqdn">spb-plc-02.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-02</tag>
+        <tag name="HOST_START">Mon Oct 05 02:51:17 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.3">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:28:00 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.3</tag>
+        <tag name="host-fqdn">spb-plc-03.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-03</tag>
+        <tag name="HOST_START">Mon Oct 05 02:28:00 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.4">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:01:21 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.4</tag>
+        <tag name="host-fqdn">spb-plc-04.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-04</tag>
+        <tag name="HOST_START">Mon Oct 05 02:01:21 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.5">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:09:31 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.5</tag>
+        <tag name="host-fqdn">spb-plc-05.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-05</tag>
+        <tag name="HOST_START">Mon Oct 05 02:09:31 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.6">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:32:30 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.6</tag>
+        <tag name="host-fqdn">spb-plc-06.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-06</tag>
+        <tag name="HOST_START">Mon Oct 05 02:32:30 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.7">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:55:02 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.7</tag>
+        <tag name="host-fqdn">spb-plc-07.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-07</tag>
+        <tag name="HOST_START">Mon Oct 05 02:55:02 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.8">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:51:53 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.8</tag>
+        <tag name="host-fqdn">spb-plc-08.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-08</tag>
+        <tag name="HOST_START">Mon Oct 05 02:51:53 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.9">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:02:04 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.9</tag>
+        <tag name="host-fqdn">spb-plc-09.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-09</tag>
+        <tag name="HOST_START">Mon Oct 05 02:02:04 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.10">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:11:39 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.10</tag>
+        <tag name="host-fqdn">spb-plc-10.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-10</tag>
+        <tag name="HOST_START">Mon Oct 05 02:11:39 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.11">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:52:41 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.11</tag>
+        <tag name="host-fqdn">spb-plc-11.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-11</tag>
+        <tag name="HOST_START">Mon Oct 05 02:52:41 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.12">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:43:38 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.12</tag>
+        <tag name="host-fqdn">spb-plc-12.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-12</tag>
+        <tag name="HOST_START">Mon Oct 05 02:43:38 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.13">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:25:53 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.13</tag>
+        <tag name="host-fqdn">spb-plc-13.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-13</tag>
+        <tag name="HOST_START">Mon Oct 05 02:25:53 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.14">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:30:10 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.14</tag>
+        <tag name="host-fqdn">spb-plc-14.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-14</tag>
+        <tag name="HOST_START">Mon Oct 05 02:30:10 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.15">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:44:54 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.15</tag>
+        <tag name="host-fqdn">spb-plc-15.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-15</tag>
+        <tag name="HOST_START">Mon Oct 05 02:44:54 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.16">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:28:25 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.16</tag>
+        <tag name="host-fqdn">spb-plc-16.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-16</tag>
+        <tag name="HOST_START">Mon Oct 05 02:28:25 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.17">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:14:55 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.17</tag>
+        <tag name="host-fqdn">spb-plc-17.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-17</tag>
+        <tag name="HOST_START">Mon Oct 05 02:14:55 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.18">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:39:33 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.18</tag>
+        <tag name="host-fqdn">spb-plc-18.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-18</tag>
+        <tag name="HOST_START">Mon Oct 05 02:39:33 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.19">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:04:23 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.19</tag>
+        <tag name="host-fqdn">spb-plc-19.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-19</tag>
+        <tag name="HOST_START">Mon Oct 05 02:04:23 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+      <ReportItem port="44818" svc_name="general" protocol="tcp" severity="4" pluginID="503560" pluginName="Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)" pluginFamily="SCADA">
+        <risk_factor>Critical</risk_factor>
+        <synopsis>Rockwell Automation ControlLogix 1756-EN2T &lt; 11.004 Remote Code Execution (CVE-2023-3595)</synopsis>
+        <solution>Upgrade the communication module firmware to 11.004 after OEM approval and a planned outage; block CIP from outside the cell zone meanwhile.</solution>
+        <cvss3_base_score>9.8</cvss3_base_score>
+        <cve>CVE-2023-3595</cve>
+        <exploit_available>true</exploit_available>
+        <plugin_output>
+  Module             : Rockwell ControlLogix 1756-EN2T
+  Installed firmware : 10.010
+  Fixed firmware     : 11.004
+</plugin_output>
+      </ReportItem>
+    </ReportHost>
+    <ReportHost name="192.168.160.20">
+      <HostProperties>
+        <tag name="HOST_END">Mon Oct 05 02:21:33 2026</tag>
+        <tag name="operating-system">Rockwell ControlLogix 5580 with 1756-EN2T</tag>
+        <tag name="host-ip">192.168.160.20</tag>
+        <tag name="host-fqdn">spb-plc-20.shaktiauto.example</tag>
+        <tag name="netbios-name">SPB-PLC-20</tag>
+        <tag name="HOST_START">Mon Oct 05 02:21:33 2026</tag>
+      </HostProperties>
+      <ReportItem port="0" svc_name="general" protocol="tcp" severity="0" pluginID="19506" pluginName="Nessus Scan Information" pluginFamily="Settings">
+        <risk_factor>None</risk_factor>
+        <synopsis>Nessus Scan Information</synopsis>
+        <solution>n/a</solution>
+        <exploit_available>false</exploit_available>
+        <plugin_output>Credentialed checks : yes</plugin_output>
+      </ReportItem>
+    </ReportHost>
+  </Report>
+</NessusClientData_v2>

@@ -1,0 +1,12 @@
+team,jira_project,manager,manager_email,vertical,vertical_head,vertical_head_email,vm_analyst,vm_analyst_email
+IT Infra - Linux,LNX,Arjun Mehta,arjun.mehta@vindhyapower.example,Corporate IT,Neha Joshi (CIO),neha.joshi@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+IT Infra - Windows,WIN,Kavya Iyer,kavya.iyer@vindhyapower.example,Corporate IT,Neha Joshi (CIO),neha.joshi@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+End-user Computing,EUC,Rohan Das,rohan.das@vindhyapower.example,Corporate IT,Neha Joshi (CIO),neha.joshi@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+Network Operations,NET,Farhan Qureshi,farhan.qureshi@vindhyapower.example,Corporate IT,Neha Joshi (CIO),neha.joshi@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+Network Security,NSEC,Meera Pillai,meera.pillai@vindhyapower.example,Corporate IT,Neha Joshi (CIO),neha.joshi@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+Digital - Portal,DIG,Sneha Kulkarni,sneha.kulkarni@vindhyapower.example,Digital,Karan Malhotra (CDO),karan.malhotra@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+Platform Engineering,PLAT,Vikram Rao,vikram.rao@vindhyapower.example,Digital,Karan Malhotra (CDO),karan.malhotra@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+DBA team,DBA,Anil Sharma,anil.sharma@vindhyapower.example,Corporate IT,Neha Joshi (CIO),neha.joshi@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+C&I - Unit 2,CIU2,Suresh Patil,suresh.patil@vindhyapower.example,Generation,"P. Venkatesh (Plant Head, Vindhya)",p.venkatesh@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+C&I - Coal Handling,CHP,Ramesh Yadav,ramesh.yadav@vindhyapower.example,Generation,"P. Venkatesh (Plant Head, Vindhya)",p.venkatesh@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
+Solar O&M,SOL,Divya Rathore,divya.rathore@vindhyapower.example,Renewables,"Ritu Bansal (Head, Renewables)",ritu.bansal@vindhyapower.example,Aisha Khan (VM analyst),aisha.khan@vindhyapower.example
