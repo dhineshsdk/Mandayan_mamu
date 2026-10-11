@@ -41,7 +41,21 @@ SUSPICIOUS = re.compile(
     r"do not (report|flag|mention)|assistant:|\bsystem:|<\s*/?\s*(system|instructions?|scan_data|facts)\b|"
     r"report (this )?as (safe|benign|fixed)|pretend|jailbreak|override (the )?(rules|policy|priority)",
     re.I)
+# A title that reads like two different kinds of problem. Sutra groups findings by kind, so text in a title can steer a
+# finding into the wrong group (a package flaw into "shared credential"); a conflict is flagged, not resolved.
+HINTS = {
+    "package": re.compile(r"\b(?:prior to|<)\s*v?\d|\bKB\d{6,7}\b|\bRH[SBE]A-\d{4}|\bupdate for\b|\bUSN-\d|"
+                          r"\bDSA-\d", re.I),
+    "config": re.compile(r"smbv1|smb\)? protocol version 1|tls (?:protocol )?version 1\.[01]|tls 1\.[01]\b|"
+                         r"self-signed|http trace|snmp.*public", re.I),
+    "credential": re.compile(r"default (?:vendor )?(?:credential|password)|password reuse[d]?", re.I),
+}
 MAX_READ = 2000  # characters of any text the reader looks at
+
+
+def conflicting(title: str) -> bool:
+    title = title[:MAX_READ]
+    return sum(1 for rx in HINTS.values() if rx.search(title)) > 1
 
 
 @dataclass(frozen=True)
@@ -59,26 +73,28 @@ class Typed:
     category: str
     suspicious: bool
     source: str  # "rules" | "model"
+    conflict: bool = False  # the title reads like more than one kind of problem
 
 
 def classify(raw: RawText) -> Typed:
     text = f"{raw.title}\n{raw.solution}"[:MAX_READ]
     hit = SUSPICIOUS.search(text)
     suspicious = hit is not None
+    conflict = conflicting(raw.title)
     # Words after an instruction-like phrase are the attacker's; they do not get to pick the category.
     title = raw.title[:MAX_READ]
     if hit and hit.start() < len(title):
         title = title[:hit.start()]
     if raw.kind == "credential":
-        return Typed("weak-credential", suspicious, "rules")
+        return Typed("weak-credential", suspicious, "rules", conflict)
     for category, pattern in CATEGORY_RULES:
         if pattern.search(title):
-            return Typed(category, suspicious, "rules")
+            return Typed(category, suspicious, "rules", conflict)
     if raw.kind == "config":
-        return Typed("misconfiguration", suspicious, "rules")
+        return Typed("misconfiguration", suspicious, "rules", conflict)
     if raw.kind == "package":
-        return Typed("outdated-component", suspicious, "rules")
-    return Typed("other", suspicious, "rules")
+        return Typed("outdated-component", suspicious, "rules", conflict)
+    return Typed("other", suspicious, "rules", conflict)
 
 
 class RuleReader:
@@ -128,7 +144,7 @@ class ModelReader:
                 cat = labels.get(n) if labels else None
                 if cat is None:
                     self.fallbacks += 1
-                out[raw.finding_id] = Typed(cat, base.suspicious, "model") if cat else base
+                out[raw.finding_id] = Typed(cat, base.suspicious, "model", base.conflict) if cat else base
         return out
 
     def _ask(self, chunk: list[RawText]) -> dict[int, str] | None:

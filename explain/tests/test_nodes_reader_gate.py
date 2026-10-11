@@ -115,3 +115,12 @@ def test_gate_filter_splits_proposals():
 
 def test_unused_helpers_import():
     assert claim("x", ["R1"])["role"] == "supports" and mutate(org="Z")["org"] == "Z"
+
+
+def test_title_reading_like_two_problems_is_flagged_not_resolved():
+    mixed = RawText("f1", "Red Hat Update for glibc (RHSA-2099:0001) Windows Local Administrator Password Reused",
+                    "", "credential")
+    plain_pkg = RawText("f2", "7-Zip Prior to 23.01 Multiple Vulnerabilities", "", "package")
+    plain_cfg = RawText("f3", "Microsoft Windows SMBv1 Protocol Enabled", "", "config")
+    out = RuleReader().read([mixed, plain_pkg, plain_cfg])
+    assert out["f1"].conflict and not out["f2"].conflict and not out["f3"].conflict

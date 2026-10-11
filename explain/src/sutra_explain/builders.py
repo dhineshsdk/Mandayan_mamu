@@ -65,6 +65,7 @@ def root_cause_facts(payload: Mapping[str, Any], rc_id: str, typed: Mapping[str,
     facts = FactSet(rc_id)
     fields = _rc_fields(rc)
     fields["injection_suspects"] = sum(1 for fid in rc["finding_ids"] if typed.get(fid) and typed[fid].suspicious)
+    fields["title_conflicts"] = sum(1 for fid in rc["finding_ids"] if typed.get(fid) and typed[fid].conflict)
     hosts = sorted((payload["assets"][a] for a in rc["asset_ids"] if a in payload["assets"]),
                    key=lambda a: (-a["criticality"], a["id"]))
     members = sorted((payload["findings"][f] for f in rc["finding_ids"] if f in payload["findings"]),
@@ -82,7 +83,8 @@ def root_cause_facts(payload: Mapping[str, Any], rc_id: str, typed: Mapping[str,
     shown = members[:max_findings]
     if reader is not None and shown:
         better = read_findings(payload, [f["id"] for f in shown], reader)
-        typed = {**typed, **{k: Typed(v.category, typed[k].suspicious if k in typed else v.suspicious, v.source)
+        typed = {**typed, **{k: Typed(v.category, typed[k].suspicious if k in typed else v.suspicious, v.source,
+                                      typed[k].conflict if k in typed else v.conflict)
                              for k, v in better.items()}}
     for i, f in enumerate(shown, 1):
         t = typed.get(f["id"]) or Typed("other", False, "rules")
@@ -126,6 +128,8 @@ def board_facts(payload: Mapping[str, Any], top_n: int = 5, unowned: int | None 
         if typed is not None and "finding_ids" in rc:
             suspects = sum(1 for fid in rc["finding_ids"] if typed.get(fid) and typed[fid].suspicious)
         fl["injection_suspects"] = suspects
+        fl["title_conflicts"] = (sum(1 for fid in rc["finding_ids"] if typed.get(fid) and typed[fid].conflict)
+                                 if typed is not None and "finding_ids" in rc else 0)
         facts.add(Node(f"R{i}", rc["id"], "root_cause", rc["title"], fl))
     for i, s in enumerate(payload.get("risk_by_site", [])[:3], 1):
         facts.add(Node(f"S{i}", s["name"], "site", s["name"], {"ale_label": s["label"], "rank": i}))
