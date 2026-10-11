@@ -23,7 +23,19 @@ from ..analysis import replace_ownership
 from ..catalog import DEFAULT_APPROVAL_RULES, FIXED_RULES, load_catalog
 from ..deps import client_ip, get_db, require, require_any
 from ..jobs import approval_rules
-from ..models import AuditEvent, AuthSession, Module, ModuleGrant, OwnershipTeam, Role, Setting, User, UserRole, utcnow
+from ..models import (
+    AuditEvent,
+    AuthSession,
+    Module,
+    ModuleGrant,
+    Outbox,
+    OwnershipTeam,
+    Role,
+    Setting,
+    User,
+    UserRole,
+    utcnow,
+)
 from ..security import audit, hash_password
 
 router = APIRouter(prefix="/api/admin")
@@ -439,6 +451,43 @@ def put_sla(body: SlaIn, request: Request, p: Principal = Depends(require_any(("
     audit(db, "admin.sla_changed", p.user, "setting", "sla", client_ip(request), before=before, after=value)
     db.commit()
     return {"sla": sla.settings(db), "defaults": sla.DEFAULT_SLA}
+
+
+# ---------- integrations ----------
+
+@router.get("/integrations")
+def integrations(request: Request, p: Principal = Depends(require("M-ADM", "admin")), db: Session = Depends(get_db)):
+    """What is configured (never the secrets) and how delivery is going."""
+    s = request.app.state.settings
+    counts: dict[str, dict[str, int]] = {}
+    for kind, status, n in db.execute(select(Outbox.kind, Outbox.status, func.count()).group_by(Outbox.kind,
+                                                                                               Outbox.status)):
+        counts.setdefault(kind, {})[status] = n
+    problems = db.scalars(select(Outbox).where(Outbox.status.in_(("failed", "skipped")))
+                          .order_by(Outbox.id.desc()).limit(25))
+    return {
+        "base_url": s.base_url,
+        "email": {"enabled": s.email_enabled, "host": s.smtp_host, "port": s.smtp_port, "from": s.smtp_from},
+        "teams": {"enabled": bool(s.teams_webhook_url)},
+        "jira": {"enabled": s.jira_enabled, "url": s.jira_url, "api": s.jira_api, "issue_type": s.jira_issue_type,
+                 "done_status": s.jira_done_status, "auth": "account + API token" if s.jira_user else "token"},
+        "servicenow": {"enabled": s.servicenow_enabled, "url": s.servicenow_url, "table": s.servicenow_table},
+        "outbox": counts,
+        "problems": [{"id": o.id, "kind": o.kind, "event": o.event, "job": o.job_id, "recipient": o.recipient,
+                      "status": o.status, "attempts": o.attempts, "error": o.last_error,
+                      "at": o.created_at.isoformat(timespec="seconds")} for o in problems],
+    }
+
+
+@router.post("/integrations/retry")
+def retry_failed(request: Request, p: Principal = Depends(require("M-ADM", "admin")), db: Session = Depends(get_db)):
+    """Queue failed and skipped deliveries again, for example after fixing a setting."""
+    rows = db.scalars(select(Outbox).where(Outbox.status.in_(("failed", "skipped")))).all()
+    for o in rows:
+        o.status, o.attempts, o.next_attempt_at = "queued", 0, utcnow()
+    audit(db, "admin.outbox_retry", p.user, "outbox", "", client_ip(request), rows=len(rows))
+    db.commit()
+    return {"queued": len(rows)}
 
 
 # ---------- audit log ----------

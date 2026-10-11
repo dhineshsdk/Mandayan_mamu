@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from .. import ingest, patch
 from ..pipeline import Result
-from . import drafting, sla
+from . import drafting, notify, sla
 from .access import Principal
 from .drafting import DraftService
 from .models import Job, JobStep, OwnershipTeam, Setting, User, utcnow
@@ -112,11 +112,13 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
                              state="waiting") for i, s in enumerate(r["steps"])]
     db.add(job)
     db.flush()
-    job.jira_key = f"{(chart.jira_project if chart and chart.jira_project else 'SEC')}-{job.id}"
     event = {"patch": "job.raise", "manual": "job.manual", "exception": "job.exception_request"}[mode]
     audit(db, event, p.user, "job", job.id, ip, rc=rc_id, team=team,
           route=job.route["reason"] if job.route else None, ticket=ticket or None,
           expires_on=expires_on.isoformat() if mode == "exception" else None)
+    notify.job_raised(db, job)
+    if job.status == "pending":
+        notify.step_opened(db, job)
     drafts = drafts or drafting.DraftService(drafter=drafting.template_only())
     if job.status == "drafting" and not drafts.background:
         drafting.apply_draft(db, job, drafts.draft_now(inp))
@@ -204,6 +206,7 @@ def decide(db: Session, p: Principal, job: Job, action: str, comment: str, ip: s
                      step.role == "vertical_head")
     audit(db, f"job.{action}", p.user, "job", job.id, ip, step=step.role, comment=comment or None,
           emergency=emergency or None)
+    notify.decided(db, job, step.role)
     db.commit()
     return job
 
@@ -217,7 +220,8 @@ def job_json(db: Session, job: Job, p: Principal | None = None, res: Result | No
     return {
         "id": f"J-{job.id:03d}", "pk": job.id, "rc_id": job.rc_id, "rc_title": job.rc_title, "team": job.team,
         "vertical": job.vertical, "mode": job.mode, "status": job.status, "ssvc": job.ssvc, "is_ot": job.is_ot,
-        "jira": job.jira_key, "ticket": job.ticket, "hosts": job.hosts, "findings": job.findings,
+        "jira": job.jira_key, "servicenow": job.servicenow_number, "ticket": job.ticket, "hosts": job.hosts,
+        "findings": job.findings,
         "route": job.route, "draft": job.draft, "created": job.created_at.isoformat(timespec="seconds"),
         "raised_by": users[job.raised_by].display_name if job.raised_by in users else "",
         "steps": [{"role": s.role, "label": patch.ROLE_LABEL[s.role], "who": s.expected_name or s.expected_email,

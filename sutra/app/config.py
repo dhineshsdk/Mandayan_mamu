@@ -30,9 +30,35 @@ class Settings:
     # OpenID Connect (Entra ID or any OIDC provider). SSO is on when issuer and client id are set.
     oidc_issuer: str = field(default_factory=lambda: os.environ.get("SUTRA_OIDC_ISSUER", ""))
     oidc_client_id: str = field(default_factory=lambda: os.environ.get("SUTRA_OIDC_CLIENT_ID", ""))
-    oidc_client_secret: str = field(default_factory=lambda: os.environ.get("SUTRA_OIDC_CLIENT_SECRET", ""))
+    oidc_client_secret: str = field(default_factory=lambda: os.environ.get("SUTRA_OIDC_CLIENT_SECRET", ""), repr=False)
     oidc_label: str = field(default_factory=lambda: os.environ.get("SUTRA_OIDC_LABEL", "Single sign-on"))
     allow_local_login: bool = field(default_factory=lambda: _bool("SUTRA_ALLOW_LOCAL_LOGIN", True))
+    # Links in notifications and tickets, e.g. https://sutra.example.in (no trailing slash). Optional.
+    base_url: str = field(default_factory=lambda: os.environ.get("SUTRA_BASE_URL", "").rstrip("/"))
+    # Email over SMTP. Off unless SUTRA_SMTP_HOST and SUTRA_SMTP_FROM are set.
+    smtp_host: str = field(default_factory=lambda: os.environ.get("SUTRA_SMTP_HOST", ""))
+    smtp_port: int = field(default_factory=lambda: int(os.environ.get("SUTRA_SMTP_PORT", "587")))
+    smtp_user: str = field(default_factory=lambda: os.environ.get("SUTRA_SMTP_USER", ""))
+    smtp_password: str = field(default_factory=lambda: os.environ.get("SUTRA_SMTP_PASSWORD", ""), repr=False)
+    smtp_from: str = field(default_factory=lambda: os.environ.get("SUTRA_SMTP_FROM", ""))
+    smtp_starttls: bool = field(default_factory=lambda: _bool("SUTRA_SMTP_STARTTLS", True))
+    # Microsoft Teams: the URL of a Workflows "Send webhook alerts to a channel" flow (or a legacy incoming webhook).
+    teams_webhook_url: str = field(default_factory=lambda: os.environ.get("SUTRA_TEAMS_WEBHOOK_URL", ""), repr=False)
+    # Jira. Cloud: API version 3 with an account email and API token. Data Center: version 2 with a personal access
+    # token and no user. Issues go to the team's project from the ownership chart.
+    jira_url: str = field(default_factory=lambda: os.environ.get("SUTRA_JIRA_URL", "").rstrip("/"))
+    jira_user: str = field(default_factory=lambda: os.environ.get("SUTRA_JIRA_USER", ""))
+    jira_token: str = field(default_factory=lambda: os.environ.get("SUTRA_JIRA_TOKEN", ""), repr=False)
+    jira_api: str = field(default_factory=lambda: os.environ.get("SUTRA_JIRA_API", "3"))
+    jira_issue_type: str = field(default_factory=lambda: os.environ.get("SUTRA_JIRA_ISSUE_TYPE", "Task"))
+    # Status to move the issue to when a rescan proves the fix, e.g. "Done". Empty: comment only.
+    jira_done_status: str = field(default_factory=lambda: os.environ.get("SUTRA_JIRA_DONE_STATUS", ""))
+    # ServiceNow Table API (basic auth). Records go to this table, e.g. change_request or incident.
+    servicenow_url: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_URL", "").rstrip("/"))
+    servicenow_user: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_USER", ""))
+    servicenow_password: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_PASSWORD", ""),
+                                     repr=False)
+    servicenow_table: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_TABLE", "change_request"))
 
     def __post_init__(self):
         self.workspace = Path(self.workspace)
@@ -51,6 +77,18 @@ class Settings:
         path.write_text(key)
         path.chmod(0o600)
         return key
+
+    @property
+    def email_enabled(self) -> bool:
+        return bool(self.smtp_host and self.smtp_from)
+
+    @property
+    def jira_enabled(self) -> bool:
+        return bool(self.jira_url and self.jira_token)
+
+    @property
+    def servicenow_enabled(self) -> bool:
+        return bool(self.servicenow_url and self.servicenow_user and self.servicenow_password)
 
     @property
     def oidc_enabled(self) -> bool:

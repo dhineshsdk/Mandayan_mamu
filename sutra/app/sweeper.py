@@ -13,7 +13,7 @@ from datetime import UTC, date, datetime
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from . import drafting, sla
+from . import drafting, notify, sla
 from .models import Job, utcnow
 from .security import audit
 
@@ -28,6 +28,7 @@ def expire_exceptions(db: Session, today: date) -> int:
                                             Job.expires_on < today)):
         job.status = "expired"
         audit(db, "job.exception_expired", None, "job", job.id, expires_on=job.expires_on.isoformat())
+        notify.expired(db, job)
         n += 1
     return n
 

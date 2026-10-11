@@ -13,11 +13,12 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import drafting, migrate, sweeper
+from . import drafting, migrate, notify, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
 from .db import make_engine, make_sessionmaker
+from .integrations import Senders
 from .jobs import Conflict, Forbidden
 from .routes import admin, auth, data, history, jobs, views
 
@@ -28,8 +29,9 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'")
 
 
-def create_app(settings: Settings | None = None, drafter=None) -> FastAPI:
-    """``drafter``: a ``sutra_patchdraft.PatchDrafter``; by default one configured from the environment."""
+def create_app(settings: Settings | None = None, drafter=None, background: bool = True) -> FastAPI:
+    """``drafter``: a ``sutra_patchdraft.PatchDrafter``; by default one configured from the environment.
+    ``background``: run the hourly sweeper and the notification dispatcher threads (tests drive them directly)."""
     settings = settings or Settings()
 
     @asynccontextmanager
@@ -40,8 +42,11 @@ def create_app(settings: Settings | None = None, drafter=None) -> FastAPI:
             app.state.analysis.load_current(db)
         drafting.resume(app.state.drafts, app.state.analysis.result)
         sweeper.sweep(app.state.sessionmaker)
-        app.state.sweeper.start()
+        if background:
+            app.state.sweeper.start()
+            app.state.dispatcher.start()
         yield
+        app.state.dispatcher.stop()
         app.state.sweeper.stop()
         app.state.drafts.shutdown()
         app.state.engine.dispose()
@@ -53,6 +58,8 @@ def create_app(settings: Settings | None = None, drafter=None) -> FastAPI:
     app.state.analysis = AnalysisStore()
     app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter)
     app.state.sweeper = sweeper.Sweeper(app.state.sessionmaker)
+    app.state.senders = Senders(settings)
+    app.state.dispatcher = notify.Dispatcher(app.state.sessionmaker, app.state.senders)
 
     @app.middleware("http")
     async def guard(request: Request, call_next):

@@ -18,6 +18,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from . import notify
 from .models import AssetSnapshot, Dataset, Job, JobCheck, Observation, utcnow
 from .security import audit
 
@@ -76,6 +77,7 @@ def verify(db: Session, ds: Dataset) -> dict[str, int]:
         audit(db, f"job.rescan_{outcome.replace('-', '_')}", None, "job", job.id, dataset=ds.id,
               as_of=ds.as_of.isoformat() if ds.as_of else None, fixed=len(fixed), still_open=len(still),
               not_rescanned=unknown)
+        notify.rescan(db, job, outcome, ds.as_of)
         counts[outcome] = counts.get(outcome, 0) + 1
     db.flush()
     return counts

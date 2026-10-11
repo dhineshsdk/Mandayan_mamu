@@ -180,11 +180,11 @@ function jobStatus(j) {
 }
 function jobTable(jobs) {
   if (!jobs.length) return '<p class="muted">No jobs.</p>';
-  return `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Team</th><th>Type</th><th>SSVC</th><th>Status</th><th>Fix due</th><th>Jira</th></tr></thead>
+  return `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Team</th><th>Type</th><th>SSVC</th><th>Status</th><th>Fix due</th><th>Ticket</th></tr></thead>
     <tbody>${jobs.map((j) => `<tr class="click" data-job="${j.pk}"><td class="id"><b>${esc(j.id)}</b></td>
       <td><div class="t">${esc(j.rc_title)}</div><div class="fix">${j.hosts.length} hosts · ${j.findings.length} findings</div></td>
       <td>${esc(j.team)}</td><td>${j.mode === "manual" ? "Manual fix" : j.mode === "exception" ? "Risk acceptance" : j.is_ot ? "Staged plan" : "Patch job"}${j.route && j.route.emergency ? ' <span class="badge warn">emergency</span>' : ""}</td>
-      <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td>${j.due_on ? `${esc(fmtDate(j.due_on))}${j.sla_breached ? ' <span class="badge warn">missed</span>' : ""}` : '<span class="muted">–</span>'}</td><td class="mono">${esc(j.jira)}</td></tr>`).join("")}</tbody></table></div>`;
+      <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td>${j.due_on ? `${esc(fmtDate(j.due_on))}${j.sla_breached ? ' <span class="badge warn">missed</span>' : ""}` : '<span class="muted">–</span>'}</td><td class="mono">${esc(j.jira || j.servicenow) || '<span class="muted">–</span>'}</td></tr>`).join("")}</tbody></table></div>`;
 }
 const OPEN = ["drafting", "pending", "approved", "fixing-manually", "reopened"];
 // Buttons to raise a job, for each team this person may raise jobs for that owns hosts in this root cause.
@@ -506,7 +506,8 @@ VIEWS.job = {
       <div class="crumb"><a href="#/jobs">← Patch jobs</a></div>
       <h1>${esc(j.id)}: ${esc(j.rc_title)}</h1>
       <div class="chips">${jobStatus(j)} ${ssvc(j.ssvc)} ${otBadge(j.is_ot)} <span class="badge">${esc(j.team)}</span>
-        <span class="badge mono">Jira ${esc(j.jira)}</span> ${j.rc_current_id ? (can("M-RC") ? `<a class="badge" href="#/rc/${esc(j.rc_current_id)}">${esc(j.rc_current_id)}</a>` : `<span class="badge">${esc(j.rc_current_id)}</span>`) : '<span class="badge">Not in the latest import</span>'}
+        ${j.jira ? (j.jira_url ? `<a class="badge mono" href="${esc(j.jira_url)}" target="_blank" rel="noopener">Jira ${esc(j.jira)}</a>` : `<span class="badge mono">Jira ${esc(j.jira)}</span>`) : ""}
+        ${j.servicenow ? (j.servicenow_url ? `<a class="badge mono" href="${esc(j.servicenow_url)}" target="_blank" rel="noopener">ServiceNow ${esc(j.servicenow)}</a>` : `<span class="badge mono">ServiceNow ${esc(j.servicenow)}</span>`) : ""} ${j.rc_current_id ? (can("M-RC") ? `<a class="badge" href="#/rc/${esc(j.rc_current_id)}">${esc(j.rc_current_id)}</a>` : `<span class="badge">${esc(j.rc_current_id)}</span>`) : '<span class="badge">Not in the latest import</span>'}
         ${j.route && j.route.emergency ? '<span class="badge warn">Emergency change allowed</span>' : ""}
         ${j.due_on ? `<span class="badge ${j.sla_breached ? "warn" : ""}">Fix due ${esc(fmtDate(j.due_on))}${j.sla_breached ? ": missed" : ""}</span>` : ""}</div>
       ${j.route ? `<div class="card"><h2>Approval route</h2><p class="muted" style="margin-top:0">${esc(j.route.reason)}.</p>
@@ -782,10 +783,11 @@ VIEWS.admin = {
     if (tab === "rules") d.rules = await api("/api/admin/approval-rules");
     if (tab === "maintenance") d.maint = await api("/api/admin/maintenance");
     if (tab === "sla") d.sla = await api("/api/admin/sla");
+    if (tab === "integrations") d.integ = await api("/api/admin/integrations");
     return d;
   },
   html(d) {
-    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"]];
+    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["integrations", "Integrations"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"]];
     return `<h1>Administration</h1>
       <div class="tabs">${tabs.map(([k, l]) => `<a href="#/admin/${k}" class="${k === d.tab ? "active" : ""}">${esc(l)}</a>`).join("")}</div>
       <div id="admin-msg"></div>
@@ -959,6 +961,35 @@ const ADMIN_TABS = {
         root.querySelectorAll("[data-step]").forEach((i) => { step_hours[i.dataset.step] = Number(i.value); });
         root.querySelectorAll("[data-fix]").forEach((i) => { fix_days[i.dataset.fix] = Number(i.value); });
         try { await api("/api/admin/sla", { method: "PUT", json: { step_hours, fix_days } }); adminMsg(root, "Saved."); }
+        catch (err) { adminMsg(root, esc(err.message), "error"); }
+      });
+    },
+  },
+  integrations: {
+    html(d) {
+      const g = d.integ;
+      const on = (x) => x ? '<span class="status st-approved">On</span>' : '<span class="status st-fixing-manually">Off</span>';
+      const rows = [
+        ["Email (SMTP)", g.email.enabled, g.email.enabled ? `${esc(g.email.host)}:${g.email.port}, from ${esc(g.email.from)}` : "Set SUTRA_SMTP_HOST and SUTRA_SMTP_FROM (and SUTRA_SMTP_USER, SUTRA_SMTP_PASSWORD if the server needs them)."],
+        ["Microsoft Teams", g.teams.enabled, g.teams.enabled ? "Posting to the configured webhook" : "Create a Workflows flow from the “Send webhook alerts to a channel” template and set SUTRA_TEAMS_WEBHOOK_URL to its URL."],
+        ["Jira", g.jira.enabled, g.jira.enabled ? `${esc(g.jira.url)}, API v${esc(g.jira.api)}, ${esc(g.jira.auth)}, issue type ${esc(g.jira.issue_type)}${g.jira.done_status ? `, moves to “${esc(g.jira.done_status)}” when a rescan proves the fix` : ""}` : "Set SUTRA_JIRA_URL and SUTRA_JIRA_TOKEN (Cloud: also SUTRA_JIRA_USER, the account email). Issues go to each team's Jira project from the ownership chart."],
+        ["ServiceNow", g.servicenow.enabled, g.servicenow.enabled ? `${esc(g.servicenow.url)}, table ${esc(g.servicenow.table)}` : "Set SUTRA_SERVICENOW_URL, SUTRA_SERVICENOW_USER and SUTRA_SERVICENOW_PASSWORD."],
+      ];
+      const kinds = Object.entries(g.outbox);
+      return `<div class="card"><h2>Integrations</h2>
+        <p class="muted" style="margin-top:0">Credentials live in the server's environment, never in the database or this page.${g.base_url ? ` Links point to ${esc(g.base_url)}.` : " Set SUTRA_BASE_URL so messages link back to Sutra."}</p>
+        <div class="table-wrap"><table><thead><tr><th>Integration</th><th>State</th><th>Settings</th></tr></thead>
+        <tbody>${rows.map(([n, e, t]) => `<tr><td><b>${n}</b></td><td>${on(e)}</td><td>${t}</td></tr>`).join("")}</tbody></table></div></div>
+      <div class="card mt"><h2>Delivery</h2>${kinds.length ? `<div class="table-wrap"><table><thead><tr><th>Kind</th><th class="n">Sent</th><th class="n">Waiting</th><th class="n">Skipped</th><th class="n">Failed</th></tr></thead>
+        <tbody>${kinds.map(([k, c]) => `<tr><td class="mono">${esc(k)}</td><td class="n">${c.sent || 0}</td><td class="n">${c.queued || 0}</td><td class="n">${c.skipped || 0}</td><td class="n">${c.failed || 0}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">Nothing sent yet.</p>'}
+        ${g.problems.length ? `<h2 style="margin-top:14px">Recent problems</h2><div class="table-wrap"><table><thead><tr><th>When</th><th>Kind</th><th>Job</th><th>To</th><th>Status</th><th>Error</th></tr></thead>
+          <tbody>${g.problems.map((p) => `<tr><td class="mono">${esc(fmtTime(p.at))}</td><td class="mono">${esc(p.kind)}</td><td>${p.job ? `<a href="#/job/${p.job}">J-${String(p.job).padStart(3, "0")}</a>` : ""}</td><td>${esc(p.recipient)}</td><td>${esc(p.status)}</td><td>${esc(p.error)}</td></tr>`).join("")}</tbody></table></div>
+          <div class="toolbar"><button class="btn" id="retry">Try failed and skipped again</button></div>` : ""}</div>`;
+    },
+    wire(root) {
+      const b = root.querySelector("#retry");
+      if (b) b.addEventListener("click", async () => {
+        try { const r = await post("/api/admin/integrations/retry", {}); await render(); adminMsg(view, `Queued ${r.queued} again.`); }
         catch (err) { adminMsg(root, esc(err.message), "error"); }
       });
     },
