@@ -1,0 +1,330 @@
+{
+ "title": "CISA Catalog of Known Exploited Vulnerabilities",
+ "catalogVersion": "2026.10.08",
+ "dateReleased": "2026-10-08T20:09:18.9833Z",
+ "count": 20,
+ "vulnerabilities": [
+  {
+   "cveID": "CVE-2020-11023",
+   "vendorProject": "JQuery",
+   "product": "JQuery",
+   "vulnerabilityName": "JQuery Cross-Site Scripting (XSS) Vulnerability",
+   "dateAdded": "2025-01-23",
+   "shortDescription": "JQuery contains a persistent cross-site scripting (XSS) vulnerability. When passing maliciously formed, untrusted input enclosed in HTML tags, JQuery's DOM manipulators can execute untrusted code in the context of the user's browser.",
+   "requiredAction": "Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.",
+   "dueDate": "2025-02-13",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "This vulnerability could affect an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: https://github.com/jquery/jquery/security/advisories/GHSA-jpcq-cgw6-v4j6 ; https://blog.jquery.com/2020/04/10/jquery-3-5-0-released/ ; https://nvd.nist.gov/vuln/detail/CVE-2020-11023",
+   "cwes": [
+    "CWE-79"
+   ]
+  },
+  {
+   "cveID": "CVE-2024-5274",
+   "vendorProject": "Google",
+   "product": "Chromium V8",
+   "vulnerabilityName": "Google Chromium V8 Type Confusion Vulnerability",
+   "dateAdded": "2024-05-28",
+   "shortDescription": "Google Chromium V8 contains a type confusion vulnerability that allows a remote attacker to execute code via a crafted HTML page. This vulnerability could affect multiple web browsers that utilize Chromium, including, but not limited to, Google Chrome, Microsoft Edge, and Opera.",
+   "requiredAction": "Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.",
+   "dueDate": "2024-06-18",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "https://chromereleases.googleblog.com/2024/05/stable-channel-update-for-desktop_23.html?m=1; https://nvd.nist.gov/vuln/detail/CVE-2024-5274",
+   "cwes": [
+    "CWE-843"
+   ]
+  },
+  {
+   "cveID": "CVE-2024-4947",
+   "vendorProject": "Google",
+   "product": "Chromium V8",
+   "vulnerabilityName": "Google Chromium V8 Type Confusion Vulnerability",
+   "dateAdded": "2024-05-20",
+   "shortDescription": "Google Chromium V8 contains a type confusion vulnerability that allows a remote attacker to execute code via a crafted HTML page.",
+   "requiredAction": "Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.",
+   "dueDate": "2024-06-10",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "https://chromereleases.googleblog.com/2024/05/stable-channel-update-for-desktop_15.html; https://nvd.nist.gov/vuln/detail/CVE-2024-4947",
+   "cwes": [
+    "CWE-843"
+   ]
+  },
+  {
+   "cveID": "CVE-2023-4911",
+   "vendorProject": "GNU",
+   "product": "GNU C Library",
+   "vulnerabilityName": "GNU C Library Buffer Overflow Vulnerability",
+   "dateAdded": "2023-11-21",
+   "shortDescription": "GNU C Library's dynamic loader ld.so contains a buffer overflow vulnerability when processing the GLIBC_TUNABLES environment variable, allowing a local attacker to execute code with elevated privileges.",
+   "requiredAction": "Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.",
+   "dueDate": "2023-12-12",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "This vulnerability affects a common open-source component, third-party library, or a protocol used by different products. Please check with specific vendors for information on patching status. For more information, please see: https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=1056e5b4c3f2d90ed2b4a55f96add28da2f4c8fa, https://access.redhat.com/security/cve/cve-2023-4911, https://www.debian.org/security/2023/dsa-5514 ; https://nvd.nist.gov/vuln/detail/CVE-2023-4911  ",
+   "cwes": [
+    "CWE-122"
+   ]
+  },
+  {
+   "cveID": "CVE-2023-4966",
+   "vendorProject": "Citrix",
+   "product": "NetScaler ADC and NetScaler Gateway",
+   "vulnerabilityName": "Citrix NetScaler ADC and NetScaler Gateway Buffer Overflow Vulnerability",
+   "dateAdded": "2023-10-18",
+   "shortDescription": "Citrix NetScaler ADC and NetScaler Gateway contain a buffer overflow vulnerability that allows for sensitive information disclosure when configured as a Gateway (VPN virtual server, ICA Proxy, CVPN, RDP Proxy) or AAA virtual server.",
+   "requiredAction": "Apply mitigations and kill all active and persistent sessions per vendor instructions [https://www.netscaler.com/blog/news/cve-2023-4966-critical-security-update-now-available-for-netscaler-adc-and-netscaler-gateway/] OR discontinue use of the product if mitigations are unavailable.",
+   "dueDate": "2023-11-08",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://www.netscaler.com/blog/news/cve-2023-4966-critical-security-update-now-available-for-netscaler-adc-and-netscaler-gateway/, https://support.citrix.com/article/CTX579459/netscaler-adc-and-netscaler-gateway-security-bulletin-for-cve20234966-and-cve20234967 ;  https://nvd.nist.gov/vuln/detail/CVE-2023-4966",
+   "cwes": [
+    "CWE-119"
+   ]
+  },
+  {
+   "cveID": "CVE-2023-44487",
+   "vendorProject": "IETF",
+   "product": "HTTP/2",
+   "vulnerabilityName": "HTTP/2 Rapid Reset Attack Vulnerability",
+   "dateAdded": "2023-10-10",
+   "shortDescription": "HTTP/2 contains a rapid reset vulnerability that allows for a distributed denial-of-service attack (DDoS).",
+   "requiredAction": "Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.",
+   "dueDate": "2023-10-31",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "This vulnerability affects a common open-source component, third-party library, or protocol used by different products. For more information, please see: HTTP/2 Rapid Reset Vulnerability, CVE-2023-44487 | CISA: https://www.cisa.gov/news-events/alerts/2023/10/10/http2-rapid-reset-vulnerability-cve-2023-44487; https://blog.cloudflare.com/technical-breakdown-http2-rapid-reset-ddos-attack/;  https://nvd.nist.gov/vuln/detail/CVE-2023-44487",
+   "cwes": [
+    "CWE-400"
+   ]
+  },
+  {
+   "cveID": "CVE-2021-45046",
+   "vendorProject": "Apache",
+   "product": "Log4j2",
+   "vulnerabilityName": "Apache Log4j2 Deserialization of Untrusted Data Vulnerability",
+   "dateAdded": "2023-05-01",
+   "shortDescription": "Apache Log4j2 contains a deserialization of untrusted data vulnerability due to the incomplete fix of CVE-2021-44228, where the Thread Context Lookup Pattern is vulnerable to remote code execution in certain non-default configurations.",
+   "requiredAction": "Apply updates per vendor instructions.",
+   "dueDate": "2023-05-22",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://logging.apache.org/log4j/2.x/security.html; https://nvd.nist.gov/vuln/detail/CVE-2021-45046",
+   "cwes": [
+    "CWE-917"
+   ]
+  },
+  {
+   "cveID": "CVE-2017-0145",
+   "vendorProject": "Microsoft",
+   "product": "SMBv1",
+   "vulnerabilityName": "Microsoft SMBv1 Remote Code Execution Vulnerability",
+   "dateAdded": "2022-02-10",
+   "shortDescription": "The SMBv1 server in multiple Microsoft Windows versions allows remote attackers to execute arbitrary code via crafted packets.",
+   "requiredAction": "Apply updates per vendor instructions.",
+   "dueDate": "2022-08-10",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://nvd.nist.gov/vuln/detail/CVE-2017-0145",
+   "cwes": [
+    "CWE-20"
+   ]
+  },
+  {
+   "cveID": "CVE-2017-0144",
+   "vendorProject": "Microsoft",
+   "product": "SMBv1",
+   "vulnerabilityName": "Microsoft SMBv1 Remote Code Execution Vulnerability",
+   "dateAdded": "2022-02-10",
+   "shortDescription": "The SMBv1 server in multiple Microsoft Windows versions allows remote attackers to execute arbitrary code via crafted packets.",
+   "requiredAction": "Apply updates per vendor instructions.",
+   "dueDate": "2022-08-10",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://nvd.nist.gov/vuln/detail/CVE-2017-0144",
+   "cwes": [
+    "CWE-20"
+   ]
+  },
+  {
+   "cveID": "CVE-2021-44228",
+   "vendorProject": "Apache",
+   "product": "Log4j2",
+   "vulnerabilityName": "Apache Log4j2 Remote Code Execution Vulnerability",
+   "dateAdded": "2021-12-10",
+   "shortDescription": "Apache Log4j2 contains a vulnerability where JNDI features do not protect against attacker-controlled JNDI-related endpoints, allowing for remote code execution.",
+   "requiredAction": "For all affected software assets for which updates exist, the only acceptable remediation actions are: 1) Apply updates; OR 2) remove affected assets from agency networks. Temporary mitigations using one of the measures provided at https://www.cisa.gov/uscert/ed-22-02-apache-log4j-recommended-mitigation-measures are only acceptable until updates are available.",
+   "dueDate": "2021-12-24",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228",
+   "cwes": [
+    "CWE-20",
+    "CWE-400",
+    "CWE-502"
+   ]
+  },
+  {
+   "cveID": "CVE-2018-13379",
+   "vendorProject": "Fortinet",
+   "product": "FortiOS",
+   "vulnerabilityName": "Fortinet FortiOS SSL VPN Path Traversal Vulnerability",
+   "dateAdded": "2021-11-03",
+   "shortDescription": "Fortinet FortiOS SSL VPN web portal contains a path traversal vulnerability that may allow an unauthenticated attacker to download FortiOS system files through specially crafted HTTP resource requests.",
+   "requiredAction": "Apply updates per vendor instructions.",
+   "dueDate": "2022-05-03",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://nvd.nist.gov/vuln/detail/CVE-2018-13379",
+   "cwes": [
+    "CWE-22"
+   ]
+  },
+  {
+   "cveID": "CVE-2019-0708",
+   "vendorProject": "Microsoft",
+   "product": "Remote Desktop Services",
+   "vulnerabilityName": "Microsoft Remote Desktop Services Remote Code Execution Vulnerability",
+   "dateAdded": "2021-11-03",
+   "shortDescription": "Microsoft Remote Desktop Services, formerly known as Terminal Service, contains an unspecified vulnerability that allows an unauthenticated attacker to connect to the target system using RDP and send specially crafted requests. Successful exploitation allows for remote code execution. The vulnerability is also known under the moniker of BlueKeep.",
+   "requiredAction": "Apply updates per vendor instructions.",
+   "dueDate": "2022-05-03",
+   "knownRansomwareCampaignUse": "Known",
+   "forensicTriage": "No",
+   "notes": "https://nvd.nist.gov/vuln/detail/CVE-2019-0708",
+   "cwes": [
+    "CWE-416"
+   ]
+  },
+  {
+   "cveID": "CVE-2015-5477",
+   "vendorProject": "ISC",
+   "product": "BIND",
+   "vulnerabilityName": " ISC BIND Data Processing Errors Vulnerability",
+   "dateAdded": "2026-10-08",
+   "shortDescription": "ISC BIND contains a data processing errors vulnerability that could allow remote attackers to cause a denial of service via TKEY queries.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-11",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "This vulnerability could affect an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: https://web.archive.org/web/20150729014733/https://kb.isc.org/article/AA-01272 ; https://access.redhat.com/errata/RHSA-2015:1513.html; https://supportportal.juniper.net/s/article/2016-01-Security-Bulletin-Junos-Vulnerability-in-ISC-BIND-named-CVE-2015-5477 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2015-5477",
+   "cwes": [
+    "CWE-19"
+   ]
+  },
+  {
+   "cveID": "CVE-2016-3081",
+   "vendorProject": "Apache",
+   "product": "Struts",
+   "vulnerabilityName": "Apache Struts Command Injection Vulnerability",
+   "dateAdded": "2026-10-08",
+   "shortDescription": "Apache Struts contains a command injection vulnerability that could allow remote attackers to execute arbitrary code via method:prefix when Dynamic Method Invocation is enabled.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-11",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "Yes",
+   "notes": "This vulnerability could affect an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: https://cwiki.apache.org/confluence/display/WW/S2-032 ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2016-3081",
+   "cwes": [
+    "CWE-77"
+   ]
+  },
+  {
+   "cveID": "CVE-2023-22894",
+   "vendorProject": "Strapi",
+   "product": "Strapi",
+   "vulnerabilityName": "Strapi Cleartext Storage of Sensitive Information Vulnerability",
+   "dateAdded": "2026-10-08",
+   "shortDescription": "Strapi contains a cleartext storage of sensitive information vulnerability that could allow attackers with access to the admin panel to discover sensitive user details via the query filter. The impacted product(s) could be end-of-life (EoL) and/or end-of-service (EoS). Users are advised to discontinue use and/or transition to a supported version. This vulnerability can be chained with CVE-2023-22621 to achieve remote code execution. ",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-11",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "Yes",
+   "notes": "This vulnerability could affect an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: https://strapi.io/blog/security-disclosure-of-vulnerabilities-cve ; https://github.com/strapi/strapi/releases ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2023-22894",
+   "cwes": [
+    "CWE-312"
+   ]
+  },
+  {
+   "cveID": "CVE-2021-3199",
+   "vendorProject": "ONLYOFFICE",
+   "product": "Docs",
+   "vulnerabilityName": "ONLYOFFICE Docs Server Path Traversal Vulnerability",
+   "dateAdded": "2026-10-08",
+   "shortDescription": "ONLYOFFICE Docs contains a path traversal vulnerability that can occur when JWT is used, via a /.. sequence in an image upload parameter and could allow for remote code execution.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-11",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "Yes",
+   "notes": "This vulnerability could affect an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: ; https://github.com/ONLYOFFICE/DocumentServer/blob/903fe5ab7a275bd69c3c3346af2d21cf87ebeabf/CHANGELOG.md#563 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2021-3199",
+   "cwes": [
+    "CWE-22"
+   ]
+  },
+  {
+   "cveID": "CVE-2015-3306",
+   "vendorProject": "ProFTPD",
+   "product": "ProFTPD",
+   "vulnerabilityName": "ProFTPD Improper Access Control Vulnerability",
+   "dateAdded": "2026-10-08",
+   "shortDescription": "ProFTPD contains an improper access control vulnerability that could allow remote attackers to read and write to arbitrary files via the site cpfr and site cpto commands.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-11",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "Yes",
+   "notes": "This vulnerability could affect an open-source component, third-party library, protocol, or proprietary implementation that could be used by different products. For more information, please see: http://www.proftpd.org/ ; https://lists.debian.org/debian-security-announce/2015/msg00154.html ; https://lists.opensuse.org/archives/list/updates@lists.opensuse.org/message/WE6YZRG5UVXMGQ7IVDRYBPIWV4M6UUGM/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2015-3306",
+   "cwes": [
+    "CWE-284"
+   ]
+  },
+  {
+   "cveID": "CVE-2026-88779",
+   "vendorProject": "Citrix",
+   "product": "NetScaler",
+   "vulnerabilityName": "Citrix NetScaler Improper Restriction of Operations within the Bounds of a Memory Buffer Vulnerability",
+   "dateAdded": "2026-10-04",
+   "shortDescription": "Citrix NetScaler ADC (formerly Citrix ADC) and Citrix NetScaler Gateway (formerly Citrix Gateway) contain an improper restriction of operations within the bounds of a memory buffer vulnerability that could allow for a denial of service.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-07",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "No",
+   "notes": "https://support.citrix.com/support-home/kbsearch/article?articleNumber=CTX697174 ; https://community.citrix.com/techzone-blogs/110_security-updates/understanding-and-addressing-cve-2026-88779-in-citrix-netscaler-adc-and-citrix-netscaler-gateway/ ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-88779",
+   "cwes": [
+    "CWE-119"
+   ]
+  },
+  {
+   "cveID": "CVE-2026-102490",
+   "vendorProject": "Zammad GmbH",
+   "product": "Zammad",
+   "vulnerabilityName": "Zammad GmbH Zammad Improper Privilege Management Vulnerability",
+   "dateAdded": "2026-10-02",
+   "shortDescription": "Zammad GmbH Zammad contains an improper privilege management vulnerability that can allow the local zammad user to escalate privileges to root. This vulnerability can be chained with CVE-2026-102489.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-05",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "Yes",
+   "notes": "https://zammad.com/en/product/releases/ ; https://community.zammad.org/t/take-care-local-privilege-escalation-cve-2026-102490-is-reported-as-being-actively-exploited/21297/2 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-102490",
+   "cwes": [
+    "CWE-269"
+   ]
+  },
+  {
+   "cveID": "CVE-2026-102489",
+   "vendorProject": "Zammad GmbH",
+   "product": "Zammad",
+   "vulnerabilityName": "Zammad GmbH Zammad Session Fixation Vulnerability",
+   "dateAdded": "2026-10-02",
+   "shortDescription": "Zammad GmbH Zammad contains a session fixation vulnerability that can lead to remote code execution as the zammad user. This vulnerability can be chained with CVE-2026-102490.",
+   "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+   "dueDate": "2026-10-05",
+   "knownRansomwareCampaignUse": "Unknown",
+   "forensicTriage": "Yes",
+   "notes": "https://zammad.com/en/product/releases/ ; https://community.zammad.org/t/take-care-local-privilege-escalation-cve-2026-102490-is-reported-as-being-actively-exploited/21297/2 ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-102489",
+   "cwes": [
+    "CWE-384"
+   ]
+  }
+ ]
+}

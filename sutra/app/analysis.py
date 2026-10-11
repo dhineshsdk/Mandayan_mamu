@@ -20,7 +20,7 @@ class AnalysisStore:
         self.lock = threading.Lock()
         self.dataset_id: int | None = None
         self.result: Result | None = None
-        self.intel = risk.load_intel()
+        self.intel = {cve: {**v, "source": "sample"} for cve, v in risk.load_intel().items()}
         self._scoped: dict[str, tuple[Result, dict]] = {}
 
     def load_current(self, db: Session) -> None:
@@ -34,7 +34,8 @@ class AnalysisStore:
         if not scans:
             self.dataset_id, self.result, self._scoped = None, None, {}
             return
-        res = pipeline.run(scans, cmdb, org=ds.org_name, known_first_seen=history.first_seen_hints(db, ds.id))
+        res = pipeline.run(scans, cmdb, org=ds.org_name, known_first_seen=history.first_seen_hints(db, ds.id),
+                           intel=self.intel)
         with self.lock:
             self.dataset_id, self.result, self._scoped = ds.id, res, {}
 
@@ -45,7 +46,7 @@ class AnalysisStore:
             raise ValueError("Include at least one Qualys CSV, Tenable CSV or .nessus file.")
         cmdb = next((Path(f["path"]) for f in files if f["format"] == "cmdb"), None)
         # Fails before anything is stored if the files are bad.
-        res = pipeline.run(scans, cmdb, org=org, known_first_seen=history.first_seen_hints(db))
+        res = pipeline.run(scans, cmdb, org=org, known_first_seen=history.first_seen_hints(db), intel=self.intel)
         teams = next((Path(f["path"]) for f in files if f["format"] == "teams"), None)
         if teams:
             replace_ownership(db, ingest.load_teams(teams))
@@ -60,6 +61,11 @@ class AnalysisStore:
         with self.lock:
             self.dataset_id, self.result, self._scoped = ds.id, res, {}
         return ds
+
+    def set_intel(self, intel: dict) -> None:
+        """New threat intel; the caller re-analyses the current import with ``load_current``."""
+        with self.lock:
+            self.intel, self._scoped = intel, {}
 
     def scoped(self, asset_ids: set[str]) -> tuple[Result, dict]:
         """The restricted result and its JSON payload, cached per scope."""

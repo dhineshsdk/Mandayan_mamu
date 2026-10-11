@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import drafting, migrate, notify, scanpull, sweeper
+from . import drafting, intel, migrate, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -39,6 +39,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
         migrate.upgrade(settings.database_url)
         with app.state.sessionmaker() as db:
             sync_catalog(db)
+            app.state.analysis.set_intel(app.state.intel.build())
             app.state.analysis.load_current(db)
         drafting.resume(app.state.drafts, app.state.analysis.result)
         sweeper.sweep(app.state.sessionmaker)
@@ -49,7 +50,10 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
             app.state.sweeper.start()
             app.state.dispatcher.start()
             app.state.puller.start_schedule()
+            if settings.intel_refresh:
+                app.state.intel_updater.start()
         yield
+        app.state.intel_updater.stop()
         app.state.puller.stop()
         app.state.dispatcher.stop()
         app.state.sweeper.stop()
@@ -66,6 +70,8 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.senders = Senders(settings)
     app.state.dispatcher = notify.Dispatcher(app.state.sessionmaker, app.state.senders)
     app.state.puller = scanpull.Puller(app)
+    app.state.intel = intel.IntelStore(settings.workspace)
+    app.state.intel_updater = intel.IntelUpdater(app)
 
     @app.middleware("http")
     async def guard(request: Request, call_next):
