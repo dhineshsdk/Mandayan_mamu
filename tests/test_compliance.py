@@ -7,11 +7,15 @@ entities, audits, findings and auditors below are invented for the tests."""
 from __future__ import annotations
 
 import hashlib
+import io
+import json
+import zipfile
 from datetime import date, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sutra_compliance import verify_audit_pack
 
 from sutra.app import cli
 from sutra.app import compliance as cmp
@@ -254,3 +258,84 @@ def test_recurring_activities_feed_the_periodic_checks(env):
     drill = next(p for p in d["assessment"]["periodic"] if p["activity"] == "ccmp_drill")
     assert drill["state"] == "current" and drill["last_performed_on"] == days(-10)
     assert d["activities"][0]["title"]
+
+
+def test_assets_come_from_the_register_and_are_classed_by_a_person(env):
+    officer = client(env, OFFICER)
+    e = ok(officer.post("/api/compliance/entities", json={"name": "Vindhya Thermal Plant", "entity_type": "generator",
+                                                          "capacity_mw": 1320, "site": "Vindhya Thermal Plant"}), 201)
+    first = ok(officer.post(f"/api/compliance/entities/{e['id']}/assets/import"))
+    assert first["added"] > 0 and first["already"] == 0
+    assert ok(officer.post(f"/api/compliance/entities/{e['id']}/assets/import")) == {"added": 0,
+                                                                                     "already": first["added"]}
+    d = ok(officer.get(f"/api/compliance/entities/{e['id']}"))
+    assert len(d["assets"]) == first["added"] and all(x["critical"] is None for x in d["assets"])
+    assert all(x["register"]["site"] == "Vindhya Thermal Plant" for x in d["assets"])
+    # Unclassed assets are a gap of their own for the backup rule; nothing is classed from the register.
+    states = {p["state"] for p in d["assessment"]["periodic"] if p["activity"] == "backup"}
+    assert states == {"unclassified_asset"}
+
+    crit, other = d["assets"][0], d["assets"][1]
+    ok(officer.put(f"/api/compliance/assets/{crit['id']}", json={"critical": True}))
+    ok(officer.put(f"/api/compliance/assets/{other['id']}", json={"critical": False}))
+    acts = f"/api/compliance/entities/{e['id']}/activities"
+    assert officer.post(acts, json={"activity": "backup", "performed_on": days(-3),
+                                    "asset_id": other["asset_id"]}).status_code == 400  # not a critical system
+    assert officer.post(acts, json={"activity": "policy_review", "performed_on": days(-3),
+                                    "asset_id": crit["asset_id"]}).status_code == 400  # entity-wide activity
+    ok(officer.post(acts, json={"activity": "backup", "performed_on": days(-3), "asset_id": crit["asset_id"]}), 201)
+    ok(officer.post(acts, json={"activity": "asset_risk_assessment", "performed_on": days(-20),
+                                "asset_id": crit["asset_id"]}), 201)
+    d = ok(officer.get(f"/api/compliance/entities/{e['id']}"))
+    row = next(x for x in d["assets"] if x["id"] == crit["id"])
+    assert row["critical"] is True and row["backup"]["state"] == "current"
+    assert row["risk_assessment"]["state"] == "current" and row["risk_assessment"]["last_performed_on"] == days(-20)
+    assert next(x for x in d["assets"] if x["id"] == other["id"])["backup"] is None
+    assert not any("No assets are recorded" in n for n in d["notes"])
+    # An asset with activities on record stays.
+    assert officer.delete(f"/api/compliance/assets/{crit['id']}").status_code == 400
+
+
+def test_the_audit_pack_exports_with_its_evidence_and_a_digest(env, log4j_job):
+    officer, auditor = client(env, OFFICER), client(env, AUDITOR)
+    fixed_on = date.fromisoformat(log4j_job["fixed_on"])
+    e = ok(officer.post("/api/compliance/entities", json={"name": "Pack Station", "entity_type": "generator",
+                                                          "capacity_mw": 500}), 201)
+    a = ok(officer.post(f"/api/compliance/entities/{e['id']}/audits", json={
+        "ref": "CSA-P", "auditor": "Example LLP", "auditor_status": "cert_in_empanelled",
+        "started_on": (fixed_on - timedelta(days=30)).isoformat(),
+        "report_submitted_on": (fixed_on - timedelta(days=10)).isoformat()}), 201)
+    ok(officer.post(f"/api/compliance/audits/{a['id']}/findings", json={
+        "ref": "P-1", "severity": "critical", "title": "Log4Shell", "job_id": log4j_job["pk"]}), 201)
+    manual = ok(officer.post(f"/api/compliance/audits/{a['id']}/findings", json={
+        "ref": "P-2", "severity": "high", "title": "Default SNMP community", "fixed_on": days(-1)}), 201)
+    content = b"%PDF-1.4\n% report\n"
+    up = ok(officer.post(f"/api/compliance/entities/{e['id']}/evidence",
+                         data={"kind": "audit_report", "title": "CSA-P report", "owner_type": "audit_report",
+                               "owner_id": str(a["id"])}, files={"file": ("report.pdf", content, "application/pdf")}),
+            201)
+
+    # The screen lists what an auditor would ask for and not find: P-2 was closed by hand with no evidence.
+    d = ok(officer.get(f"/api/compliance/entities/{e['id']}"))
+    gaps = {(g["kind"], g["ref"]) for g in d["evidence_gaps"]}
+    assert ("no_fix_evidence", "P-2") in gaps and not any(r == "P-1" for _, r in gaps)
+    assert manual["fixed_on"] == days(-1)
+
+    r = auditor.get(f"/api/compliance/entities/{e['id']}/audit-pack.json")
+    assert r.status_code == 200 and "attachment" in r.headers["content-disposition"]
+    assert verify_audit_pack(r.text)
+    pack = json.loads(r.text)
+    f1 = next(f for x in pack["audits"] for f in x["findings"] if f["assessment"]["finding_id"] == "P-1")
+    assert f1["assessment"]["state"] == "fixed_on_time" and f1["fix_evidence_ids"][0].startswith("RESCAN-")
+    assert any(x["evidence_id"] == f"EV-{up['id']}" and x["sha256"] == up["sha256"] for x in pack["evidence"])
+
+    z = zipfile.ZipFile(io.BytesIO(auditor.get(f"/api/compliance/entities/{e['id']}/audit-pack.zip").content))
+    names = set(z.namelist())
+    assert {"audit-pack.json", "README.txt", f"evidence/EV-{up['id']}-report.pdf"} <= names
+    assert z.read(f"evidence/EV-{up['id']}-report.pdf") == content
+    assert verify_audit_pack(z.read("audit-pack.json").decode())
+    app, _ = env
+    with app.state.sessionmaker() as db:
+        exports = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "compliance.audit_pack_export",
+                                                           AuditEvent.target_id == str(e["id"]))))
+    assert {x.detail["format"] for x in exports} == {"json", "zip"}

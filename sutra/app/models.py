@@ -428,6 +428,22 @@ class CmpEntity(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
+class CmpAsset(Base):
+    """An asset of a regulated entity, classed for the CEA as a critical system or not. ``critical`` is None until
+    someone classes it; the rule pack treats an unclassed asset as a gap of its own."""
+
+    __tablename__ = "cmp_assets"
+    __table_args__ = (UniqueConstraint("entity_id", "asset_id"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_id: Mapped[int] = mapped_column(ForeignKey("cmp_entities.id", ondelete="CASCADE"), index=True)
+    asset_id: Mapped[str] = mapped_column(String(120))  # the asset register's ID
+    name: Mapped[str] = mapped_column(String(255), default="")
+    critical: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    classified_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    classified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class CmpAudit(Base):
     """A cyber security audit of one entity by an external auditor."""
 

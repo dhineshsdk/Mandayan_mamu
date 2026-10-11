@@ -11,7 +11,7 @@ import secrets
 from datetime import date
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -21,6 +21,7 @@ from ..access import Principal
 from ..deps import client_ip, get_db, require
 from ..models import (
     CmpActivity,
+    CmpAsset,
     CmpAudit,
     CmpControl,
     CmpEntity,
@@ -129,6 +130,8 @@ def delete_entity(eid: int, request: Request, p: Principal = Depends(ACT), db: S
     if used:
         raise ValueError("This entity has audits, activities or evidence on record, so it cannot be removed.")
     audit(db, "compliance.entity_delete", p.user, "cmp_entity", e.id, client_ip(request), name=e.name)
+    for x in db.scalars(select(CmpAsset).where(CmpAsset.entity_id == e.id)):
+        db.delete(x)
     db.delete(e)
     db.commit()
     return {"ok": True}
@@ -380,6 +383,7 @@ def update_control(cid: int, body: ControlIn, request: Request, p: Principal = D
 class ActivityIn(BaseModel):
     activity: str = Field(max_length=40)
     performed_on: date
+    asset_id: str = Field(default="", max_length=120)  # required for per-asset activities
     approved_by: str = Field(default="", max_length=200)
 
 
@@ -387,15 +391,29 @@ class ActivityIn(BaseModel):
 def add_activity(eid: int, body: ActivityIn, request: Request, p: Principal = Depends(ACT),
                  db: Session = Depends(get_db)):
     e = _get(db, CmpEntity, eid, "entity")
-    if body.activity not in cmp.entity_activities():
-        raise ValueError(f"Choose an activity: {', '.join(cmp.entity_activities())}.")
-    x = CmpActivity(entity_id=e.id, activity=body.activity,
+    acts = cmp.activities()
+    if body.activity not in acts:
+        raise ValueError(f"Choose an activity: {', '.join(acts)}.")
+    asset_id = body.asset_id.strip()
+    scope = acts[body.activity]["scope"]
+    if scope == "entity":
+        if asset_id:
+            raise ValueError(f"{acts[body.activity]['title']} is recorded for the whole entity, not one asset.")
+    else:
+        asset = db.scalars(select(CmpAsset).where(CmpAsset.entity_id == e.id, CmpAsset.asset_id == asset_id)).first()
+        if asset is None:
+            raise ValueError(f"{acts[body.activity]['title']} is recorded per asset: choose one of this entity's "
+                             "assets.")
+        if scope == "critical_asset" and asset.critical is not True:
+            raise ValueError(f"{acts[body.activity]['title']} applies to critical systems; {asset_id} is not classed "
+                             "critical.")
+    x = CmpActivity(entity_id=e.id, activity=body.activity, asset_id=asset_id,
                     performed_on=cmp.check_past(body.performed_on, "The date it was done"),
                     approved_by=body.approved_by.strip(), created_by=p.user.id)
     db.add(x)
     _validate(db, e)
     audit(db, "compliance.activity_add", p.user, "cmp_activity", x.id, client_ip(request), entity=e.id,
-          activity=x.activity, performed_on=_iso(x.performed_on), approved_by=x.approved_by)
+          activity=x.activity, asset_id=x.asset_id, performed_on=_iso(x.performed_on), approved_by=x.approved_by)
     db.commit()
     return {"id": x.id}
 
@@ -410,6 +428,100 @@ def delete_activity(xid: int, request: Request, p: Principal = Depends(ACT), db:
     db.delete(x)
     db.commit()
     return {"ok": True}
+
+
+# ---------- assets ----------
+
+class AssetIn(BaseModel):
+    asset_id: str = Field(min_length=1, max_length=120)
+    name: str = Field(default="", max_length=255)
+
+
+class ClassIn(BaseModel):
+    critical: bool | None  # None clears the classification
+
+
+@router.post("/entities/{eid}/assets/import")
+def import_assets(eid: int, request: Request, p: Principal = Depends(ACT), db: Session = Depends(get_db)):
+    e = _get(db, CmpEntity, eid, "entity")
+    added, existing = cmp.import_assets(db, e)
+    _validate(db, e)
+    audit(db, "compliance.assets_import", p.user, "cmp_entity", e.id, client_ip(request), site=e.site, added=added,
+          already=existing)
+    db.commit()
+    return {"added": added, "already": existing}
+
+
+@router.post("/entities/{eid}/assets", status_code=201)
+def add_asset(eid: int, body: AssetIn, request: Request, p: Principal = Depends(ACT), db: Session = Depends(get_db)):
+    e = _get(db, CmpEntity, eid, "entity")
+    aid = body.asset_id.strip()
+    if db.scalars(select(CmpAsset).where(CmpAsset.entity_id == e.id, CmpAsset.asset_id == aid)).first():
+        raise ValueError(f"{aid} is already recorded for this entity.")
+    x = CmpAsset(entity_id=e.id, asset_id=aid, name=body.name.strip())
+    db.add(x)
+    _validate(db, e)
+    audit(db, "compliance.asset_add", p.user, "cmp_asset", x.id, client_ip(request), entity=e.id, asset_id=aid)
+    db.commit()
+    return {"id": x.id}
+
+
+@router.put("/assets/{xid}")
+def classify_asset(xid: int, body: ClassIn, request: Request, p: Principal = Depends(ACT),
+                   db: Session = Depends(get_db)):
+    x = _get(db, CmpAsset, xid, "asset")
+    before = x.critical
+    x.critical, x.classified_by, x.classified_at = body.critical, p.user.id, utcnow()
+    _validate(db, db.get(CmpEntity, x.entity_id))
+    audit(db, "compliance.asset_classify", p.user, "cmp_asset", x.id, client_ip(request), entity=x.entity_id,
+          asset_id=x.asset_id, before=before, critical=x.critical)
+    db.commit()
+    return {"ok": True}
+
+
+@router.delete("/assets/{xid}")
+def delete_asset(xid: int, request: Request, p: Principal = Depends(ACT), db: Session = Depends(get_db)):
+    x = _get(db, CmpAsset, xid, "asset")
+    if db.scalars(select(CmpActivity).where(CmpActivity.entity_id == x.entity_id,
+                                            CmpActivity.asset_id == x.asset_id)).first():
+        raise ValueError("Activities are recorded for this asset, so it cannot be removed.")
+    audit(db, "compliance.asset_delete", p.user, "cmp_asset", x.id, client_ip(request), entity=x.entity_id,
+          asset_id=x.asset_id)
+    db.delete(x)
+    db.commit()
+    return {"ok": True}
+
+
+# ---------- audit pack ----------
+
+def _pack_name(e: CmpEntity, ext: str) -> str:
+    safe = "".join(c if c.isalnum() or c in "-_" else "-" for c in e.name)[:60].strip("-") or "entity"
+    return f"audit-pack-{safe}-{cmp.today_local().isoformat()}.{ext}"
+
+
+@router.get("/entities/{eid}/audit-pack.json")
+def audit_pack_json(eid: int, request: Request, p: Principal = Depends(VIEW), db: Session = Depends(get_db)):
+    e = _get(db, CmpEntity, eid, "entity")
+    ap = cmp.Loaded(db, e).audit_pack()
+    audit(db, "compliance.audit_pack_export", p.user, "cmp_entity", e.id, client_ip(request), format="json",
+          digest=ap.digest)
+    db.commit()
+    return Response(ap.to_json(), media_type="application/json",
+                    headers={"Content-Disposition": f'attachment; filename="{_pack_name(e, "json")}"'})
+
+
+@router.get("/entities/{eid}/audit-pack.zip")
+def audit_pack_zip(eid: int, request: Request, p: Principal = Depends(VIEW), db: Session = Depends(get_db)):
+    """The audit pack with every evidence file it references, for an auditor to keep."""
+    e = _get(db, CmpEntity, eid, "entity")
+    loaded = cmp.Loaded(db, e)
+    ap = loaded.audit_pack()
+    data = cmp.pack_zip(request.app.state.settings.workspace, ap, loaded.evidence)
+    audit(db, "compliance.audit_pack_export", p.user, "cmp_entity", e.id, client_ip(request), format="zip",
+          digest=ap.digest, files=len(loaded.evidence))
+    db.commit()
+    return Response(data, media_type="application/zip",
+                    headers={"Content-Disposition": f'attachment; filename="{_pack_name(e, "zip")}"'})
 
 
 # ---------- evidence ----------

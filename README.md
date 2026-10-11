@@ -237,8 +237,14 @@ comes from the CEA rule pack in `./compliance` (`sutra_compliance`); Sutra compu
 - Evidence files are stored once under their SHA-256 in `<workspace>/evidence`, never changed or deleted, and every
   upload, link, unlink and download is in the audit log.
 - The compliance officer and the CISO record (M-CMP act); the time-limited auditor account reads (M-CMP view).
-- The bundled rule pack has not been checked against the gazette text; every screen says so. Per-asset obligations
-  and incident reporting clocks are not recorded yet, and the entity page lists what is not checked.
+- Assets are imported from the current asset register by the entity's site, and a person classes each one as a
+  critical system or not (the register's 1-to-5 criticality is shown, never copied). The per-asset review shows each
+  asset's last risk assessment (due every six months), backup age for critical systems and its open findings.
+- The audit pack downloads as a ZIP: `audit-pack.json` (status, every finding's clock and timeline, citations,
+  per-asset review, evidence index and evidence gaps, with a SHA-256 digest that
+  `sutra_compliance.verify_audit_pack()` checks) and every evidence file. The same evidence gaps are on screen.
+- The bundled rule pack has not been checked against the gazette text; every screen says so. Incident reporting
+  clocks are not recorded yet, and the entity page lists what is not checked.
 
 ### Entra ID directory sync
 
