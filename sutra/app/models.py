@@ -56,6 +56,10 @@ class User(Base):
     locked_until: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # Entra ID object ID once directory sync has matched this person; "" state means not managed by the sync,
+    # "active" means in a mapped group, "removed" means the sync disabled the account after they left every group.
+    directory_id: Mapped[str | None] = mapped_column(String(64), nullable=True, unique=True)
+    directory_state: Mapped[str] = mapped_column(String(16), default="", server_default="")
     roles: Mapped[list[UserRole]] = relationship(cascade="all, delete-orphan", lazy="selectin")
     grants: Mapped[list[ModuleGrant]] = relationship(cascade="all, delete-orphan", lazy="selectin",
                                                      foreign_keys="ModuleGrant.user_id")
@@ -71,6 +75,23 @@ class UserRole(Base):
     role_key: Mapped[str] = mapped_column(ForeignKey("roles.key"))
     scope_type: Mapped[str] = mapped_column(String(16))
     scope_value: Mapped[str] = mapped_column(String(120), default="")
+    # "manual" (set by an admin) or "entra" (granted by directory sync from a group mapping; the sync owns it)
+    source: Mapped[str] = mapped_column(String(16), default="manual", server_default="manual")
+
+
+class DirectoryGroupMap(Base):
+    """Members of an Entra ID group get this role over this scope. Directory sync applies the mappings."""
+
+    __tablename__ = "directory_group_maps"
+    __table_args__ = (UniqueConstraint("group_id", "role_key", "scope_type", "scope_value"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    group_id: Mapped[str] = mapped_column(String(64), index=True)
+    group_name: Mapped[str] = mapped_column(String(256), default="")
+    role_key: Mapped[str] = mapped_column(ForeignKey("roles.key"))
+    scope_type: Mapped[str] = mapped_column(String(16))
+    scope_value: Mapped[str] = mapped_column(String(120), default="")
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class ModuleGrant(Base):

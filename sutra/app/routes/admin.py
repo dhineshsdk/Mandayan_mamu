@@ -8,6 +8,7 @@ import io
 import secrets
 from datetime import UTC, date, datetime
 from typing import Literal
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
 from fastapi.responses import Response
@@ -17,7 +18,7 @@ from sqlalchemy.orm import Session
 
 from ... import ingest
 from ...synth import TEAMS_COLS
-from .. import drafting, sla
+from .. import directory, drafting, sla, vault
 from ..access import ORG, Principal
 from ..analysis import replace_ownership
 from ..catalog import DEFAULT_APPROVAL_RULES, FIXED_RULES, load_catalog
@@ -26,6 +27,7 @@ from ..jobs import approval_rules
 from ..models import (
     AuditEvent,
     AuthSession,
+    DirectoryGroupMap,
     Module,
     ModuleGrant,
     Outbox,
@@ -102,8 +104,9 @@ def user_json(u: User) -> dict:
             "locked": bool(u.locked_until and u.locked_until > utcnow()),
             "expires_at": u.expires_at.isoformat(timespec="seconds") if u.expires_at else None,
             "last_login_at": u.last_login_at.isoformat(timespec="seconds") if u.last_login_at else None,
-            "roles": [{"id": r.id, "role": r.role_key, "scope_type": r.scope_type, "scope_value": r.scope_value}
-                      for r in u.roles],
+            "roles": [{"id": r.id, "role": r.role_key, "scope_type": r.scope_type, "scope_value": r.scope_value,
+                       "source": r.source} for r in u.roles],
+            "directory": u.directory_state or None,
             "grants": [{"id": g.id, "module": g.module_key, "action": g.action, "effect": g.effect,
                         "scope_type": g.scope_type, "scope_value": g.scope_value, "reason": g.reason}
                        for g in u.grants]}
@@ -152,10 +155,13 @@ def _apply_roles(db: Session, user: User, roles: list[RoleAssign], expires_at: d
             continue
         seen.add(key)
         rows.append({"role": a.role, "scope_type": a.scope_type, "scope_value": value})
-    user.roles.clear()
+    # Roles from Entra ID directory sync stay; the sync owns them.
+    synced = [r for r in user.roles if r.source == "entra"]
+    user.roles = synced
     db.flush()  # delete the old rows first: the unit of work would otherwise insert before deleting
-    user.roles = [UserRole(role_key=r["role"], scope_type=r["scope_type"], scope_value=r["scope_value"])
-                  for r in rows]
+    have = {(r.role_key, r.scope_type, r.scope_value) for r in synced}
+    user.roles += [UserRole(role_key=r["role"], scope_type=r["scope_type"], scope_value=r["scope_value"])
+                   for r in rows if (r["role"], r["scope_type"], r["scope_value"]) not in have]
     return rows
 
 
@@ -488,6 +494,110 @@ def retry_failed(request: Request, p: Principal = Depends(require("M-ADM", "admi
     audit(db, "admin.outbox_retry", p.user, "outbox", "", client_ip(request), rows=len(rows))
     db.commit()
     return {"queued": len(rows)}
+
+
+# ---------- Entra ID directory sync ----------
+
+class DirectoryIn(BaseModel):
+    enabled: bool
+    tenant_id: str = Field(min_length=1, max_length=64)
+    client_id: str = Field(min_length=1, max_length=64)
+    secret: str = Field(default="", max_length=500)  # empty keeps the stored one
+    login_url: str = Field(default=directory.LOGIN_URL, max_length=200)
+    graph_url: str = Field(default=directory.GRAPH_URL, max_length=200)
+
+
+class GroupMapIn(BaseModel):
+    group_id: str = Field(min_length=1, max_length=64)
+    role: str = Field(max_length=40)
+    scope_type: Literal["org", "vertical", "site", "team"] = "org"
+    scope_value: str = Field(default="", max_length=120)
+
+
+def _https_root(url: str) -> str:
+    url = url.strip().rstrip("/")
+    parts = urlsplit(url)
+    if parts.scheme != "https" or not parts.hostname or parts.path or parts.query:
+        raise ValueError("Sign-in and Graph addresses must be https:// addresses with no path.")
+    return url
+
+
+def _directory_json(db: Session) -> dict:
+    maps = db.scalars(select(DirectoryGroupMap).order_by(DirectoryGroupMap.group_name, DirectoryGroupMap.id))
+    return {"config": directory.config_json(directory.config(db)), "status": directory.status(db),
+            "maps": [{"id": m.id, "group_id": m.group_id, "group_name": m.group_name, "role": m.role_key,
+                      "scope_type": m.scope_type, "scope_value": m.scope_value} for m in maps]}
+
+
+@router.get("/directory")
+def get_directory(p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    return _directory_json(db)
+
+
+@router.put("/directory")
+def set_directory(body: DirectoryIn, request: Request, p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    cfg = directory.config(db)
+    if not body.secret and not cfg["secret"]:
+        raise ValueError("Enter the client secret.")
+    value = {"enabled": body.enabled, "tenant_id": body.tenant_id.strip(), "client_id": body.client_id.strip(),
+             "secret": vault.seal(request.app.state.settings.secret_key, body.secret) if body.secret
+             else cfg["secret"], "login_url": _https_root(body.login_url), "graph_url": _https_root(body.graph_url)}
+    directory._set(db, directory.SETTING, value)
+    audit(db, "admin.directory_changed", p.user, "setting", directory.SETTING, client_ip(request),
+          **directory.config_json(value), secret_changed=bool(body.secret))
+    db.commit()
+    return _directory_json(db)
+
+
+@router.post("/directory/maps", status_code=201)
+def add_group_map(body: GroupMapIn, request: Request, p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    role = db.get(Role, body.role)
+    if role is None:
+        raise ValueError(f"Unknown role {body.role!r}.")
+    if body.scope_type != role.scope_type:
+        raise ValueError(f"{role.name} is assigned per {role.scope_type}, not per {body.scope_type}.")
+    if role.time_limited:
+        raise ValueError(f"{role.name} access must end on a date, so give it to each person by hand.")
+    value = _check_scope(db, body.scope_type, body.scope_value)
+    gid = body.group_id.strip()
+    if db.scalars(select(DirectoryGroupMap).where(DirectoryGroupMap.group_id == gid,
+                                                  DirectoryGroupMap.role_key == body.role,
+                                                  DirectoryGroupMap.scope_type == body.scope_type,
+                                                  DirectoryGroupMap.scope_value == value)).first():
+        raise HTTPException(409, "This group already gives that role.")
+    m = DirectoryGroupMap(group_id=gid, role_key=body.role, scope_type=body.scope_type, scope_value=value,
+                          created_by=p.user.id)
+    db.add(m)
+    db.flush()
+    audit(db, "admin.directory_map_added", p.user, "directory_group_map", m.id, client_ip(request), group=gid,
+          role=body.role, scope_type=body.scope_type, scope_value=value)
+    db.commit()
+    return _directory_json(db)
+
+
+@router.delete("/directory/maps/{mid}")
+def delete_group_map(mid: int, request: Request, p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    m = db.get(DirectoryGroupMap, mid)
+    if m is None:
+        raise LookupError("No such mapping.")
+    audit(db, "admin.directory_map_removed", p.user, "directory_group_map", m.id, client_ip(request),
+          group=m.group_id, role=m.role_key, scope_type=m.scope_type, scope_value=m.scope_value)
+    db.delete(m)
+    db.commit()
+    return _directory_json(db)
+
+
+@router.post("/directory/sync")
+def sync_directory(request: Request, p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    """Runs now and returns the outcome. Roles change at the next sync, not when a mapping is edited."""
+    try:
+        request.app.state.directory.run("manual", p.user.id)
+    except RuntimeError as e:
+        raise HTTPException(409, str(e)) from e
+    except directory.DirectoryError as e:
+        raise HTTPException(502, str(e)) from e
+    db.expire_all()
+    return _directory_json(db)
 
 
 # ---------- audit log ----------

@@ -1020,10 +1020,11 @@ VIEWS.admin = {
     if (tab === "maintenance") d.maint = await api("/api/admin/maintenance");
     if (tab === "sla") d.sla = await api("/api/admin/sla");
     if (tab === "integrations") d.integ = await api("/api/admin/integrations");
+    if (tab === "directory") d.dir = await api("/api/admin/directory");
     return d;
   },
   html(d) {
-    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["integrations", "Integrations"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"]];
+    const tabs = d.full ? [["people", "People and access"], ["ownership", "Ownership chart"], ["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"], ["integrations", "Integrations"], ["directory", "Entra ID sync"], ["licences", "Modules and licences"]] : [["rules", "Approval thresholds"], ["maintenance", "Maintenance windows"], ["sla", "Service levels"]];
     return `<h1>Administration</h1>
       <div class="tabs">${tabs.map(([k, l]) => `<a href="#/admin/${k}" class="${k === d.tab ? "active" : ""}">${esc(l)}</a>`).join("")}</div>
       <div id="admin-msg"></div>
@@ -1042,7 +1043,7 @@ function scopePicker(cat, role, prefix) {
   if (r.scope_type === "vertical") return `<select id="${prefix}-scope" required>${cat.verticals.map((t) => `<option>${esc(t)}</option>`).join("") || "<option value=''>Upload the ownership chart first</option>"}</select>`;
   return `<input type="text" id="${prefix}-scope" placeholder="Site name, as in the asset register" required>`;
 }
-const roleLabel = (r) => `${esc(ROLE_NAME[r.role] || r.role)}${r.scope_type === "org" ? "" : ` <span class="muted">(${esc(r.scope_type)}: ${esc(r.scope_value)})</span>`}`;
+const roleLabel = (r) => `${esc(ROLE_NAME[r.role] || r.role)}${r.scope_type === "org" ? "" : ` <span class="muted">(${esc(r.scope_type)}: ${esc(r.scope_value)})</span>`}${r.source === "entra" ? ' <span class="badge" title="Given by an Entra ID group; changes at the next directory sync">Entra ID</span>' : ""}`;
 
 const ADMIN_TABS = {
   people: {
@@ -1228,6 +1229,68 @@ const ADMIN_TABS = {
         try { const r = await post("/api/admin/integrations/retry", {}); await render(); adminMsg(view, `Queued ${r.queued} again.`); }
         catch (err) { adminMsg(root, esc(err.message), "error"); }
       });
+    },
+  },
+  directory: {
+    html(d) {
+      const c = d.dir.config, st = d.dir.status, cat = d.catalog;
+      const groupName = (m) => m.group_name ? `${esc(m.group_name)}<div class="fix mono">${esc(m.group_id)}</div>` : `<span class="mono">${esc(m.group_id)}</span>`;
+      const last = st.last_attempt ? `${st.ok ? "Last sync" : "Last attempt"} ${esc(fmtTime(st.last_attempt))}: ${st.ok
+        ? `${num(st.people)} people in mapped groups, ${num(st.created)} accounts created, ${num(st.linked)} linked, ${num(st.roles_changed)} role changes, ${num(st.disabled)} disabled, ${num(st.enabled)} enabled again.${st.conflicts && st.conflicts.length ? ` <span class="warn-ink">Skipped: ${st.conflicts.map(esc).join("; ")}</span>` : ""}`
+        : `<span class="warn-ink">${esc(st.error)} Nothing was changed.</span>`}` : "Not synced yet.";
+      return `<div class="card"><h2>Entra ID directory sync</h2>
+        <p class="muted" style="margin-top:0">Members of the Entra ID groups below get the mapped role, with a single sign-on account created or linked by email. People who leave a group lose the role it gave; an account the sync created is disabled once it has no roles left. Roles you give by hand are never changed. Syncs run daily when switched on, and if any group cannot be read nothing changes.</p>
+        <p class="muted">Register an app in Entra ID with the Microsoft Graph application permissions <b>GroupMember.Read.All</b> and <b>User.Read.All</b>, grant admin consent, and create a client secret.</p>
+        <form id="dir-cfg" class="form-grid">
+          <label>Tenant ID<input name="tenant_id" maxlength="64" required value="${esc(c.tenant_id)}" autocomplete="off"></label>
+          <label>Client (application) ID<input name="client_id" maxlength="64" required value="${esc(c.client_id)}" autocomplete="off"></label>
+          <label>Client secret<input name="secret" type="password" maxlength="500" ${c.has_secret ? 'placeholder="Unchanged"' : "required"} autocomplete="new-password"></label>
+          <label>Sign-in address<input name="login_url" maxlength="200" value="${esc(c.login_url)}"></label>
+          <label>Graph address<input name="graph_url" maxlength="200" value="${esc(c.graph_url)}"></label>
+          <label class="check"><input type="checkbox" name="enabled" ${c.enabled ? "checked" : ""}> Sync every day</label>
+          <div class="toolbar"><button class="btn primary">Save</button><button type="button" class="btn" id="dir-sync" ${c.has_secret && d.dir.maps.length ? "" : "disabled"}>Sync now</button></div>
+        </form>
+        <p style="margin-bottom:0">${last}</p></div>
+      <div class="card mt"><h2>Groups and roles</h2>
+        ${d.dir.maps.length ? `<div class="table-wrap"><table><thead><tr><th>Entra ID group</th><th>Role</th><th></th></tr></thead><tbody>
+          ${d.dir.maps.map((m) => `<tr><td>${groupName(m)}</td><td>${roleLabel(m)}</td><td><button class="btn small" data-unmap="${m.id}">Remove</button></td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">No groups mapped yet.</p>'}
+        <form id="dir-map" class="form-grid" style="margin-top:12px">
+          <label>Group object ID<input id="dm-group" maxlength="64" required placeholder="From the group's Overview page in Entra ID" autocomplete="off"></label>
+          <label>Role<select id="dm-role">${cat.roles.filter((r) => !r.time_limited).map((r) => `<option value="${esc(r.key)}">${esc(r.name)}</option>`).join("")}</select></label>
+          <label>Scope<span id="dm-scope-box"></span></label>
+          <div><button class="btn">Add mapping</button></div>
+        </form>
+        <p class="muted" style="margin-bottom:0">Time-limited roles such as auditor are given to each person by hand, with an end date.</p></div>`;
+    },
+    wire(root, d) {
+      const fail = (e) => adminMsg(root, esc(e.message), "error");
+      const f = root.querySelector("#dir-cfg");
+      f.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await api("/api/admin/directory", { method: "PUT", json: { enabled: f.enabled.checked, tenant_id: f.tenant_id.value, client_id: f.client_id.value, secret: f.secret.value, login_url: f.login_url.value, graph_url: f.graph_url.value } });
+          render();
+        } catch (err) { fail(err); }
+      });
+      root.querySelector("#dir-sync").addEventListener("click", async (e) => {
+        e.target.disabled = true; e.target.textContent = "Syncing…";
+        try { await post("/api/admin/directory/sync", {}); render(); } catch (err) { fail(err); render(); }
+      });
+      const role = root.querySelector("#dm-role"), box = root.querySelector("#dm-scope-box");
+      const drawScope = () => (box.innerHTML = scopePicker(d.catalog, role.value, "dm"));
+      role.addEventListener("change", drawScope); drawScope();
+      root.querySelector("#dir-map").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const r = d.catalog.roles.find((x) => x.key === role.value);
+        try {
+          await post("/api/admin/directory/maps", { group_id: root.querySelector("#dm-group").value, role: role.value, scope_type: r.scope_type, scope_value: root.querySelector("#dm-scope").value });
+          render();
+        } catch (err) { fail(err); }
+      });
+      root.querySelectorAll("[data-unmap]").forEach((b) => b.addEventListener("click", async () => {
+        if (!confirm("Remove this mapping? Members keep the role until the next sync.")) return;
+        try { await api(`/api/admin/directory/maps/${b.dataset.unmap}`, { method: "DELETE" }); render(); } catch (err) { fail(err); }
+      }));
     },
   },
   licences: {

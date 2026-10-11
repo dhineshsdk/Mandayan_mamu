@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import drafting, intel, migrate, notify, scanpull, sweeper
+from . import directory, drafting, intel, migrate, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -52,7 +52,9 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
             app.state.puller.start_schedule()
             if settings.intel_refresh:
                 app.state.intel_updater.start()
+            app.state.directory.start()
         yield
+        app.state.directory.stop()
         app.state.intel_updater.stop()
         app.state.puller.stop()
         app.state.dispatcher.stop()
@@ -72,6 +74,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.puller = scanpull.Puller(app)
     app.state.intel = intel.IntelStore(settings.workspace)
     app.state.intel_updater = intel.IntelUpdater(app)
+    app.state.directory = directory.Syncer(app)
 
     @app.middleware("http")
     async def guard(request: Request, call_next):

@@ -188,6 +188,23 @@ result like an export, carrying over the asset register from the latest import t
   in the workspace) and are never returned by the API. If that key changes, enter the credentials again.
 - An internal CA can be trusted by giving the path of its CA bundle on the Sutra server.
 
+### Entra ID directory sync
+
+Under **Administration → Entra ID sync** an administrator maps Entra ID groups to Sutra roles, for example a VM team
+group to VM analyst, or a plant group to plant engineer for one site. Sutra reads the members of each mapped group
+(nested groups included) through Microsoft Graph once a day, and on demand:
+
+- Each enabled member gets the mapped roles. Sutra creates a single-sign-on account for them, or links the existing
+  account with the same email.
+- People who leave a group lose the roles it gave. If an account the sync manages ends up with no roles, it is
+  disabled, and it is enabled again if the person comes back. An account an administrator disabled stays disabled.
+- Roles given by hand are never changed. Time-limited roles such as auditor cannot be mapped to a group.
+- If any group cannot be read, nothing changes. A sync that would leave nobody able to administer Sutra is refused.
+
+Register an app in Entra ID with the Microsoft Graph application permissions GroupMember.Read.All and User.Read.All,
+grant admin consent, and enter the tenant ID, client ID and a client secret (stored encrypted, never shown again).
+National clouds can change the sign-in and Graph addresses.
+
 ### Threat intelligence
 
 Sutra fetches the [CISA Known Exploited Vulnerabilities](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
