@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import migrate
+from . import drafting, migrate
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -28,7 +28,8 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'")
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, drafter=None) -> FastAPI:
+    """``drafter``: a ``sutra_patchdraft.PatchDrafter``; by default one configured from the environment."""
     settings = settings or Settings()
 
     @asynccontextmanager
@@ -37,7 +38,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         with app.state.sessionmaker() as db:
             sync_catalog(db)
             app.state.analysis.load_current(db)
+        drafting.resume(app.state.drafts, app.state.analysis.result)
         yield
+        app.state.drafts.shutdown()
         app.state.engine.dispose()
 
     app = FastAPI(title="Sutra", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
@@ -45,6 +48,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.engine = make_engine(settings.database_url)
     app.state.sessionmaker = make_sessionmaker(app.state.engine)
     app.state.analysis = AnalysisStore()
+    app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter)
 
     @app.middleware("http")
     async def guard(request: Request, call_next):

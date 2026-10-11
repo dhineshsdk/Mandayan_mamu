@@ -10,7 +10,7 @@ Python 3.11 or later.
 
 ```
 python3 -m venv .venv && . .venv/bin/activate
-pip install -e .
+pip install -e ./patchdraft -e .                   # add "./patchdraft[ai]" for Claude drafting
 sutra db-upgrade                                   # creates workspace/sutra.db (SQLite)
 sutra create-admin --email you@company.com --name "Your Name"
 sutra serve                                        # http://127.0.0.1:8765
@@ -88,6 +88,22 @@ the session, never from the request. The roles and modules are data in
 
 SAML sign-in is not built yet; OIDC covers Entra ID.
 
+### Patch-job drafts
+
+When a team raises a patch job, Sutra drafts it with the `sutra_patchdraft` library in `patchdraft/` (see its
+README): target hosts in rings, steps, pre-checks, rollback, and for OT a staged plan with an OEM approval request
+and compensating controls. Every step cites the root cause, hosts, changes and findings it rests on.
+
+- With `ANTHROPIC_API_KEY` set and `./patchdraft[ai]` installed, Claude writes the draft. Sutra checks it against
+  the scan data (no version, KB, CVE, IP or URL that the scan did not report) and falls back to the templates if
+  it fails. `SUTRA_AI_DRAFTING=off` keeps air-gapped installs on the templates. The draft page says which was used.
+- A Claude draft can take minutes, so the job shows "Drafting" and its first approval step opens when the draft
+  is written. Drafts interrupted by a restart are finished at start-up.
+- Ring windows come from the IT change window under **Administration → Maintenance windows** (default Saturday
+  22:00 to 02:00 IST), counted from the day the job is raised. OT plans use the next planned shutdown an
+  administrator names for the site; without one, the plan says the slot is not set rather than guessing.
+- Who approves is decided by the routing rules, never by the draft.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's
@@ -164,7 +180,7 @@ checking against the gazette text.
 ## Tests
 
 ```
-pip install -e .[dev]
+pip install -e ./patchdraft -e .[dev]
 ruff check .
 pytest
 ```

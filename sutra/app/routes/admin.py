@@ -6,7 +6,7 @@ from __future__ import annotations
 import csv
 import io
 import secrets
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session
 
 from ... import ingest
 from ...synth import TEAMS_COLS
+from .. import drafting
 from ..access import ORG, Principal
 from ..analysis import replace_ownership
 from ..catalog import DEFAULT_APPROVAL_RULES, FIXED_RULES, load_catalog
@@ -363,6 +364,47 @@ def put_rules(body: RulesIn, request: Request, p: Principal = Depends(require_an
           before=before, after=value)
     db.commit()
     return {"rules": value, "fixed": FIXED_RULES, "ssvc": SSVC}
+
+
+# ---------- maintenance windows ----------
+
+class MaintenanceIn(BaseModel):
+    weekday: int = Field(ge=0, le=6)  # Monday = 0
+    start: str = Field(pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    duration_hours: int = Field(ge=1, le=24)
+    timezone_label: str = Field(min_length=1, max_length=16)
+    ot_shutdowns: dict[str, date] = Field(default_factory=dict, max_length=500)  # site -> next planned shutdown
+
+
+def _maintenance_out(db: Session, request: Request) -> dict:
+    res = request.app.state.analysis.result
+    sites = sorted({a.site for a in res.assets.values() if a.is_ot and a.site}) if res else []
+    return {"maintenance": drafting.maintenance(db), "ot_sites": sites, "today": drafting.today().isoformat(),
+            "ai_drafting": request.app.state.drafts.background}
+
+
+@router.get("/maintenance")
+def get_maintenance(request: Request, p: Principal = Depends(require_any(("M-ADM", "act"), ("M-ADM", "admin"))),
+                    db: Session = Depends(get_db)):
+    return _maintenance_out(db, request)
+
+
+@router.put("/maintenance")
+def put_maintenance(body: MaintenanceIn, request: Request,
+                    p: Principal = Depends(require_any(("M-ADM", "act"), ("M-ADM", "admin"))),
+                    db: Session = Depends(get_db)):
+    before = drafting.maintenance(db)
+    value = body.model_dump(mode="json")
+    value["ot_shutdowns"] = {k.strip()[:200]: v for k, v in value["ot_shutdowns"].items() if k.strip()}
+    row = db.get(Setting, "maintenance")
+    if row is None:
+        row = Setting(key="maintenance", value=value)
+        db.add(row)
+    row.value, row.updated_by, row.updated_at = value, p.user.id, utcnow()
+    audit(db, "admin.maintenance_changed", p.user, "setting", "maintenance", client_ip(request),
+          before=before, after=value)
+    db.commit()
+    return _maintenance_out(db, request)
 
 
 # ---------- audit log ----------
