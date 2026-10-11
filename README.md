@@ -10,7 +10,7 @@ Python 3.11 or later.
 
 ```
 python3 -m venv .venv && . .venv/bin/activate
-pip install -e ./patchdraft -e .                   # add "./patchdraft[ai]" for Claude drafting
+pip install -e ./patchdraft -e ./connectors -e .  # add "./patchdraft[ai]" for Claude drafting
 sutra db-upgrade                                   # creates workspace/sutra.db (SQLite)
 sutra create-admin --email you@company.com --name "Your Name"
 sutra serve                                        # http://127.0.0.1:8765
@@ -171,6 +171,20 @@ and the share fixed on time, plus open findings at each import. Time to fix is c
 reporting a job's findings to the scan that proved them gone, so it measures exposure, not approval speed. A budget
 view is not built: Sutra holds no cost data to base one on.
 
+### Scanner API pulls
+
+Under **Import data → Scanner connections** an administrator adds read-only API connections to Qualys VMDR, Tenable
+Vulnerability Management or Tenable Security Center (the `sutra_connectors` library in `connectors/`). A pull reads
+every enabled connection in full (all open detections, and every host the scanner has assessed) and imports the
+result like an export, carrying over the asset register from the latest import that had one. Pulls run by hand
+(VM analyst or admin) or once a day at a chosen hour, India time.
+
+- If any connection fails, nothing is imported: a scanner that did not answer must never make findings look fixed.
+- Each host the scanner reports as assessed counts as scanned, so a fully patched host can prove a fix.
+- Passwords and secret keys are encrypted at rest with a key derived from `SUTRA_SECRET_KEY` (or the key generated
+  in the workspace) and are never returned by the API. If that key changes, enter the credentials again.
+- An internal CA can be trusted by giving the path of its CA bundle on the Sutra server.
+
 ### Import history
 
 Every import is kept. Sutra records when it saw the import and the scan date it covers, and stores each import's
@@ -247,7 +261,7 @@ checking against the gazette text.
 ## Tests
 
 ```
-pip install -e ./patchdraft -e .[dev]
+pip install -e ./patchdraft -e ./connectors -e .[dev]
 ruff check .
 pytest
 ```

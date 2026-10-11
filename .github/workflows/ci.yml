@@ -19,6 +19,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - run: pip install -e ./patchdraft -e ".[dev]"
+      - run: pip install -e ./patchdraft -e ./connectors -e ".[dev]"
       - run: ruff check .
       - run: pytest -q
