@@ -172,7 +172,7 @@ function emptyState() {
     <p class="sub">${can("M-DAT", "act") ? "Load a demo company or import scanner exports to begin." : "An analyst has not imported any scan data yet."}</p>
     ${can("M-DAT", "act") ? '<a class="btn primary" href="#/import">Import data</a>' : ""}</div>`;
 }
-const STATUS_LABEL = { drafting: "Drafting", "draft-failed": "Draft failed", pending: "Awaiting approval", approved: "Approved", rejected: "Rejected", "sent-back": "Sent back", "fixing-manually": "Fixing manually" };
+const STATUS_LABEL = { drafting: "Drafting", "draft-failed": "Draft failed", pending: "Awaiting approval", approved: "Approved", rejected: "Rejected", "sent-back": "Sent back", "fixing-manually": "Fixing manually", "verified-fixed": "Fixed (proved by rescan)", reopened: "Reopened by rescan" };
 function jobStatus(j) {
   if (j.status === "pending") { const s = j.steps.find((x) => x.state === "current"); return `<span class="status st-pending">Waiting: ${esc(s.label)}</span>`; }
   if (j.status === "approved") return `<span class="status st-approved">${j.is_ot ? "Approved: staged for shutdown" : "Approved: ready to run in rings"}</span>`;
@@ -186,7 +186,7 @@ function jobTable(jobs) {
       <td>${esc(j.team)}</td><td>${j.mode === "manual" ? "Manual fix" : j.is_ot ? "Staged plan" : "Patch job"}${j.route && j.route.emergency ? ' <span class="badge warn">emergency</span>' : ""}</td>
       <td>${ssvc(j.ssvc)}</td><td>${jobStatus(j)}</td><td class="mono">${esc(j.jira)}</td></tr>`).join("")}</tbody></table></div>`;
 }
-const OPEN = ["drafting", "pending", "approved", "fixing-manually"];
+const OPEN = ["drafting", "pending", "approved", "fixing-manually", "reopened"];
 // Buttons to raise a job, for each team this person may raise jobs for that owns hosts in this root cause.
 function raiseButtons(rc, teams, jobs) {
   return teams.map((team) => {
@@ -483,7 +483,8 @@ VIEWS.job = {
           <div class="toolbar" style="margin-top:8px"><button class="btn primary" data-act="approve">Approve${j.route.emergency && cur.role === "vertical_head" ? " as emergency change" : ""}</button>
           <button class="btn" data-act="sendback">Send back</button><button class="btn" data-act="reject">Reject</button></div></div>` :
           cur ? `<p class="muted" style="margin-bottom:0">Waiting for ${esc(cur.who || "a VM analyst")}.${j.waiting_reason && can("M-PJ", "approve") ? ` ${esc(j.waiting_reason)}` : ""}</p>` : ""}
-        </div>` : `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team is fixing this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}. The findings close only when a rescan proves the fix.</p></div>`}
+        </div>` : `<div class="card"><h2>Manual fix</h2><p style="margin:0">The team ${j.status === "verified-fixed" ? "fixed" : "is fixing"} this by hand${j.ticket ? ` under change ticket <b class="mono">${esc(j.ticket)}</b>` : ""}.${j.status === "verified-fixed" ? "" : " The findings close only when a rescan proves the fix."}</p></div>`}
+      ${rescanHtml(j)}
       ${j.status === "drafting" ? '<div class="card mt"><h2>Drafting</h2><p style="margin:0">Sutra is writing the draft. The first approval step opens when it is ready. <a href="">Refresh</a></p></div>' : ""}
       ${j.status === "draft-failed" ? '<div class="card mt"><h2>Draft failed</h2><p style="margin:0">Sutra could not write a draft for this job, so it was closed without approvals. Raise it again; if it fails again, tell your Sutra administrator.</p></div>' : ""}
       ${d && d.lane ? draftHtml(j, d) : ""}
@@ -514,6 +515,13 @@ VIEWS.job = {
   },
 };
 
+const OUTCOME = { fixed: "Fixed", "partly-fixed": "Partly fixed", "not-fixed": "Not fixed", "not-rescanned": "Not rescanned", reopened: "Findings back: reopened" };
+function rescanHtml(j) {
+  const head = j.status === "verified-fixed" ? `<p style="margin-top:0"><b>Fixed.</b> The scan of ${esc(fmtDate(j.fixed_on))} no longer reports any of the ${j.targets} findings this job covers.</p>`
+    : `<p class="muted" style="margin-top:0">This job closes by itself when a later import shows none of its ${j.targets} findings on hosts that were scanned again. Nobody marks it fixed by hand.</p>`;
+  const rows = j.checks.map((c) => `<tr><td>${esc(fmtDate(c.as_of))}</td><td>${esc(OUTCOME[c.outcome] || c.outcome)}</td><td class="n">${c.fixed}</td><td class="n">${c.still_open}</td><td class="n">${c.not_rescanned}</td></tr>`).join("");
+  return `<div class="card mt"><h2>Rescan proof</h2>${head}${rows ? `<div class="table-wrap"><table><thead><tr><th>Scans as of</th><th>Result</th><th class="n">Fixed</th><th class="n">Still reported</th><th class="n">Host not rescanned</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted" style="margin-bottom:0">No import since this job was raised.</p>'}</div>`;
+}
 function cites(list) {
   if (!list || !list.length) return "";
   // Name the root cause, hosts and changes; count findings, which can run to hundreds.

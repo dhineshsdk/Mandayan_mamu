@@ -133,6 +133,9 @@ pre.evidence { white-space: pre-wrap; background: var(--panel-2); border-radius:
 .st-approved { background: #e6f6ee; color: var(--good); }
 .st-rejected, .st-sent-back { background: var(--warn-bg); color: var(--warn-ink); }
 .st-fixing-manually { background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); }
+.st-verified-fixed { background: var(--good); color: #fff; }
+.st-reopened, .st-draft-failed { background: var(--warn-bg); color: var(--warn-ink); font-weight: 600; }
+.st-drafting { background: var(--panel-2); color: var(--muted); }
 pre.playbook { white-space: pre-wrap; background: var(--panel-2); border-radius: 6px; padding: 10px; font-size: 12px; margin: 0; overflow-x: auto; }
 textarea { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px; width: 100%; min-height: 60px; }
 .note-demo { font-size: 12px; color: var(--muted); }

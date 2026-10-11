@@ -5,7 +5,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .. import patch
+from .. import ingest, patch
 from ..pipeline import Result
 from . import drafting
 from .access import Principal
@@ -14,7 +14,7 @@ from .models import Job, JobStep, OwnershipTeam, Setting, User, utcnow
 from .security import audit
 
 PJ = "M-PJ"
-OPEN = ("drafting", "pending", "approved", "fixing-manually")
+OPEN = ("drafting", "pending", "approved", "fixing-manually", "reopened")
 
 
 class Forbidden(Exception):
@@ -60,6 +60,7 @@ def raise_job(db: Session, p: Principal, res: Result, rc_id: str, team: str, mod
     job = Job(dataset_id=dataset_id, rc_id=rc.rc_id, rc_key=rc.key, rc_title=rc.title, team=team,
               vertical=chart.vertical if chart else "", mode=mode, ssvc=rc.ssvc, is_ot=rc.is_ot,
               ticket=ticket, hosts=[h.asset_id for h in hosts], findings=[f.finding_id for f in mine],
+              targets=sorted({(f.asset_id, ingest.fingerprint(f)[:400]) for f in mine}),
               raised_by=p.user.id)
     if mode == "manual":
         job.status = "fixing-manually"
@@ -170,4 +171,7 @@ def job_json(db: Session, job: Job, p: Principal | None = None, res: Result | No
         "rc_current_id": next((r.rc_id for r in res.root_causes if r.key == job.rc_key), None) if res else None,
         "can_decide": bool(p and cur and can_sign(p, job, cur) is None),
         "waiting_reason": (can_sign(p, job, cur) if p and cur else None),
+        "fixed_on": job.fixed_on.isoformat() if job.fixed_on else None,
+        "closed_at": job.closed_at.isoformat(timespec="seconds") if job.closed_at else None,
+        "targets": len(job.targets),
     }
