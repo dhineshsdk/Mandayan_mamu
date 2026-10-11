@@ -70,7 +70,41 @@ def main(argv: list[str] | None = None) -> None:
     ins.add_argument("key", help="the key text, or @file")
     ins.add_argument("--workspace", type=Path)
 
+    b = sub.add_parser("backup", help="create, verify, list or restore backups of the database and workspace")
+    bs = b.add_subparsers(dest="bcmd", required=True)
+    for name, text in (("create", "write a backup (the server may keep running)"), ("verify", "check a backup file"),
+                       ("list", "list the backups in a folder"),
+                       ("restore", "restore a backup into a stopped installation")):
+        x = bs.add_parser(name, help=text)
+        x.add_argument("--workspace", type=Path, help="data folder (default: $SUTRA_WORKSPACE or ./workspace)")
+        if name in ("create", "verify", "restore"):
+            x.add_argument("--passphrase-file", type=Path,
+                           help="file holding the passphrase (or set SUTRA_BACKUP_PASSPHRASE); omit for no encryption")
+        if name == "create":
+            x.add_argument("--out", type=Path, help="folder for the backup (default: <workspace>/backups)")
+            x.add_argument("--keep", type=int, help="keep only this many newest backups in the folder")
+            x.add_argument("--files-only", action="store_true", help="skip the database (PostgreSQL installs)")
+        if name == "list":
+            x.add_argument("--out", type=Path, help="folder (default: <workspace>/backups)")
+        if name in ("verify", "restore"):
+            x.add_argument("archive", type=Path)
+        if name == "restore":
+            x.add_argument("--force", action="store_true",
+                           help="move an existing installation aside (pre-restore-<time>/) and restore over it")
+
+    up = sub.add_parser("upgrade", help="back up, then migrate the database to this release")
+    up.add_argument("--workspace", type=Path)
+    up.add_argument("--check", action="store_true", help="only say whether a migration is pending")
+    up.add_argument("--no-backup", action="store_true", help="skip the automatic pre-upgrade backup")
+    up.add_argument("--db-backed-up", action="store_true", help="PostgreSQL: confirm you took a pg_dump first")
+    up.add_argument("--passphrase-file", type=Path)
+
     args = ap.parse_args(argv)
+    if args.cmd in ("backup", "upgrade"):
+        from .app import cli
+
+        cli.backup_command(args) if args.cmd == "backup" else cli.upgrade_command(args)
+        return
     if args.cmd == "licence":
         from .app import cli
 
