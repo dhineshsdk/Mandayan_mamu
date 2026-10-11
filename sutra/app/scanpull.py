@@ -48,6 +48,8 @@ KINDS = {
                        "options": [{"key": "tenant_id", "label": "Directory (tenant) ID"},
                                    {"key": "scopes", "label": "Subscription IDs or management groups",
                                     "hint": "Comma separated"}]},
+    "nozomi": {"label": "Nozomi Networks Guardian or CMC", "user": "User name", "secret": "Password",
+               "default_url": "", "url_hint": "https://guardian.plant.example.in"},
     "aws_inspector": {"label": "Amazon Inspector", "user": "Access key ID", "secret": "Secret access key",
                       "default_url": "https://inspector2.ap-south-1.amazonaws.com",
                       "url_hint": "https://inspector2.ap-south-1.amazonaws.com"},
@@ -62,6 +64,7 @@ def build(conn: ScannerConnection, secret: str, transport=None):
         AwsInspectorConnector,
         AzureDefenderConnector,
         CrowdStrikeConnector,
+        NozomiConnector,
         QualysConnector,
         TenableSCConnector,
         TenableVMConnector,
@@ -82,6 +85,8 @@ def build(conn: ScannerConnection, secret: str, transport=None):
         return AzureDefenderConnector(opts.get("tenant_id", ""), conn.username, secret,
                                       [x for x in opts.get("scopes", "").split(",") if x.strip()],
                                       base_url=conn.base_url, verify=verify, **extra)
+    if conn.kind == "nozomi":
+        return NozomiConnector(conn.base_url, conn.username, secret, verify=verify, **extra)
     if conn.kind == "aws_inspector":
         return AwsInspectorConnector(conn.username, secret, base_url=conn.base_url, verify=verify, **extra)
     raise ValueError(f"Unknown scanner kind {conn.kind!r}.")
