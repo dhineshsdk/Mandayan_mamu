@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 
 from ... import ingest
 from ...synth import TEAMS_COLS
-from .. import directory, drafting, sla, vault
+from .. import directory, drafting, licence, sla, vault
 from ..access import ORG, Principal
 from ..analysis import replace_ownership
 from ..catalog import DEFAULT_APPROVAL_RULES, FIXED_RULES, load_catalog
@@ -78,6 +78,10 @@ class GrantIn(BaseModel):
 
 class ModulePatch(BaseModel):
     licensed: bool
+
+
+class LicenceIn(BaseModel):
+    key: str = Field(min_length=10, max_length=8000)
 
 
 class RulesIn(BaseModel):
@@ -303,10 +307,13 @@ def remove_grant(gid: int, request: Request, p: Principal = Depends(ADMIN), db: 
 # ---------- catalogue and licences ----------
 
 @router.get("/catalog")
-def catalog(p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+def catalog(request: Request, p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    ent = request.app.state.licences.entitlement(db)
     return {
-        "modules": [{"key": m.key, "name": m.name, "built": m.built, "licensed": m.licensed}
+        "modules": [{"key": m.key, "name": m.name, "built": m.built, "licensed": m.licensed,
+                     "in_licence": ent.allows(m.key)}
                     for m in db.scalars(select(Module).order_by(Module.key))],
+        "licence": ent.as_dict(),
         "roles": [{"key": r.key, "name": r.name, "description": r.description, "scope_type": r.scope_type,
                    "time_limited": r.time_limited,
                    "permissions": sorted(f"{x.module_key}:{x.action}" for x in r.permissions)}
@@ -325,10 +332,39 @@ def set_licence(key: str, body: ModulePatch, request: Request, p: Principal = De
         raise LookupError("No such module.")
     if key == "M-ADM" and not body.licensed:
         raise ValueError("Administration cannot be switched off.")
+    ent = request.app.state.licences.entitlement(db)
+    if body.licensed and not ent.allows(key):
+        raise ValueError(f"{m.name} is not in this installation's licence key. Install a key that includes it.")
     m.licensed = body.licensed
     audit(db, "admin.licence_changed", p.user, "module", key, client_ip(request), licensed=body.licensed)
     db.commit()
     return {"key": m.key, "licensed": m.licensed}
+
+
+@router.get("/licence")
+def licence_status(request: Request, p: Principal = Depends(ADMIN), db: Session = Depends(get_db)):
+    svc = request.app.state.licences
+    out = svc.entitlement(db).as_dict()
+    out["require_licence"] = svc.require
+    out["vendor_key_in_build"] = svc.public_key() is not None
+    return out
+
+
+@router.put("/licence")
+def install_licence(body: LicenceIn, request: Request, p: Principal = Depends(ADMIN),
+                    db: Session = Depends(get_db)):
+    svc = request.app.state.licences
+    try:
+        ent = svc.install(db, body.key, p.user.id)
+    except licence.LicenceError as e:
+        audit(db, "admin.licence_rejected", p.user, "licence", "", client_ip(request), reason=str(e))
+        db.commit()
+        raise ValueError(str(e)) from e
+    lic = ent.licence
+    audit(db, "admin.licence_installed", p.user, "licence", lic.id, client_ip(request), customer=lic.customer,
+          expires=lic.expires.isoformat(), modules=list(lic.modules))
+    db.commit()
+    return ent.as_dict()
 
 
 # ---------- ownership chart ----------

@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from . import ai, directory, drafting, intel, migrate, netconfig, notify, scanpull, sweeper
+from . import ai, directory, drafting, intel, licence, migrate, netconfig, notify, scanpull, sweeper
 from .analysis import AnalysisStore
 from .catalog import sync_catalog
 from .config import Settings
@@ -72,6 +72,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
     app.state.engine = make_engine(settings.database_url)
     app.state.sessionmaker = make_sessionmaker(app.state.engine)
     app.state.analysis = AnalysisStore()
+    app.state.licences = licence.LicenceService(settings.require_licence)
     app.state.ai = ai.AiService(explainer=explainer)
     app.state.drafts = drafting.DraftService(app.state.sessionmaker, drafter or ai.drafter(app.state.ai.config))
     app.state.sweeper = sweeper.Sweeper(app.state.sessionmaker)

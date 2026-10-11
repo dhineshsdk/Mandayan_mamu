@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..model import Asset
+from .licence import Entitlement
 from .models import Module, OwnershipTeam, Role, User, utcnow
 
 ORG = "org"
@@ -86,8 +87,10 @@ def account_usable(user: User | None) -> bool:
     return not (user.expires_at and user.expires_at <= utcnow())
 
 
-def build_principal(db: Session, user: User) -> Principal:
-    licensed = {m.key for m in db.scalars(select(Module)) if m.licensed and m.built}
+def build_principal(db: Session, user: User, entitlement: Entitlement | None = None) -> Principal:
+    """``entitlement`` is what the installed licence key allows; None means no key restricts the modules."""
+    licensed = {m.key for m in db.scalars(select(Module))
+                if m.licensed and m.built and (entitlement is None or entitlement.allows(m.key))}
     roles = {r.key: r for r in db.scalars(select(Role))}
     p = Principal(user=user, roles=[])
     p.team_vertical = {t.team: t.vertical for t in db.scalars(select(OwnershipTeam))}

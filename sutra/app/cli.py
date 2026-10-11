@@ -133,3 +133,57 @@ def serve(settings: Settings, host: str, port: int) -> None:
         print("Warning: cookies are not marked Secure. Serve over HTTPS and unset SUTRA_COOKIE_SECURE=0.",
               file=sys.stderr)
     uvicorn.run(create_app(settings), host=host, port=port, proxy_headers=True, server_header=False)
+
+
+def licence_command(args) -> None:
+    import os
+    from datetime import date
+
+    from . import licence
+    from .config import Settings
+
+    def text(value: str) -> str:
+        return open(value[1:], encoding="utf-8").read() if value.startswith("@") else value
+
+    try:
+        if args.lcmd == "keygen":
+            private, public = licence.generate_keypair()
+            args.out.mkdir(parents=True, exist_ok=True)
+            priv_path, pub_path = args.out / "sutra-licence-private.pem", args.out / "sutra-licence-public.pem"
+            if priv_path.exists() or pub_path.exists():
+                sys.exit(f"{priv_path} or {pub_path} already exists; refusing to overwrite a signing key.")
+            fd = os.open(priv_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(fd, "wb") as f:
+                f.write(private)
+            pub_path.write_bytes(public)
+            print(f"Private key: {priv_path}  (keep offline; anyone with it can issue licences)")
+            print(f"Public key:  {pub_path}  (copy to sutra/data/licence_public.pem before building a release)")
+        elif args.lcmd == "issue":
+            try:
+                expires = date.fromisoformat(args.expires)
+            except ValueError:
+                sys.exit("--expires must be a date like 2027-03-31.")
+            modules = [m.strip() for m in args.modules.split(",") if m.strip()]
+            print(licence.issue(args.private_key.read_bytes(), args.customer, modules, expires, args.id))
+        elif args.lcmd == "show":
+            pub = licence.load_public_key(args.public_key)
+            if pub is None:
+                sys.exit("No vendor public key found. Pass --public-key or set SUTRA_LICENCE_PUBLIC_KEY.")
+            lic = licence.verify(text(args.key), pub)
+            print(f"Valid signature. Customer {lic.customer}, id {lic.id}, issued {lic.issued}, expires {lic.expires}")
+            print("Modules:", ", ".join(lic.modules))
+        else:
+            settings = Settings(workspace=args.workspace) if args.workspace else Settings()
+            engine, sm = _db(settings)
+            svc = licence.LicenceService(settings.require_licence)
+            with sm() as db:
+                ent = svc.install(db, text(args.key), None)
+                lic = ent.licence
+                audit(db, "admin.licence_installed", None, "licence", lic.id, "cli", customer=lic.customer,
+                      expires=lic.expires.isoformat(), modules=list(lic.modules))
+                db.commit()
+            engine.dispose()
+            print(ent.message)
+    except licence.LicenceError as e:
+        sys.exit(f"Licence error: {e}")
+

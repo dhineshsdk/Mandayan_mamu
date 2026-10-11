@@ -67,7 +67,7 @@ def current_principal(request: Request, db: Session = Depends(get_db)) -> Princi
     if user.must_change_password and request.url.path not in ("/api/auth/password", "/api/auth/logout",
                                                               "/api/auth/me"):
         raise HTTPException(status_code=403, detail="Change your password to continue.")
-    p = build_principal(db, user)
+    p = build_principal(db, user, request.app.state.licences.entitlement(db))
     request.state.principal = p
     return p
 

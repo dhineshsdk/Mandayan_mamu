@@ -61,6 +61,9 @@ class Settings:
     servicenow_table: str = field(default_factory=lambda: os.environ.get("SUTRA_SERVICENOW_TABLE", "change_request"))
     # Fetch the CISA KEV catalog and EPSS scores once a day. Off for servers with no internet access; the feed URLs
     # can instead point at an internal mirror (SUTRA_KEV_URL, SUTRA_EPSS_URL).
+    # Licence keys. With this on, no key means only Administration runs (the installer sets it). The vendor's public key
+    # comes from the PEM file at SUTRA_LICENCE_PUBLIC_KEY, else the one built into the release.
+    require_licence: bool = field(default_factory=lambda: _bool("SUTRA_REQUIRE_LICENCE", False))
     intel_refresh: bool = field(default_factory=lambda: _bool("SUTRA_INTEL_REFRESH", True))
 
     def __post_init__(self):
