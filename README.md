@@ -257,6 +257,14 @@ administrators can collect by hand.
   fingerprint.
 - Not yet: routes, ARP tables from firewalls, and other vendors (see `connectors/docs/api-notes/network-devices.md`).
 
+### Attack surface (M-ATK)
+
+Reads the stored firewall and switch configurations (FortiGate, PAN-OS, Cisco IOS) and shows the paths from the
+internet, IT and the DMZ into your OT zones, the rules that carry them, broad, shadowed, disabled and unused rules
+(from uploaded hit counts), and which rules to cut first. CISO and VM analyst see it and edit zones. Exact first-match
+rule evaluation, IPv4 only, no dynamic routing: read `docs/attack-surface.md` for what is and is not covered. Tested
+on invented sample configurations in `examples/attack-surface` (labelled as samples) and real vendor syntax fixtures.
+
 ### Compliance (CEA fix clock)
 
 The Compliance module (M-CMP) records each regulated entity (a plant, a substation, a load-despatch centre), its
