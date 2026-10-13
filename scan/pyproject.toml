@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sutra-scan"
+version = "0.1.0"
+description = "Sutra Scan: lists the packages installed on Linux hosts (dpkg, rpm, apk) and matches them against open OSV advisory data, offline from a feed snapshot"
+requires-python = ">=3.10"
+dependencies = []  # standard library only, so the collector runs on a bare server and the whole tool can ship as a zipapp
+
+[project.optional-dependencies]
+test = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+sutra-scan = "sutra_scan.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["containers: runs real distro containers; needs a Docker daemon (SUTRA_SCAN_CONTAINERS=1)"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+ignore = ["S101", "S311"]  # asserts are how pytest checks; the fuzz tests need seeded, not secure, randomness
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501", "S603", "S607"]

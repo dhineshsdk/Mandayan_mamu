@@ -35,6 +35,12 @@ Restart `sutra serve` afterwards so it picks up the new data.
 | Uploads | defusedxml | `.nessus` files are untrusted XML; entity expansion and external entities are refused |
 | Web app | Plain HTML, CSS and JavaScript | No build step, so it runs air-gapped |
 
+### Sutra Scan (our own Linux scanner)
+
+`scan/` lists the packages installed on Debian, Ubuntu, Alpine, AlmaLinux, Rocky Linux and RHEL hosts and matches them
+against open OSV advisory data, offline from a snapshot file. Its output is a rows file that **Import data** reads like
+any scanner export. See `scan/README.md`.
+
 ### Settings
 
 All settings are environment variables.
