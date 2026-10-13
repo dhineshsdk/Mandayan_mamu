@@ -11,7 +11,6 @@ from sutra_scan.versions import apk_compare, dpkg_compare, rpm_compare
 
 ALPHABET_DEB = "0123456789" * 3 + "abcXYZ" + ".+-~:"
 ALPHABET_RPM = "0123456789" * 3 + "abcXYZ" + ".+-~^_"
-ALPHABET_APK = "0123456789" * 3 + "abc."
 
 
 def _rand(rng, alphabet, n=9):
@@ -45,14 +44,27 @@ def test_rpm_matches_native():
         assert rpm_compare(a, b) == int(out), (a, b)
 
 
+def _rand_apk(rng):
+    """A valid apk version built from its grammar (the real apk also accepts malformed strings such as '1.b7')."""
+    v = ".".join(str(rng.choice([0, 1, 2, 9, 10, 11, 100])) if rng.random() < 0.8 else f"0{rng.randint(1, 9)}"
+                 for _ in range(rng.randint(1, 3)))
+    if rng.random() < 0.3:
+        v += rng.choice("abcz")
+    for _ in range(rng.choice([0, 0, 1, 2])):
+        v += "_" + rng.choice(["alpha", "beta", "pre", "rc", "cvs", "svn", "git", "hg", "p"]) + rng.choice(["", "1", "2", "10"])
+    if rng.random() < 0.5:
+        v += f"-r{rng.randint(0, 12)}"
+    return v
+
+
 @pytest.mark.skipif(not shutil.which("apk"), reason="apk not installed")
 def test_apk_matches_native():
     rng = random.Random(13)
-    for _ in range(500):
-        a = _rand(rng, ALPHABET_APK, 6).strip(".") or "1"
-        b = _rand(rng, ALPHABET_APK, 6).strip(".") or "1"
-        a, b = "1." + a, "1." + b
-        out = subprocess.run(["apk", "version", "-t", a, b], capture_output=True, text=True).stdout.strip()  # noqa: S603, S607
-        if out not in ("<", ">", "="):
-            continue
+    checked = 0
+    for _ in range(1000):
+        a, b = _rand_apk(rng), _rand_apk(rng)
+        out = subprocess.run(["apk", "version", "-t", a, b], capture_output=True, text=True).stdout.strip()
+        assert out in ("<", ">", "="), (a, b, out)
         assert apk_compare(a, b) == {"<": -1, "=": 0, ">": 1}[out], (a, b)
+        checked += 1
+    assert checked == 1000
