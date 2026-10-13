@@ -1,0 +1,6 @@
+{"zones": [
+  {"name": "Internet", "kind": "internet", "cidrs": []},
+  {"name": "Corporate IT", "kind": "it", "cidrs": ["10.10.0.0/16"]},
+  {"name": "DMZ", "kind": "dmz", "cidrs": ["10.20.0.0/24"]},
+  {"name": "Plant OT", "kind": "ot", "cidrs": ["10.50.0.0/16"]}
+]}

@@ -1,0 +1,8 @@
+<response status="success"><result><rule-hit-count><vsys><entry name="vsys1"><rule-base><entry name="security"><rules>
+<entry name="Engineering to SCADA"><hit-count>207</hit-count><last-hit-timestamp>1791500000</last-hit-timestamp><last-reset-timestamp>1760000000</last-reset-timestamp></entry>
+<entry name="Historian pull"><hit-count>1440</hit-count><last-hit-timestamp>1791799000</last-hit-timestamp><last-reset-timestamp>1760000000</last-reset-timestamp></entry>
+<entry name="Vendor remote support"><hit-count>12</hit-count><last-hit-timestamp>1775000000</last-hit-timestamp><last-reset-timestamp>1760000000</last-reset-timestamp></entry>
+<entry name="NTP from OT"><hit-count>88021</hit-count><last-hit-timestamp>1791800000</last-hit-timestamp><last-reset-timestamp>1760000000</last-reset-timestamp></entry>
+<entry name="Temporary commissioning"><hit-count>0</hit-count><last-hit-timestamp>0</last-hit-timestamp><last-reset-timestamp>1760000000</last-reset-timestamp></entry>
+<entry name="Block everything else"><hit-count>9921</hit-count><last-hit-timestamp>1791800000</last-hit-timestamp><last-reset-timestamp>1760000000</last-reset-timestamp></entry>
+</rules></entry></rule-base></entry></vsys></rule-hit-count></result></response>

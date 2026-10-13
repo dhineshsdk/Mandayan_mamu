@@ -437,6 +437,31 @@ class ConfigSnapshot(Base):
     mac_table: Mapped[list] = mapped_column(JSON, default=list)
 
 
+class AttackZone(Base):
+    """A named group of networks the attack surface module looks for paths between (``sutra.app.attack``)."""
+
+    __tablename__ = "attack_zones"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(80), unique=True)
+    kind: Mapped[str] = mapped_column(String(12))  # internet | it | dmz | ot
+    cidrs: Mapped[list] = mapped_column(JSON, default=list)  # empty for the internet means "every public address"
+    updated_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class AttackHits(Base):
+    """Rule hit counts uploaded for one device, replacing the previous upload. ``rules`` maps a rule key to
+    ``{"hits", "last_hit", "since"}`` (ISO times or null)."""
+
+    __tablename__ = "attack_hits"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    device_id: Mapped[int] = mapped_column(ForeignKey("network_devices.id", ondelete="CASCADE"), unique=True)
+    source_format: Mapped[str] = mapped_column(String(24))
+    rules: Mapped[dict] = mapped_column(JSON, default=dict)
+    loaded_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    loaded_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+
+
 class CmpEntity(Base):
     """A regulated entity (a plant, a substation, a load-despatch centre) the compliance engine assesses
     (``sutra.app.compliance``). ``site`` ties it to the site name used in the asset register."""

@@ -199,3 +199,18 @@ form.inline-form { display: inline-flex; gap: 6px; align-items: center; margin-l
 ul.ai { margin: 0; padding-left: 18px; }
 ul.ai li { margin-bottom: 8px; }
 .cites .badge { font-size: 10.5px; padding: 0 5px; }
+
+/* attack surface */
+.badge.sev { color: #fff; border-color: transparent; }
+.badge.sev-critical { background: var(--act); }
+.badge.sev-high { background: var(--attend); }
+.badge.sev-medium { background: var(--trackstar); }
+.badge.sev-low, .badge.sev-info { background: var(--track); }
+.badge.good { background: var(--accent-soft); color: var(--good); border-color: transparent; }
+.hops { margin: 8px 0 0; padding-left: 20px; }
+.hops li { margin-bottom: 6px; }
+.small { font-size: 12px; }
+.tiles { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; min-width: 110px; box-shadow: var(--shadow); }
+.tile-n { font-size: 26px; font-weight: 700; }
+.tile-l { font-size: 12px; color: var(--muted); }

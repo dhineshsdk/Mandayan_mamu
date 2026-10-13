@@ -1,0 +1,11 @@
+{"results": [
+  {"policyid": 1, "hit_count": 48211, "last_used": 1791800000, "first_used": 1760000000},
+  {"policyid": 2, "hit_count": 912004, "last_used": 1791800000, "first_used": 1760000000},
+  {"policyid": 3, "hit_count": 3310, "last_used": 1791790000, "first_used": 1760000000},
+  {"policyid": 4, "hit_count": 207, "last_used": 1791500000, "first_used": 1760000000},
+  {"policyid": 5, "hit_count": 0, "last_used": 0, "first_used": 1760000000},
+  {"policyid": 6, "hit_count": 12, "last_used": 1775000000, "first_used": 1760000000},
+  {"policyid": 7, "hit_count": 0, "last_used": 0, "first_used": 1760000000},
+  {"policyid": 8, "hit_count": 0, "last_used": 0, "first_used": 1760000000},
+  {"policyid": 10, "hit_count": 1440, "last_used": 1791799000, "first_used": 1760000000}
+]}

@@ -76,6 +76,7 @@ const NAV = [
   { view: "changes", label: "What changed", test: () => can("M-RC") || can("M-TP") || can("M-BRD") },
   { view: "headline", label: "Headline check", module: "M-HC" },
   { view: "compliance", label: "Compliance", module: "M-CMP" },
+  { view: "attack", label: "Attack surface", module: "M-ATK" },
   { view: "import", label: "Import data", module: "M-DAT" },
   { view: "audit", label: "Audit log", test: () => can("M-AUD") || can("M-ADM", "admin") },
   { view: "admin", label: "Administration", test: () => can("M-ADM", "admin") || can("M-ADM", "act") },
@@ -1184,6 +1185,105 @@ function wireDevices(root, d) {
     setTimeout(async () => { if (seq === renderSeq) render(); }, 3000);
   }
 }
+
+// ---------- attack surface (M-ATK) ----------
+const SEV_LABEL = { critical: "Critical", high: "High", medium: "Medium", low: "Low", info: "Note" };
+const sevBadge = (s) => `<span class="badge sev sev-${esc(s)}">${esc(SEV_LABEL[s] || s)}</span>`;
+const ruleLabel = (r) => (r ? `${esc(r.key)}${r.name && r.name !== r.key ? ` <span class="muted">(${esc(r.name)})</span>` : ""}` : "");
+const FINDING_KIND = { broad: "Broad rule", shadowed: "Shadowed rule", disabled: "Disabled rule", unused: "Unused rule" };
+function attackPathHtml(p) {
+  return `<div class="card mt path-card"><div class="row-between"><h3 style="margin:0">${sevBadge(p.severity)} ${esc(p.title)}</h3></div>
+    <p style="margin:6px 0"><b>From</b> <span class="mono">${p.sources.map(esc).join(", ")}</span> <b>to</b> <span class="mono">${p.destinations.map(esc).join(", ")}</span>
+      <b>on</b> ${p.services.map((s) => `<span class="badge">${esc(s)}</span>`).join(" ")}</p>
+    <ol class="hops">${p.hops.map((h) => `<li><b>${esc(h.device)}</b> <span class="muted">${esc(h.ingress)} → ${esc(h.egress)}</span>
+      <div class="fix">Allowed by ${h.rules.length ? h.rules.map((r) => `<span class="badge" title="${esc(r.summary)}">${esc(r.key)}</span>`).join(" ") : "no rule"}</div></li>`).join("")}</ol>
+    ${p.complete ? "" : '<div class="notice">The path continues through a device Sutra has no configuration for. Add that device to see the rest.</div>'}
+    ${p.approximate.length ? `<details><summary>Parts of these rules are approximate</summary><ul>${p.approximate.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></details>` : ""}</div>`;
+}
+function attackZonesText(zones) {
+  return zones.map((z) => `${z.kind} | ${z.name} | ${z.cidrs.join(" ")}`).join("\n");
+}
+function parseZones(text) {
+  return text.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).map((l) => {
+    const [kind, name, cidrs = ""] = l.split("|").map((x) => x.trim());
+    return { kind: kind.toLowerCase(), name, cidrs: cidrs.split(/[\s,]+/).filter(Boolean) };
+  });
+}
+VIEWS.attack = {
+  async load() { return api("/api/attack"); },
+  html(d) {
+    const s = d.summary;
+    const unused = d.devices_without_hits.length;
+    return `<h1>Attack surface</h1>
+      <p class="sub">Which networks can reach your plant networks, through which devices and rules, read from the firewall and switch configurations Sutra collected. Generated ${esc(fmtTime(d.generated))}.</p>
+      ${d.notes.map((n) => `<div class="notice">${esc(n)}</div>`).join("")}
+      ${d.problems.map((p) => `<div class="error" style="margin-bottom:8px"><b>${esc(p.device)}</b>: ${esc(p.problem)}</div>`).join("")}
+      <div class="tiles">${["critical", "high", "medium", "low"].map((k) => `<div class="tile"><div class="tile-n">${s[k]}</div><div class="tile-l">${sevBadge(k)}</div></div>`).join("")}
+        <div class="tile"><div class="tile-n">${d.paths.length}</div><div class="tile-l">Paths into OT or IT</div></div></div>
+      <h2 class="mt">Paths</h2>
+      ${d.paths.length ? d.paths.map(attackPathHtml).join("") : `<p class="muted">${d.zones.some((z) => z.kind === "ot") ? "No path from the internet, IT or the DMZ into the OT zones was found in the collected configurations." : "Define an OT zone below to look for paths."}</p>`}
+      <h2 class="mt">Rules to cut first</h2>
+      <p class="muted" style="margin-top:0">Ranked by how many of the paths above depend on the rule. <b>Only permit</b> counts the paths this rule alone carries at its hop: removing it closes them. A rule with no recent hits is the safest cut${unused ? `; hit counts are missing for ${esc(d.devices_without_hits.join(", "))}, so unused rules on those devices cannot be told apart` : ""}.</p>
+      ${d.chokepoints.length ? `<div class="table-wrap"><table><thead><tr><th>Device</th><th>Rule</th><th>What it allows</th><th class="n">Paths</th><th class="n">Only permit on</th><th></th></tr></thead><tbody>
+        ${d.chokepoints.map((c) => `<tr><td>${esc(c.device)}</td><td>${ruleLabel(c.rule)}</td><td class="mono small">${esc(c.rule.summary)}</td><td class="n">${c.paths}</td><td class="n">${c.sole}</td><td>${c.unused ? '<span class="badge good">unused: safest cut</span>' : ""}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">No rule carries a risky path.</p>'}
+      <h2 class="mt">Rule findings</h2>
+      <div class="toolbar"><select id="atk-kind"><option value="">All kinds</option>${Object.entries(FINDING_KIND).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select>
+        <label class="inline"><input type="checkbox" id="atk-risky"> Only rules on a path into OT or IT</label></div>
+      ${d.findings.length ? `<div class="table-wrap"><table id="atk-findings"><thead><tr><th></th><th>Device</th><th>Rule</th><th>Finding</th></tr></thead><tbody>
+        ${d.findings.map((f) => `<tr data-kind="${esc(f.kind)}" data-risky="${f.on_risky_path ? 1 : 0}"><td>${sevBadge(f.severity)}</td><td>${esc(f.device)}</td><td>${ruleLabel(f.rule)}</td>
+          <td><b>${esc(f.title)}</b>${f.on_risky_path ? ' <span class="badge warn">on a path</span>' : ""}<div class="fix">${esc(f.detail)}</div>
+          ${f.approximate.length ? `<div class="fix">Approximate: ${f.approximate.map(esc).join("; ")}</div>` : ""}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">No rule findings.</p>'}
+      <h2 class="mt">Devices and hit counts</h2>
+      <p class="muted" style="margin-top:0">Configurations do not record how often a rule matches, so “unused” needs the counters read from the device. Paste or upload the output below; it replaces the earlier upload for that device. Counters older than ${d.unused_days} days of data are needed to call a rule unused.</p>
+      <div class="table-wrap"><table><thead><tr><th>Device</th><th class="n">Rules</th><th class="n">Interfaces</th><th>Hit counts</th><th>Not modelled</th></tr></thead><tbody>
+        ${d.coverage.map((c) => `<tr><td>${esc(c.device)} <span class="badge">${esc(c.vendor)}</span></td><td class="n">${c.rules}</td><td class="n">${c.interfaces}</td>
+          <td>${c.hits_loaded ? `${esc(d.hit_formats[c.hits_format] || c.hits_format)}, loaded ${esc(fmtTime(c.hits_loaded))}${d.can_act ? ` <button class="btn small" data-clear-hits="${c.device_id}">Remove</button>` : ""}` : '<span class="muted">none</span>'}</td>
+          <td><details><summary>${c.notes.length} note${c.notes.length === 1 ? "" : "s"}</summary><ul>${c.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></details></td></tr>`).join("") || '<tr><td colspan="5" class="muted">No device configurations yet. Add devices under Import data.</td></tr>'}</tbody></table></div>
+      ${d.can_act && d.coverage.length ? `<form class="form-grid" id="atk-hits" style="margin-top:10px">
+        <label>Device<select name="device">${d.coverage.map((c) => `<option value="${c.device_id}">${esc(c.device)}</option>`).join("")}</select></label>
+        <label>Format<select name="format">${Object.entries(d.hit_formats).map(([k, v]) => `<option value="${esc(k)}">${esc(v)}</option>`).join("")}</select></label>
+        <label>Counters last reset (if the format does not say)<input type="date" name="since"></label>
+        <label>File<input type="file" name="file"></label>
+        <div class="toolbar"><button class="btn primary">Load hit counts</button></div></form><div id="atk-msg"></div>` : ""}
+      <h2 class="mt">Zones</h2>
+      <p class="muted" style="margin-top:0">A zone is a named group of networks of one kind: <code>internet</code>, <code>it</code>, <code>dmz</code> or <code>ot</code>. The internet zone, left without networks, means every public address.</p>
+      ${d.can_act ? `<form id="atk-zones"><textarea name="zones" rows="6" spellcheck="false" placeholder="ot | Plant OT | 10.50.0.0/16">${esc(attackZonesText(d.zones))}</textarea>
+        <p class="muted">One zone per line: <code>kind | name | networks separated by spaces</code>.</p>
+        <div class="toolbar"><button class="btn primary">Save zones</button></div></form>` : `<ul>${d.zones.map((z) => `<li>${esc(z.kind_label)}: <b>${esc(z.name)}</b> <span class="mono">${esc(z.cidrs.join(" ") || "all public addresses")}</span></li>`).join("")}</ul>`}
+      <details class="mt"><summary>What this does not cover</summary><ul>${d.limits.map((l) => `<li>${esc(l)}</li>`).join("")}</ul></details>`;
+  },
+  wire(root, d) {
+    const filter = () => {
+      const kind = root.querySelector("#atk-kind"), risky = root.querySelector("#atk-risky");
+      root.querySelectorAll("#atk-findings tbody tr").forEach((tr) => {
+        tr.hidden = (kind.value && tr.dataset.kind !== kind.value) || (risky.checked && tr.dataset.risky !== "1");
+      });
+    };
+    root.querySelector("#atk-kind")?.addEventListener("change", filter);
+    root.querySelector("#atk-risky")?.addEventListener("change", filter);
+    if (!d.can_act) return;
+    const msg = () => root.querySelector("#atk-msg") || root.querySelector("#atk-zones");
+    const fail = (e) => msg().insertAdjacentHTML("afterend", `<div class="error" style="margin-top:10px">${esc(e.message)}</div>`);
+    root.querySelector("#atk-zones")?.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      try { await api("/api/attack/zones", { method: "PUT", json: { zones: parseZones(ev.target.zones.value) } }); render(); } catch (e) { fail(e); }
+    });
+    root.querySelector("#atk-hits")?.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const f = ev.target, file = f.file.files[0];
+      if (!file) return fail(new Error("Choose the file with the hit counts."));
+      try {
+        const text = await file.text();
+        await post(`/api/attack/hits/${f.device.value}`, { format: f.format.value, text, since: f.since.value ? `${f.since.value}T00:00:00` : null });
+        render();
+      } catch (e) { fail(e); }
+    });
+    root.querySelectorAll("[data-clear-hits]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Remove the loaded hit counts for this device?")) return;
+      try { await api(`/api/attack/hits/${b.dataset.clearHits}`, { method: "DELETE" }); render(); } catch (e) { fail(e); }
+    }));
+  },
+};
 
 // ---------- compliance (M-CMP) ----------
 const CMP_STATUS = { non_compliant: ["st-rejected", "Not compliant"], attention: ["st-cmp-amber", "Needs attention"],
