@@ -1,0 +1,12 @@
+Extended IP access list PLC-OUT
+    10 permit tcp 10.50.2.0 0.0.0.255 10.50.1.0 0.0.0.255 eq 502 (5821103 matches)
+    20 permit tcp 10.50.2.0 0.0.0.255 10.50.1.0 0.0.0.255 eq 44818 (2201 matches)
+    30 permit tcp 10.10.5.0 0.0.0.255 10.50.1.0 0.0.0.255 eq 502
+    40 deny ip any any log (17 matches)
+Extended IP access list SCADA-OUT
+    10 permit tcp 10.10.5.0 0.0.0.255 10.50.2.0 0.0.0.255 eq 3389 (207 matches)
+    20 permit tcp 10.10.5.0 0.0.0.255 10.50.2.0 0.0.0.255 eq 4840 (1630 matches)
+    30 permit tcp host 10.20.0.20 host 10.50.2.10 eq 1433 (1440 matches)
+    40 permit tcp any host 10.50.2.20 eq 3389 (12 matches)
+    50 permit ip 10.10.0.0 0.0.255.255 10.50.0.0 0.0.255.255
+    60 deny ip any any log (3 matches)

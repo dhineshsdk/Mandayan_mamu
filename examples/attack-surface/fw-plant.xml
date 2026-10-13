@@ -1,0 +1,266 @@
+<config version="10.1.0">
+  <devices>
+    <entry name="localhost.localdomain">
+      <deviceconfig>
+        <system>
+          <hostname>fw-plant</hostname>
+        </system>
+      </deviceconfig>
+      <network>
+        <interface>
+          <ethernet>
+            <entry name="ethernet1/1">
+              <layer3>
+                <ip>
+                  <entry name="10.30.0.2/30" />
+                </ip>
+              </layer3>
+            </entry>
+            <entry name="ethernet1/2">
+              <layer3>
+                <ip>
+                  <entry name="10.40.0.1/30" />
+                </ip>
+              </layer3>
+            </entry>
+          </ethernet>
+        </interface>
+        <virtual-router>
+          <entry name="default">
+            <routing-table>
+              <ip>
+                <static-route>
+                  <entry name="default">
+                    <destination>0.0.0.0/0</destination>
+                    <nexthop>
+                      <ip-address>10.30.0.1</ip-address>
+                    </nexthop>
+                    <interface>ethernet1/1</interface>
+                  </entry>
+                  <entry name="to-plant">
+                    <destination>10.50.0.0/16</destination>
+                    <nexthop>
+                      <ip-address>10.40.0.2</ip-address>
+                    </nexthop>
+                    <interface>ethernet1/2</interface>
+                  </entry>
+                </static-route>
+              </ip>
+            </routing-table>
+          </entry>
+        </virtual-router>
+      </network>
+      <vsys>
+        <entry name="vsys1">
+          <zone>
+            <entry name="it-side">
+              <network>
+                <layer3>
+                  <member>ethernet1/1</member>
+                </layer3>
+              </network>
+            </entry>
+            <entry name="ot-side">
+              <network>
+                <layer3>
+                  <member>ethernet1/2</member>
+                </layer3>
+              </network>
+            </entry>
+          </zone>
+          <address>
+            <entry name="IT-engineering">
+              <ip-netmask>10.10.5.0/24</ip-netmask>
+            </entry>
+            <entry name="IT-net">
+              <ip-netmask>10.10.0.0/16</ip-netmask>
+            </entry>
+            <entry name="DMZ-historian">
+              <ip-netmask>10.20.0.20/32</ip-netmask>
+            </entry>
+            <entry name="OT-net">
+              <ip-netmask>10.50.0.0/16</ip-netmask>
+            </entry>
+            <entry name="SCADA-net">
+              <ip-netmask>10.50.2.0/24</ip-netmask>
+            </entry>
+            <entry name="SCADA-historian-db">
+              <ip-netmask>10.50.2.10/32</ip-netmask>
+            </entry>
+            <entry name="SCADA-vendor-host">
+              <ip-netmask>10.50.2.20/32</ip-netmask>
+            </entry>
+            <entry name="NTP-server">
+              <ip-netmask>10.10.0.5/32</ip-netmask>
+            </entry>
+          </address>
+          <service>
+            <entry name="tcp-3389">
+              <protocol>
+                <tcp>
+                  <port>3389</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="tcp-4840">
+              <protocol>
+                <tcp>
+                  <port>4840</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="tcp-1433">
+              <protocol>
+                <tcp>
+                  <port>1433</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="udp-123">
+              <protocol>
+                <udp>
+                  <port>123</port>
+                </udp>
+              </protocol>
+            </entry>
+          </service>
+          <rulebase>
+            <security>
+              <rules>
+                <entry name="Engineering to SCADA">
+                  <from>
+                    <member>it-side</member>
+                  </from>
+                  <to>
+                    <member>ot-side</member>
+                  </to>
+                  <source>
+                    <member>IT-engineering</member>
+                  </source>
+                  <destination>
+                    <member>SCADA-net</member>
+                  </destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>tcp-3389</member>
+                    <member>tcp-4840</member>
+                  </service>
+                  <action>allow</action>
+                  <description>Remote engineering sessions</description>
+                </entry>
+                <entry name="Historian pull">
+                  <from>
+                    <member>it-side</member>
+                  </from>
+                  <to>
+                    <member>ot-side</member>
+                  </to>
+                  <source>
+                    <member>DMZ-historian</member>
+                  </source>
+                  <destination>
+                    <member>SCADA-historian-db</member>
+                  </destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>tcp-1433</member>
+                  </service>
+                  <action>allow</action>
+                </entry>
+                <entry name="Vendor remote support">
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <to>
+                    <member>ot-side</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>SCADA-vendor-host</member>
+                  </destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>tcp-3389</member>
+                  </service>
+                  <action>allow</action>
+                </entry>
+                <entry name="NTP from OT">
+                  <from>
+                    <member>ot-side</member>
+                  </from>
+                  <to>
+                    <member>it-side</member>
+                  </to>
+                  <source>
+                    <member>OT-net</member>
+                  </source>
+                  <destination>
+                    <member>NTP-server</member>
+                  </destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>udp-123</member>
+                  </service>
+                  <action>allow</action>
+                </entry>
+                <entry name="Temporary commissioning">
+                  <from>
+                    <member>it-side</member>
+                  </from>
+                  <to>
+                    <member>ot-side</member>
+                  </to>
+                  <source>
+                    <member>IT-net</member>
+                  </source>
+                  <destination>
+                    <member>OT-net</member>
+                  </destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <action>allow</action>
+                  <description>Commissioning 2019</description>
+                </entry>
+                <entry name="Block everything else">
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <action>deny</action>
+                </entry>
+              </rules>
+            </security>
+          </rulebase>
+        </entry>
+      </vsys>
+    </entry>
+  </devices>
+</config>
