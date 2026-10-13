@@ -20,7 +20,7 @@ from .config import Settings
 from .db import make_engine, make_sessionmaker
 from .integrations import Senders
 from .jobs import Conflict, Forbidden
-from .routes import admin, auth, compliance, data, history, jobs, netdevices, ot, scanners, views
+from .routes import admin, attack, auth, compliance, data, history, jobs, netdevices, ot, scanners, views
 from .routes import ai as ai_routes
 
 STATIC = Path(__file__).resolve().parent.parent / "web" / "static"
@@ -137,7 +137,7 @@ def create_app(settings: Settings | None = None, drafter=None, background: bool 
                             status_code=422)
 
     for router in (auth.router, views.router, ai_routes.router, jobs.router, ot.router, data.router,
-                   scanners.router, netdevices.router, compliance.router, history.router, admin.router,
+                   scanners.router, netdevices.router, attack.router, compliance.router, history.router, admin.router,
                    admin.audit_router):
         app.include_router(router)
 

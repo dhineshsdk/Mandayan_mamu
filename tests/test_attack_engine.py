@@ -115,7 +115,8 @@ def test_hit_readers():
     assert h["A"].hits == 0 and h["A"].since == datetime(2026, 1, 1) and h["B"].last_hit == datetime(2026, 10, 1)
     with pytest.raises(ValueError):
         hits.from_csv("rule,hits\nA,many\n")
-    h = hits.from_ios_access_lists("Extended IP access list X\n    10 permit ip any any (7 matches)\n    20 deny ip any any\n")
+    h = hits.from_ios_access_lists(
+        "Extended IP access list X\n    10 permit ip any any (7 matches)\n    20 deny ip any any\n")
     assert h["X 10"].hits == 7 and h["X 20"].hits == 0
     p = sample_hits()["fw-plant"]
     assert p["Temporary commissioning"].hits == 0

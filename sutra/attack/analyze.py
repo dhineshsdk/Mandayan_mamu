@@ -120,6 +120,7 @@ class Finding:
     rule: str = ""
     approximate: list[str] = field(default_factory=list)
     on_risky_path: bool = False
+    path: Path | None = None  # set on kind "path"
 
 
 # ---------------------------------------------------------------- evaluation
@@ -421,7 +422,7 @@ def analyze(devices: list[Device], zones: list[Zone], hits: dict[str, HitMap] | 
             for dz in by_kind.get(dk, []):
                 paths.extend(find_paths(devices, sz, dz))
     path_findings = [Finding("path", path_severity(p), path_title(p), path_detail(p), p.hops[0].device, "",
-                             list(p.approximate), True) for p in paths]
+                             list(p.approximate), True, p) for p in paths]
     ot_ranges = [iv for z in by_kind.get("ot", []) for iv in z.intervals()]
     findings: list[Finding] = []
     coverage = []
