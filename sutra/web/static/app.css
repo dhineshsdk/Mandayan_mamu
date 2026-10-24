@@ -214,3 +214,7 @@ ul.ai li { margin-bottom: 8px; }
 .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; min-width: 110px; box-shadow: var(--shadow); }
 .tile-n { font-size: 26px; font-weight: 700; }
 .tile-l { font-size: 12px; color: var(--muted); }
+.notice { background: var(--warn-bg); color: var(--warn-ink); border-radius: 6px; padding: 10px 14px; margin: 0 0 14px; font-size: 14px; }
+.steps-list { margin: 6px 0 0; padding-left: 22px; line-height: 1.6; }
+.kv.gloss { grid-template-columns: 230px 1fr; }
+.ssvc[title], .badge[title] { cursor: help; }

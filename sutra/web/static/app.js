@@ -14,7 +14,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const pct = (x) => `${Math.round(x * 100)}%`;
 const num = (n) => Number(n).toLocaleString("en-IN");
 const ssvcClass = (s) => "s-" + s.replace("*", "star");
-const ssvc = (s) => `<span class="ssvc ${ssvcClass(s)}">${esc(s)}</span>`;
+const ssvc = (s) => `<span class="ssvc ${ssvcClass(s)}" title="${esc(SSVC_MEANING[s] || "")}">${esc(s)}</span>`;
 const KIND = { "base-image": "Base image", package: "Package", "config-template": "Config template",
   "shared-credential": "Shared credential", "fleet-config": "Fleet config", fleet: "Fleet", single: "Single" };
 const SSVC_ORDER = ["Act", "Attend", "Track*", "Track"];
@@ -24,6 +24,22 @@ const SSVC_MEANING = {
   "Track*": "Signs of attacker interest. Watch daily and prepare a control.",
   Track: "No active exploitation. Bundle into the next maintenance window.",
 };
+const GLOSSARY = [
+  ["Root cause", "The one fix that closes many findings at once, for example patching a golden image instead of 43 servers. Sutra groups scanner findings into root causes so teams fix 20 things, not 451."],
+  ["Finding", "One problem on one host, as reported by a scanner. Findings seen by two scanners are merged."],
+  ["SSVC", "CISA's triage method. It turns exploitation, exposure and impact into one of four decisions: Act, Attend, Track* or Track."],
+  ["Act / Attend / Track* / Track", "Act: exploited now and a threat to operations, move within hours. Attend: faster than the normal cycle. Track*: attacker interest, watch daily and prepare a control. Track: next maintenance window."],
+  ["Expected annual loss (₹ risk)", "Sutra's estimate of what a problem is likely to cost per year in rupees, shown with an 80% range. It is an estimate from stated inputs, not a prediction."],
+  ["CEA fix clock", "The Central Electricity Authority's cyber security regulations set fix windows: 1 month for critical and high, 3 months for others. They apply from 1 April 2027; before then the clock is a forecast."],
+  ["KEV", "CISA's Known Exploited Vulnerabilities catalogue: CVEs attackers are using now."],
+  ["CMDB", "Your asset register. Hosts a scanner sees but the register lacks are flagged as not in the CMDB."],
+  ["Golden image", "The template servers are built from. Fixing the image fixes every server built from it."],
+  ["Crown jewel", "An asset of the highest business criticality (5 of 5). It always needs the vertical head's approval."],
+  ["OT", "Operational technology: plant control systems. Sutra never changes OT itself; it stages a plan that a person carries out with OEM approval and a shutdown slot."],
+  ["Rescan proof", "A job is closed only when a later import shows its findings gone on hosts that were scanned again. Nobody marks it fixed by hand."],
+  ["Ring", "A group of hosts patched together. Ring 1 is a small canary group to catch a bad change before the rest."],
+  ["Vertical", "A business unit or plant, such as Corporate IT or Generation, headed by a vertical head."],
+];
 const ROLE_NAME = { team_member: "Team member", team_manager: "Team manager", vm_analyst: "VM analyst",
   vertical_head: "Vertical head", plant_engineer: "Plant engineer", ciso: "CISO", compliance_officer: "Compliance officer",
   executive: "Executive", auditor: "Auditor", admin: "Administrator" };
@@ -38,12 +54,19 @@ function fmtDate(iso) {
   const d = new Date(iso.length === 10 ? iso + "T00:00:00" : iso);
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
-const fmtTime = (iso) => (iso ? iso.replace("T", " ") + " UTC" : "–");
+const fmtTime = (iso) => {
+  if (!iso) return "–";
+  const d = new Date(/(Z|[+-]\d\d:?\d\d)$/.test(iso) ? iso : iso.replace(" ", "T") + "Z");
+  if (isNaN(d)) return iso.replace("T", " ") + " UTC";
+  return d.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC" }) + " UTC";
+};
+const CEA_IN_FORCE = "2027-04-01";
+const ceaPending = () => { const a = (D && D.as_of) || (STATUS && STATUS.as_of); return !!a && a < CEA_IN_FORCE; };
 function dueLabel(iso) {
   if (!iso) return '<span class="muted">unknown</span>';
   const asOf = (D && D.as_of) || (STATUS && STATUS.as_of);
   const days = Math.round((new Date(iso + "T00:00:00") - new Date(asOf + "T00:00:00")) / 864e5);
-  if (days < 0) return `<span class="badge warn">${-days} days past</span>`;
+  if (days < 0) return `<span class="badge warn"${ceaPending() ? ' title="Past the fix window the CEA rules set. Those rules apply from 1 April 2027, so before then this is a forecast, not a breach."' : ""}>${-days} days past</span>`;
   return `${fmtDate(iso)} <span class="muted">(${days} days)</span>`;
 }
 const otBadge = (isOt) => (isOt ? '<span class="badge ot">OT</span>' : '<span class="badge">IT</span>');
@@ -66,6 +89,7 @@ const post = (path, json) => api(path, { method: "POST", json });
 
 // ---------- navigation: only the modules this person has ----------
 const NAV = [
+  { view: "help", label: "Start here", test: () => true },
   { view: "board", label: "Board", module: "M-BRD" },
   { view: "queue", label: "Root causes", module: "M-RC" },
   { view: "assets", label: "Assets and coverage", module: "M-AST" },
@@ -82,6 +106,7 @@ const NAV = [
   { view: "admin", label: "Administration", test: () => can("M-ADM", "admin") || can("M-ADM", "act") },
 ];
 const allowed = (n) => (n.test ? n.test() : can(n.module));
+let NOTICE = "";
 const OWNER_VIEW = { rc: "queue", job: "jobs", otplan: "ot" };
 function buildNav() {
   const items = NAV.filter(allowed);
@@ -185,7 +210,7 @@ function jobStatus(j) {
   return `<span class="status st-${esc(j.status)}">${esc(STATUS_LABEL[j.status] || j.status)}</span>`;
 }
 function jobTable(jobs) {
-  if (!jobs.length) return '<p class="muted">No jobs.</p>';
+  if (!jobs.length) return '<p class="muted">No jobs yet. A team raises one from its Team portal (Build patch job, Fixing it myself or Accept the risk), and it appears here for the people who must approve it.</p>';
   return `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Team</th><th>Type</th><th>SSVC</th><th>Status</th><th>Fix due</th><th>Ticket</th></tr></thead>
     <tbody>${jobs.map((j) => `<tr class="click" data-job="${j.pk}"><td class="id"><b>${esc(j.id)}</b></td>
       <td><div class="t">${esc(j.rc_title)}</div><div class="fix">${j.hosts.length} hosts · ${j.findings.length} findings</div></td>
@@ -303,8 +328,8 @@ VIEWS.board = {
           <div class="note">${num(d.raw_rows)} detections → ${num(h.findings)} unique findings → ${h.root_causes} root causes</div></div>
         <div class="card kpi"><div class="label">Top ${h.top_n} fixes close</div><div class="value">${pct(h.top_risk_share)} of ₹ risk</div>
           <div class="note">and ${pct(h.top_findings_share)} of all findings</div></div>
-        <div class="card kpi"><div class="label">CEA fix clock</div><div class="value">${num(h.cea_overdue)} past window</div>
-          <div class="note">1-month (critical, high) or 3-month window, applies from 1 Apr 2027. Top ${h.top_n} clear ${num(h.cea_overdue_closed_by_top)}.</div></div>
+        <div class="card kpi"><div class="label">CEA fix clock</div><div class="value">${num(h.cea_overdue)} ${ceaPending() ? "would be past window" : "past window"}</div>
+          <div class="note">1-month (critical, high) or 3-month window. ${ceaPending() ? "The rule applies from 1 Apr 2027, so this is a forecast, not yet a breach." : "In force."} Top ${h.top_n} clear ${num(h.cea_overdue_closed_by_top)}.</div></div>
       </div>
       <div class="grid two">
         <div class="card"><h2>Triage (CISA SSVC)</h2>
@@ -700,7 +725,7 @@ VIEWS.ot = {
       <td>${p.due_on ? `${esc(fmtDate(p.due_on))}${p.sla_breached ? ' <span class="badge warn">missed</span>' : ""}` : '<span class="muted">–</span>'}</td></tr>`).join("");
     return `<h1>OT plans</h1>
       <p class="sub">Fixes on OT assets at your plant. Nothing is pushed to a controller: you carry the staged plan out by hand and record the OEM's approval, the control held until the shutdown, the confirmed shutdown slot and what happened.</p>
-      <div class="card">${rows ? `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Plant</th><th>SSVC</th><th>Stage</th><th>OEM</th><th>Shutdown slot</th><th>Fix due</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted" style="margin:0">No OT jobs at your plant yet. A team raises one from its portal; it appears here as soon as it is raised.</p>'}</div>`;
+      <div class="card">${rows ? `<div class="table-wrap"><table><thead><tr><th>Job</th><th>Root cause</th><th>Plant</th><th>SSVC</th><th>Stage</th><th>OEM</th><th>Shutdown slot</th><th>Fix due</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted" style="margin:0">No OT jobs at your plant yet. When a team raises a fix for a plant asset from its Team portal it appears here. You then record the OEM approval, the confirmed shutdown slot and the result. Nothing for you to do until then.</p>'}</div>`;
   },
   wire(root) { root.querySelectorAll("[data-otplan]").forEach((r) => r.addEventListener("click", () => { location.hash = `#/otplan/${r.dataset.otplan}`; })); },
 };
@@ -807,7 +832,7 @@ VIEWS.changes = {
     return { imports, changes, error };
   },
   html(d) {
-    const label = (i) => `${fmtDate(i.as_of)} · ${i.org || "upload"}${i.kind === "demo" ? " (synthetic)" : ""} · imported ${fmtTime(i.imported_at)}`;
+    const label = (i) => `#${i.id} · ${fmtDate(i.as_of)} · ${i.org || "upload"}${i.kind === "demo" ? " (synthetic)" : ""} · imported ${fmtTime(i.imported_at)}`;
     if (d.imports.length < 2) return `<h1>What changed</h1><p class="sub">Sutra compares two imports. Only ${d.imports.length} import exists so far; the next one will show what was fixed, what is new and what is still open.</p>`;
     const c = d.changes;
     if (!c) return `<h1>What changed</h1><div class="error">${esc(d.error)}</div>`;
@@ -1478,7 +1503,7 @@ VIEWS.compliance = {
         <td>${e.next_deadline ? `${esc(fmtDate(e.next_deadline.due.slice(0, 10)))} <span class="muted">${esc(e.next_deadline.subject.replace("_", " "))} ${esc(e.next_deadline.ref)}</span>` : '<span class="muted">–</span>'}</td></tr>`).join("");
       return `<h1>Compliance</h1><p class="sub">CEA cyber security obligations for each regulated entity: audits, the fix clock on every finding, and the proof behind each closure.</p>
         ${packNote}
-        <div class="card">${rows ? `<div class="table-wrap"><table><thead><tr><th>Entity</th><th>Status</th><th class="n">Audits</th><th class="n">Findings</th><th class="n">Breaches</th><th>Next deadline</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No regulated entities recorded yet.</p>'}
+        <div class="card">${rows ? `<div class="table-wrap"><table><thead><tr><th>Entity</th><th>Status</th><th class="n">Audits</th><th class="n">Findings</th><th class="n">Breaches</th><th>Next deadline</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No regulated entities recorded yet. ${can("M-CMP", "act") ? "Add each power plant, grid or other entity the CEA regulations cover below, then record its audits." : "A compliance officer or CISO adds each regulated entity; it will appear here read-only for you."}</p>'}
         ${d.list.can_act ? `<details style="margin-top:10px"><summary>Add an entity</summary><form class="form-grid" data-cmp-url="/api/compliance/entities">${ENTITY_FIELDS({ name: "", entity_type: "generator", capacity_mw: null, site: "" }, d.meta.entity_types)}<div class="toolbar"><button class="btn primary">Add entity</button></div></form></details>` : ""}
         <div id="cmp-msg"></div></div>`;
     }
@@ -2030,6 +2055,54 @@ function editUser(root, cat, u) {
 }
 
 // ---------- account ----------
+// ---------- start here: what Sutra is, what this role does, what to do first ----------
+const ROLE_GUIDE = {
+  admin: { does: "You set Sutra up for your company: who can sign in, what each person can see, how data gets in, and which modules are licensed. You do not approve fixes and you do not see risk detail unless you are given another role.",
+    steps: [["Add your people and give each a role", "admin/people", "M-ADM"], ["Fill in the ownership chart so every team has a manager and a vertical head; without it jobs cannot be routed for approval", "admin/ownership", "M-ADM"], ["Load data: connect a scanner or import its export", "import", "M-DAT"], ["Check licences and that the data source is not synthetic", "admin/licences", "M-ADM"]] },
+  ciso: { does: "You own the company's cyber risk. Sutra turns thousands of scanner findings into a short list of fixes ranked by rupee risk, and shows who is fixing what and whether it is proved fixed.",
+    steps: [["Read the Board: expected annual loss, the top fixes and what Sutra cannot see", "board", "M-BRD"], ["Open Root causes to see why a fix ranks where it does", "queue", "M-RC"], ["Check Scorecards for teams that are late", "scorecards", "M-CSO"], ["Open Compliance for CEA deadlines and audit evidence", "compliance", "M-CMP"]] },
+  vm_analyst: { does: "You run the vulnerability queue. You keep data and ownership clean, review each root cause, and approve patch jobs after the team manager.",
+    steps: [["Check Patch jobs for approvals waiting for you (the number beside it)", "jobs", "M-PJ"], ["Work the Root causes queue from the top, Act first", "queue", "M-RC"], ["Fix blind spots in Assets and coverage: unscanned and unowned hosts", "assets", "M-AST"], ["Import fresh scans so fixes can be proved by rescan", "import", "M-DAT"]] },
+  team_manager: { does: "You manage one or more teams that own servers and applications. You approve their patch jobs first and watch their open findings.",
+    steps: [["Open Patch jobs and approve or send back jobs waiting for you", "jobs", "M-PJ"], ["See what your team owns in the Team portal", "portal", "M-TP"], ["Check your team's Scorecard", "scorecards", "M-CSO"]] },
+  team_member: { does: "You own servers or applications. Sutra tells you which fixes matter most for your team and drafts the change for you.",
+    steps: [["Open the Team portal: each row is one fix, ranked by rupee risk", "portal", "M-TP"], ["Press Build patch job and Sutra drafts it and sends it for approval; or Fixing it myself to record a manual fix; or Accept the risk to ask for an exception", "portal", "M-TP"], ["Follow the job under Patch jobs. It closes itself when a later scan shows the problem gone", "jobs", "M-PJ"]] },
+  vertical_head: { does: "You head a business unit or plant. You give the last approval on higher-risk jobs and every OT plan, and you see risk for your unit.",
+    steps: [["Open Patch jobs and approve what is waiting for you", "jobs", "M-PJ"], ["See your unit's risk on the Board", "board", "M-BRD"], ["Look at Root causes for the biggest items", "queue", "M-RC"]] },
+  plant_engineer: { does: "You look after plant control systems. Sutra never changes a controller. It stages a plan and you carry it out by hand after OEM approval and a confirmed shutdown slot.",
+    steps: [["Open OT plans for plans waiting on OEM approval, a shutdown slot or execution", "ot", "M-OT"], ["See the findings on your plant's assets in the Team portal", "portal", "M-TP"]] },
+  compliance_officer: { does: "You track the CEA cyber security obligations: audits, fix deadlines and the proof behind each closure.",
+    steps: [["Open Compliance and add each regulated entity", "compliance", "M-CMP"], ["Record audits and upload evidence", "compliance", "M-CMP"], ["Export the Audit pack for auditors", "audit", "M-AUD"]] },
+  executive: { does: "You see how exposed the company is, in rupees, and whether it is improving. Everything else is hidden from you.",
+    steps: [["Read the Board", "board", "M-BRD"], ["See what changed between imports", "changes", null]] },
+  auditor: { does: "You have read-only, time-limited access to compliance records and the audit trail. You can export evidence but cannot change anything.",
+    steps: [["Open Compliance for entities, audits and evidence", "compliance", "M-CMP"], ["Open the Audit log for every sign-in, change and refusal", "audit", null]] },
+};
+VIEWS.help = {
+  load: async () => ({}),
+  html() {
+    const roles = ME.roles.map((r) => r.role);
+    const synthetic = STATUS && STATUS.synthetic;
+    const blocks = roles.filter((r) => ROLE_GUIDE[r]).map((r) => {
+      const g = ROLE_GUIDE[r];
+      const steps = g.steps.filter((x) => !x[2] || can(x[2]) || (x[2] === "M-ADM" && can("M-ADM", "admin")) || (x[2] === "M-AUD" && can("M-AUD"))).map((x) => `<li><a href="#/${x[1]}">${esc(x[0])}</a></li>`).join("");
+      return `<div class="card"><h2>You are: ${esc(ROLE_NAME[r] || r)}</h2><p style="margin-top:0">${esc(g.does)}</p>${steps ? `<h3>Do this first</h3><ol class="steps-list">${steps}</ol>` : ""}</div>`;
+    }).join("");
+    return `<h1>Start here</h1>
+      <p class="sub">Sutra finds what is wrong in your IT and plant systems, merges thousands of scanner findings into a short list of fixes ranked by rupee risk, routes each fix for approval, and closes it only when a rescan proves it is gone.</p>
+      ${synthetic ? '<div class="notice">This is synthetic demo data for a fictional company. Nothing here is real.</div>' : ""}
+      ${STATUS && !STATUS.loaded ? '<div class="notice">No data has been loaded yet. An administrator or VM analyst imports scanner data under Import data.</div>' : ""}
+      <div class="card"><h2>How a fix travels</h2>
+        <ol class="steps-list"><li><b>Scanners</b> report findings. Sutra merges and groups them into <b>root causes</b>.</li>
+        <li>Each root cause is ranked by <b>rupee risk</b> and given a triage decision (<b>Act, Attend, Track*, Track</b>).</li>
+        <li>The owning team presses <b>Build patch job</b>. Sutra drafts the change.</li>
+        <li>The job is approved in order: <b>team manager, VM analyst, vertical head</b> (higher-risk jobs only). Nobody approves their own job.</li>
+        <li>The team makes the change. A later <b>rescan</b> proves it; then, and only then, the job closes.</li></ol></div>
+      ${blocks || '<div class="card"><p>No role is assigned to you yet. Ask an administrator.</p></div>'}
+      <div class="card"><h2>Words you will see</h2><dl class="kv gloss">${GLOSSARY.map((g) => `<dt>${esc(g[0])}</dt><dd>${esc(g[1])}</dd>`).join("")}</dl></div>`;
+  },
+};
+
 VIEWS.account = {
   load: async () => ({}),
   html() {
@@ -2077,7 +2150,9 @@ async function render() {
   let key = VIEWS[name] ? name : homeView();
   if (ME.user.must_change_password) key = "account";
   const owner = NAV.find((n) => n.view === (OWNER_VIEW[key] || key));
-  if (owner && !allowed(owner)) key = homeView();
+  NOTICE = "";
+  if (owner && !allowed(owner)) { NOTICE = `You do not have access to ${owner.label}. Ask an administrator if you need it. Showing your home page instead.`; key = homeView(); }
+  else if (name && !VIEWS[name]) NOTICE = "That page does not exist. Showing your home page instead.";
   document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.view === (OWNER_VIEW[key] || key)));
   const seq = ++renderSeq;
   if (NEEDS_DATA.has(key) && STATUS && !STATUS.loaded) { view.innerHTML = emptyState(); return; }
@@ -2085,7 +2160,7 @@ async function render() {
   try {
     D = await VIEWS[key].load(decodeURIComponent(arg || ""));
     if (seq !== renderSeq) return;
-    view.innerHTML = VIEWS[key].html(D);
+    view.innerHTML = (NOTICE ? `<div class="notice" role="status">${esc(NOTICE)}</div>` : "") + VIEWS[key].html(D);
     (VIEWS[key].wire || (() => {}))(view, D);
     view.focus({ preventScroll: true });
   } catch (e) {
